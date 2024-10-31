@@ -1,0 +1,16 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('../../assets/images/bg.png');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+  }
+  
+  .container {
+    min-height: 100vh; 
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+  }
+  
