@@ -33,20 +33,21 @@ build/
 .vscode/
 
 # dependencies
-/node_modules
+**/node_modules/
 
 # testing
-/coverage
+/View/coverage
 
 # production
-/build
+/View/build
 
 # misc
+View/edu-mentor/node_modules/
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+View/.env.local
+View/.env.development.local
+View/.env.test.local
+View/.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
