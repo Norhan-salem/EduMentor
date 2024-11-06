@@ -108,8 +108,8 @@ ALTER TABLE IF EXISTS public."Mentor"
 CREATE TABLE IF NOT EXISTS public."Mentee"
 (
     "MenteeID" integer NOT NULL DEFAULT nextval('"Mentee_MenteeID_seq"'::regclass),
-    "LearningHours" numeric(5,4) NOT NULL,
-    "NumberofAttandedSessions" integer NOT NULL,
+    "LearningHours" double precision NOT NULL,
+    "NumberOfAttandedSessions" integer NOT NULL,
     CONSTRAINT "Mentee_pkey" PRIMARY KEY ("MenteeID"),
     CONSTRAINT "Mentee_fkey" FOREIGN KEY ("MenteeID")
         REFERENCES public."User" ("UserID") MATCH SIMPLE
@@ -130,10 +130,10 @@ ALTER TABLE IF EXISTS public."Mentee"
 CREATE TABLE IF NOT EXISTS public."OnlineDonation"
 (
     "DonationID" integer NOT NULL DEFAULT nextval('"OnlineDonation_DonationID_seq"'::regclass),
-    "Amount" numeric(15,3) NOT NULL,
+    "Amount" double precision NOT NULL,
     "PaymentType" smallint NOT NULL,
     "InvoiceID" integer NOT NULL DEFAULT nextval('"OnlineDonation_InvoiceID_seq"'::regclass),
-    "AmountCharged" numeric(15,3) NOT NULL,
+    "AmountCharged" double precision NOT NULL,
     "IsDeleted" boolean NOT NULL,
     CONSTRAINT "OnlineDonation_pkey" PRIMARY KEY ("DonationID")
 )
@@ -151,11 +151,17 @@ ALTER TABLE IF EXISTS public."OnlineDonation"
 CREATE TABLE IF NOT EXISTS public."Session"
 (
     "SessionID" bigint NOT NULL DEFAULT nextval('"Session_SessionID_seq"'::regclass),
-    "Duration" numeric(4,4) NOT NULL,
+    "SessionName" text COLLATE pg_catalog."default" NOT NULL,
+    "Duration" double precision NOT NULL,
     "Date" timestamp without time zone NOT NULL,
-    "IsDeleted" boolean,
+    "IsDeleted" boolean NOT NULL,
     CONSTRAINT "Session_pkey" PRIMARY KEY ("SessionID")
 )
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Session"
+    OWNER to postgres;
 
 TABLESPACE pg_default;
 
@@ -206,8 +212,8 @@ ALTER TABLE IF EXISTS public."Topics"
 
 CREATE TABLE IF NOT EXISTS public."MT_InterestedIn"
 (
-    "MentorID" integer NOT NULL DEFAULT nextval('"MT_InterestedIn_MentorID_seq"'::regclass),
-    "TopicsID" integer NOT NULL DEFAULT nextval('"MT_InterestedIn_TopicsID_seq"'::regclass),
+    "MentorID" integer NOT NULL,
+    "TopicsID" integer NOT NULL,
     CONSTRAINT "MT_InterestedIn_pkey" PRIMARY KEY ("MentorID", "TopicsID"),
     CONSTRAINT "MT_InterestedIn_MID_fkey" FOREIGN KEY ("MentorID")
         REFERENCES public."Mentor" ("MentorID") MATCH SIMPLE
@@ -231,9 +237,10 @@ ALTER TABLE IF EXISTS public."MT_InterestedIn"
 
 CREATE TABLE IF NOT EXISTS public."Mentor_Availability"
 (
-    "MentorID" integer NOT NULL DEFAULT nextval('"MentorAvailability_MentorID_seq"'::regclass),
+    "MentorID" integer NOT NULL,
     "Availability" timestamp without time zone NOT NULL,
-    CONSTRAINT "MentorAvailability_pkey" PRIMARY KEY ("MentorID"),
+    "AvailabilityDuration" double precision NOT NULL,
+    CONSTRAINT "Mentor_Availability_pkey" PRIMARY KEY ("MentorID", "Availability", "AvailabilityDuration"),
     CONSTRAINT "MentorAvailability_fkey" FOREIGN KEY ("MentorID")
         REFERENCES public."Mentor" ("MentorID") MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -252,8 +259,8 @@ ALTER TABLE IF EXISTS public."Mentor_Availability"
 
 CREATE TABLE IF NOT EXISTS public."MTT_InterestedIn"
 (
-    "MenteeID" integer NOT NULL DEFAULT nextval('"MTT_InterestedIn_MenteeID_seq"'::regclass),
-    "TopicsID" integer NOT NULL DEFAULT nextval('"MTT_InterestedIn_TopicsID_seq"'::regclass),
+    "MenteeID" integer NOT NULL,
+    "TopicsID" integer NOT NULL,
     CONSTRAINT "MTT_InterestedIn_pkey" PRIMARY KEY ("MenteeID", "TopicsID"),
     CONSTRAINT "MTT_InterestedIn_MID_fkey" FOREIGN KEY ("MenteeID")
         REFERENCES public."Mentee" ("MenteeID") MATCH SIMPLE
@@ -277,8 +284,8 @@ ALTER TABLE IF EXISTS public."MTT_InterestedIn"
 
 CREATE TABLE IF NOT EXISTS public."ODD_Makes"
 (
-    "OnlineDonorID" integer NOT NULL DEFAULT nextval('"ODD_Makes_OnlineDonorID_seq"'::regclass),
-    "DonationID" integer NOT NULL DEFAULT nextval('"ODD_Makes_DonationID_seq"'::regclass),
+    "OnlineDonorID" integer NOT NULL,
+    "DonationID" integer NOT NULL,
     "Date" timestamp with time zone NOT NULL,
     CONSTRAINT "ODD_Makes_pkey" PRIMARY KEY ("OnlineDonorID", "DonationID"),
     CONSTRAINT "ODD_Makes_DID_fkey" FOREIGN KEY ("DonationID")
@@ -303,8 +310,8 @@ ALTER TABLE IF EXISTS public."ODD_Makes"
 
 CREATE TABLE IF NOT EXISTS public."AS_Makes"
 (
-    "AdminID" integer NOT NULL DEFAULT nextval('"AS_Makes_AdminID_seq"'::regclass),
-    "SessionID" bigint NOT NULL DEFAULT nextval('"AS_Makes_SessionID_seq"'::regclass),
+    "AdminID" integer NOT NULL,
+    "SessionID" bigint NOT NULL,
     CONSTRAINT "AS_Makes_pkey" PRIMARY KEY ("AdminID", "SessionID"),
     CONSTRAINT "AS_Makes_AID_fkey" FOREIGN KEY ("AdminID")
         REFERENCES public."Admin" ("AdminID") MATCH SIMPLE
@@ -322,39 +329,14 @@ ALTER TABLE IF EXISTS public."AS_Makes"
     OWNER to postgres;
 
 
---15 Table: public.AM_Assigns
-
--- DROP TABLE IF EXISTS public."AM_Assigns";
-
-CREATE TABLE IF NOT EXISTS public."AM_Assigns"
-(
-    "AdminID" integer NOT NULL DEFAULT nextval('"AM_Assigns_AdminID_seq"'::regclass),
-    "MentorID" integer NOT NULL DEFAULT nextval('"AM_Assigns_MentorID_seq"'::regclass),
-    CONSTRAINT "AM_Assigns_pkey" PRIMARY KEY ("AdminID", "MentorID"),
-    CONSTRAINT "AM_Assigns_AID_fkey" FOREIGN KEY ("AdminID")
-        REFERENCES public."Admin" ("AdminID") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
-    CONSTRAINT "AM_Assigns_MID_fkey" FOREIGN KEY ("MentorID")
-        REFERENCES public."Mentor" ("MentorID") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public."AM_Assigns"
-    OWNER to postgres;
-
-
---16 Table: public.SMTT_Takes
+--15 Table: public.SMTT_Takes
 
 -- DROP TABLE IF EXISTS public."SMTT_Takes";
 
 CREATE TABLE IF NOT EXISTS public."SMTT_Takes"
 (
-    "SessionID" bigint NOT NULL DEFAULT nextval('"SMTT_Takes_SessionID_seq"'::regclass),
-    "MenteeID" integer NOT NULL DEFAULT nextval('"SMTT_Takes_MenteeID_seq"'::regclass),
+    "SessionID" bigint NOT NULL,
+    "MenteeID" integer NOT NULL,
     CONSTRAINT "SMTT_Takes_pkey" PRIMARY KEY ("SessionID", "MenteeID"),
     CONSTRAINT "SMTT_Takes_MID_fkey" FOREIGN KEY ("MenteeID")
         REFERENCES public."Mentee" ("MenteeID") MATCH SIMPLE
@@ -372,14 +354,14 @@ ALTER TABLE IF EXISTS public."SMTT_Takes"
     OWNER to postgres;
 
 
---17 Table: public.FS_Has
+--16 Table: public.FS_Has
 
 -- DROP TABLE IF EXISTS public."FS_Has";
 
 CREATE TABLE IF NOT EXISTS public."FS_Has"
 (
-    "FeedbackID" bigint NOT NULL DEFAULT nextval('"FS_Has_FeedbackID_seq"'::regclass),
-    "SessionID" bigint NOT NULL DEFAULT nextval('"FS_Has_SessionID_seq"'::regclass),
+    "FeedbackID" bigint NOT NULL,
+    "SessionID" bigint NOT NULL,
     CONSTRAINT "FS_Has_pkey" PRIMARY KEY ("SessionID"),
     CONSTRAINT "FS_Has_FID_fkey" FOREIGN KEY ("FeedbackID")
         REFERENCES public."Feedback" ("FeedbackID") MATCH SIMPLE
@@ -397,14 +379,14 @@ ALTER TABLE IF EXISTS public."FS_Has"
     OWNER to postgres;
 
 
---18 Table: public.FM_Gives
+--17 Table: public.FM_Gives
 
 -- DROP TABLE IF EXISTS public."FM_Gives";
 
 CREATE TABLE IF NOT EXISTS public."FM_Gives"
 (
-    "FeedbackID" bigint NOT NULL DEFAULT nextval('"FM_Gives_FeedbackID_seq"'::regclass),
-    "MenteeID" integer NOT NULL DEFAULT nextval('"FM_Gives_MenteeID_seq"'::regclass),
+    "FeedbackID" bigint NOT NULL,
+    "MenteeID" integer NOT NULL,
     CONSTRAINT "FM_Gives_pkey" PRIMARY KEY ("FeedbackID", "MenteeID"),
     CONSTRAINT "FM_Gives_FID_fkey" FOREIGN KEY ("FeedbackID")
         REFERENCES public."Feedback" ("FeedbackID") MATCH SIMPLE
@@ -422,14 +404,14 @@ ALTER TABLE IF EXISTS public."FM_Gives"
     OWNER to postgres;
 
 
---19 Table: public.SM_Gives
+--18 Table: public.SM_Gives
 
 -- DROP TABLE IF EXISTS public."SM_Gives";
 
 CREATE TABLE IF NOT EXISTS public."SM_Gives"
 (
-    "SessionID" bigint NOT NULL DEFAULT nextval('"SM_Gives_SessionID_seq"'::regclass),
-    "MentorID" integer NOT NULL DEFAULT nextval('"SM_Gives_MentorID_seq"'::regclass),
+    "SessionID" bigint NOT NULL,
+    "MentorID" integer NOT NULL,
     CONSTRAINT "SM_Gives_pkey" PRIMARY KEY ("SessionID", "MentorID"),
     CONSTRAINT "SM_Gives_MID_fkey" FOREIGN KEY ("MentorID")
         REFERENCES public."Mentor" ("MentorID") MATCH SIMPLE
