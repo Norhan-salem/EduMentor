@@ -6,7 +6,7 @@ import { validateForm } from '../utils/validation';
 const roles = ['Mentor', 'Mentee'];
 const interestOptions = [
   'Technology',
-  'Education',
+  'History',
   'Health',
   'Business',
   'Art',

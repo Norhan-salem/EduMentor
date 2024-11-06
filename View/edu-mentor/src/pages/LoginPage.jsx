@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Tab, Tabs } from 'react-bootstrap';
+import { Container, Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
 import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
-import '../css/LoginPage.css';
 
-const LoginPage = () => {
+const LoginPage = () => { 
   const [activeTab, setActiveTab] = useState('login');
   
   return (
-    <Container className="container">
-      <Row>
-        <Col>
+    <Container className="d-flex justify-content-center align-items-center mt-5 mb-5">
+      <Row className="w-100">
+        <Col lg={4} className="mx-auto">
           <Card className="p-4 shadow-lg">
             <Card.Body>
               <Tabs
@@ -35,3 +34,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

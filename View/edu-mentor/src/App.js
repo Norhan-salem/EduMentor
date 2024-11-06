@@ -6,9 +6,12 @@ import AboutPage from './pages/AboutPage';
 import DonatePage from './pages/DonatePage';
 import LoginPage from './pages/LoginPage';
 import Footer from './components/Footer';
+import './App.css';
+import MentorDashboard from './pages/MentorDashboard';
 
 const App = () => {
   return (
+    <div className='app-wrapper'>
     <Router>
       <Header />
       <Routes>
@@ -16,9 +19,11 @@ const App = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/Mentor" element={<MentorDashboard />} />
       </Routes>
       <Footer />
     </Router>
+    </div>
   );
 };
 
