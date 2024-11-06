@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS public."User"
     "Email" text COLLATE pg_catalog."default" NOT NULL,
     "FirstName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
     "LastName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "Role" smallint NOT NULL,
     "Password" text COLLATE pg_catalog."default",
     "IsDeleted" boolean NOT NULL,
     CONSTRAINT "User_pkey" PRIMARY KEY ("UserID")
