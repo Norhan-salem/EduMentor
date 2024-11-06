@@ -7,7 +7,8 @@ import DonatePage from './pages/DonatePage';
 import LoginPage from './pages/LoginPage';
 import Footer from './components/Footer';
 import './App.css';
-import MentorDashboard from './pages/MentorDashboard';
+import MentorDashboardPage from './pages/MentorDashboardPage';
+import MenteeDashboardPage from './pages/MenteeDashboardPage';
 
 const App = () => {
   return (
@@ -19,7 +20,8 @@ const App = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/Mentor" element={<MentorDashboard />} />
+        <Route path="/Mentor" element={<MentorDashboardPage />} />
+        <Route path="/Mentee" element={<MenteeDashboardPage />} />
       </Routes>
       <Footer />
     </Router>

@@ -5,7 +5,7 @@ import AvailabilitySchedule from '../components/AvailabilitySchedule';
 import MentoringHours from '../components/MentoringHours';
 import Interests from '../components/InterestsSelection';
 
-const MentorDashboard = () => {
+const MentorDashboardPage = () => {
   const [sessions] = useState([
     { date: '2024-11-07', duration: '2 hours', topic: 'Math Tutoring' },
     { date: '2024-11-09', duration: '1.5 hours', topic: 'Science Tutoring' },
@@ -75,4 +75,4 @@ const MentorDashboard = () => {
   );
 };
 
-export default MentorDashboard;
+export default MentorDashboardPage;
