@@ -2,6 +2,7 @@ package com.asu.EduMentor.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -108,6 +109,31 @@ public abstract class User implements CRUD{
             //e.printStackTrace();
             throw new RuntimeException("Error deleting admin", e);
         }
+    }
+
+    public static User findByEmail(String email) {
+        String sql = "SELECT * FROM public.\"User\" WHERE \"Email\" = ? AND \"isDeleted\" = FALSE";
+        try (PreparedStatement stmt = DBConnection.getInstance().getConnection().prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int role = rs.getInt("Role");
+                return switch (role) {
+                    case 0 -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
+                            rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
+                    case 1 -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
+                            rs.getString("Email"), rs.getString("Password"), rs.getDouble("TotalHours"));
+                    case 2 -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
+                            rs.getString("Email"), rs.getString("Password"),
+                            rs.getInt("NumberOfAttendedSessions"), rs.getDouble("LearningHours"));
+                    default -> throw new IllegalArgumentException("Invalid role in database");
+                };
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding user by email", e);
+        }
+        return null;
     }
 
 }
