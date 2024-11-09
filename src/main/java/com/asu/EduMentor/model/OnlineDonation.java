@@ -1,17 +1,14 @@
 package com.asu.EduMentor.model;
 
-import java.sql.*;
 import java.util.List;
 
-public class OnlineDonation implements CRUD
-{
+public class OnlineDonation implements CRUD {
     private int donationID;
     private int paymentType;
     private double amount;
     private boolean isDeleted;
 
-    public OnlineDonation(int paymentType, double amount)
-    {
+    public OnlineDonation(int paymentType, double amount) {
         this.paymentType = paymentType;
         this.amount = amount;
     }
@@ -49,15 +46,12 @@ public class OnlineDonation implements CRUD
     }
 
 
-
-    public Invoice getInvoice()
-    {
+    public Invoice getInvoice() {
         // to be implemented
         return null;
     }
 
-    public void makeDonation(OnlineDonor od)
-    {
+    public void makeDonation(OnlineDonor od) {
         // to be implemented
     }
 

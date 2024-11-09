@@ -8,14 +8,13 @@ import java.sql.SQLException;
 
 public final class DBConnection {
     private static volatile DBConnection instance;
-
-    // Method to get the database connection
-    //  variables
-    @Getter
-    private Connection connection;
     private final String url = "jdbc:postgresql://localhost:5432/EDUMentor"; // Update with your database
     private final String username = "admin"; // Update with your username
     private final String password = "admin"; // Update with your password
+    // Method to get the database connection
+    //  variables
+    @Getter
+    private final Connection connection;
 
     private DBConnection() {
         // Initialize the database connection

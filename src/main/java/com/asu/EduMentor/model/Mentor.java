@@ -4,18 +4,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mentor extends User{
+public class Mentor extends User {
 
     private double totalHours;
 
-    public Mentor(String firstName, String lastName, String email, String password)
-    {
+    public Mentor(String firstName, String lastName, String email, String password) {
         super(firstName, lastName, userType.MENTOR, email, password);
         this.totalHours = 0;
     }
 
-    public Mentor(String firstName, String lastName, String email, String password, double totalHours)
-    {
+    public Mentor(String firstName, String lastName, String email, String password, double totalHours) {
         super(firstName, lastName, userType.MENTOR, email, password);
         this.totalHours = totalHours;
     }
@@ -32,9 +30,8 @@ public class Mentor extends User{
     public Object create() {
 
         String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\") VALUES (?, ?, ?, ?, ?)";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getFirstName());
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
@@ -44,27 +41,21 @@ public class Mentor extends User{
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next())
-            {
+            if (rs.next()) {
                 this.setUserID(rs.getInt("UserID"));
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error creating user", e);
         }
 
         String mentorQuery = "INSERT INTO public.\"Mentor\" (\"UserID\") VALUES (?)";
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(mentorQuery))
-        {
+             PreparedStatement stmt = conn.prepareStatement(mentorQuery)) {
             stmt.setInt(1, this.getUserID());
 
             stmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error creating mentor", e);
         }
@@ -77,17 +68,15 @@ public class Mentor extends User{
     public Object update(Object updatedObject) {
 
 
-        if(!(updatedObject instanceof User))
-        {
+        if (!(updatedObject instanceof User)) {
             throw new IllegalArgumentException("Invalid object type");
         }
 
         Mentor updatedMentor = (Mentor) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(userQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedMentor.getFirstName());
             stmt.setString(2, updatedMentor.getLastName());
             stmt.setString(3, updatedMentor.getEmail());
@@ -95,9 +84,7 @@ public class Mentor extends User{
             stmt.setInt(5, updatedMentor.getUserID());
 
             stmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error updating mentor", e);
         }
@@ -109,14 +96,12 @@ public class Mentor extends User{
     public Object read(int id) {
 
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"MentorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next())
-            {
+            if (rs.next()) {
                 int userID = rs.getInt("UserID");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
@@ -127,9 +112,7 @@ public class Mentor extends User{
                 m.setUserID(userID);
                 return m;
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading mentor", e);
         }
@@ -142,13 +125,11 @@ public class Mentor extends User{
 
         List<Object> mentors = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"AdminID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int userID = rs.getInt("UserID");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
@@ -159,9 +140,7 @@ public class Mentor extends User{
                 mentor.setUserID(userID);
                 mentors.add(mentor);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading all mentors", e);
         }
@@ -170,8 +149,7 @@ public class Mentor extends User{
 
     }
 
-    public List<Session> getGivenSessions()
-    {
+    public List<Session> getGivenSessions() {
 
         List<Session> sessions = new ArrayList<>();
         String query = "SELECT s.\"SessionID\", s.\"SessionName\", s.\"Date\",  s.\"Duration\"" +
@@ -180,14 +158,12 @@ public class Mentor extends User{
                 "WHERE sg.\"MentorID\" = ?";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query))
-        {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int sessionID = rs.getInt("SessionID");
                 String name = rs.getString("SessionName");
                 Date date = rs.getDate("Date");
@@ -198,8 +174,7 @@ public class Mentor extends User{
                 sessions.add(session);
             }
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error retrieving attended sessions", e);
         }
@@ -207,22 +182,19 @@ public class Mentor extends User{
         return sessions;
     }
 
-    public List<Availability> getMentorAvailabilities()
-    {
+    public List<Availability> getMentorAvailabilities() {
         List<Availability> availabilityList = new ArrayList<>();
 
         String query = "SELECT a.\"Availability\", a.\"AvailabilityDuration\" " +
                 "FROM public.\"Mentor_Availability\" a " +
                 "WHERE a.\"MentorID\" = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query))
-        {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
 
                 Timestamp time = rs.getTimestamp("Availability");
                 double duration = rs.getDouble("AvailabilityDuration");
@@ -232,8 +204,7 @@ public class Mentor extends User{
                 availabilityList.add(availability);
             }
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error retrieving availability", e);
         }
@@ -242,11 +213,9 @@ public class Mentor extends User{
 
     public void addAvailability(Availability availability) {
         // TODO: implement
-        return;
     }
 
     public void deleteAvailability(Availability availability) {
         // TODO: implement
-        return;
     }
 }
