@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class User implements CRUD{
@@ -118,22 +119,55 @@ public abstract class User implements CRUD{
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int role = rs.getInt("Role");
-                return switch (role) {
-                    case 0 -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
-                            rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
-                    case 1 -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
-                            rs.getString("Email"), rs.getString("Password"), rs.getDouble("TotalHours"));
-                    case 2 -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
-                            rs.getString("Email"), rs.getString("Password"),
-                            rs.getInt("NumberOfAttendedSessions"), rs.getDouble("LearningHours"));
-                    default -> throw new IllegalArgumentException("Invalid role in database");
-                };
+                return createUserFromResultSet(rs);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error finding user by email", e);
         }
         return null;
+    }
+
+    public static List<User> findUsersBySearchTerm(String search) {
+        List<User> userList = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM public.\"User\" WHERE " +
+                "(\"FirstName\" ILIKE ? OR \"LastName\" ILIKE ? OR \"Email\" ILIKE ?) AND \"isDeleted\" = FALSE";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+
+            String searchPattern = "%" + search + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                userList.add(createUserFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error searching for users", e);
+        }
+
+        return userList;
+    }
+
+    private static User createUserFromResultSet(ResultSet rs) throws SQLException {
+        userType role = userType.valueOf(rs.getString("Role"));
+
+        User user = switch (role) {
+            case ADMIN -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
+                    rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
+            case MENTOR -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
+                    rs.getString("Email"), rs.getString("Password"), rs.getDouble("TotalHours"));
+            case MENTEE -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
+                    rs.getString("Email"), rs.getString("Password"),
+                    rs.getInt("NumberOfAttendedSessions"), rs.getDouble("LearningHours"));
+            default -> throw new IllegalArgumentException("Invalid role in database");
+        };
+
+        user.setUserID(rs.getInt("UserID"));
+        return user;
     }
 
 }
