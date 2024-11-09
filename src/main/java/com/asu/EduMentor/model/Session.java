@@ -349,4 +349,35 @@ public class Session implements CRUD
         }
     }
 
+    public static List<Session> findSessionsBySearchTerm(String search) {
+        List<Session> sessions = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM public.\"Session\" WHERE " +
+                "(\"SessionName\" ILIKE ? OR TO_CHAR(\"Date\", 'YYYY-MM-DD') ILIKE ?) AND \"isDeleted\" = FALSE";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+
+            String searchPattern = "%" + search + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                long sessionID = rs.getLong("SessionID");
+                Date date = rs.getDate("Date");
+                double duration = rs.getDouble("Duration");
+                String name = rs.getString("SessionName");
+
+                Session session = new Session(date, duration, name);
+                session.setSessionID(sessionID);
+                sessions.add(session);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error searching for sessions", e);
+        }
+
+        return sessions;
+    }
+
 }

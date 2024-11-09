@@ -10,6 +10,10 @@ public class Mentee extends User{
     private double learningHours;
 
 
+    public Mentee() {
+        super("", "", userType.MENTEE, "", "");
+    }
+
     public Mentee(String firstName, String lastName, String email, String password)
     {
         super(firstName, lastName, userType.MENTEE, email, password);
@@ -140,6 +144,7 @@ public class Mentee extends User{
 
     @Override
     public Object read(int id)
+    // TODO: Refactor this method to be static
     {
 
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
@@ -208,7 +213,7 @@ public class Mentee extends User{
     }
 
 
-    public List<Session> getGivenSessions() {
+    public List<Session> getAttendedSessions() {
         List<Session> givenSessions = new ArrayList<>();
         String query = "SELECT s.\"SessionID\", s.\"SessionName\", s.\"Date\", s.\"Duration\" " +
                 "FROM public.\"Session\" s " +

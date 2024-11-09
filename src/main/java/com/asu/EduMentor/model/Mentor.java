@@ -170,7 +170,7 @@ public class Mentor extends User{
 
     }
 
-    public List<Session> getAttendedSessions()
+    public List<Session> getGivenSessions()
     {
 
         List<Session> sessions = new ArrayList<>();
@@ -238,5 +238,15 @@ public class Mentor extends User{
             throw new RuntimeException("Error retrieving availability", e);
         }
         return availabilityList;
+    }
+
+    public void addAvailability(Availability availability) {
+        // TODO: implement
+        return;
+    }
+
+    public void deleteAvailability(Availability availability) {
+        // TODO: implement
+        return;
     }
 }
