@@ -170,7 +170,7 @@ public class Mentor extends User{
 
     }
 
-    public List<Session> getAttendedSessions()
+    public List<Session> getGivenSessions()
     {
 
         List<Session> sessions = new ArrayList<>();

@@ -208,7 +208,7 @@ public class Mentee extends User{
     }
 
 
-    public List<Session> getGivenSessions() {
+    public List<Session> getAttendedSessions() {
         List<Session> givenSessions = new ArrayList<>();
         String query = "SELECT s.\"SessionID\", s.\"SessionName\", s.\"Date\", s.\"Duration\" " +
                 "FROM public.\"Session\" s " +
