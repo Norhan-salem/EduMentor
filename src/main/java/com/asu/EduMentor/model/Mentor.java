@@ -239,4 +239,14 @@ public class Mentor extends User{
         }
         return availabilityList;
     }
+
+    public void addAvailability(Availability availability) {
+        // TODO: implement
+        return;
+    }
+
+    public void deleteAvailability(Availability availability) {
+        // TODO: implement
+        return;
+    }
 }

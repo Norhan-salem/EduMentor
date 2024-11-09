@@ -58,7 +58,6 @@ public class SessionController {
 
     @PostMapping("/getUserSessions")
     public ResponseEntity<List<Session>> getUserSessions(@RequestBody User user) {
-        // TODO: can be refactored to apply strategy pattern
         try {
             if (user.getRole() == userType.MENTOR) {
                 Mentor mentor = new Mentor(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
