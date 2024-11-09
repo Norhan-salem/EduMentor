@@ -2,8 +2,7 @@ package com.asu.EduMentor.model;
 
 import java.util.List;
 
-public class Invoice implements CRUD
-{
+public class Invoice implements CRUD {
 
     private int invoiceID;
     private String description;
