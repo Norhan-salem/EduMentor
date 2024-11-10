@@ -10,12 +10,14 @@ import java.util.List;
 /**
  * This class represents the relationship between a {@link User} and {@link Topics}.
  * It provides methods to add, delete, and retrieve topics associated with a specific user
- * in the database.
+ * in the database based on their role.
  */
 public class UserHasTopics {
 
     /**
-     * Adds a topic to the specified user's list of topics in the database.
+     * Adds a topic to the specified user's list of topics in the database based on their role.
+     * If the user is a mentor, adds to the MentorTopics table.
+     * If the user is a mentee, adds to the MenteeTopics table.
      *
      * @param topic The {@link Topics} instance to be associated with the user.
      * @param user The {@link User} instance to which the topic will be added.
@@ -23,9 +25,18 @@ public class UserHasTopics {
      * @throws RuntimeException if a database error occurs while adding the topic.
      */
     public boolean addTopic(Topics topic, User user) {
-        String sqlQuery = "INSERT INTO public.\"UserTopics\" (\"UserID\", \"TopicsID\") VALUES (?, ?)";
+        String roleBasedInsertQuery;
+
+        if (user.getRole() == userType.MENTOR) {
+            roleBasedInsertQuery = "INSERT INTO public.\"MentorTopics\" (\"MentorID\", \"TopicsID\") VALUES (?, ?)";
+        } else if (user.getRole() == userType.MENTEE) {
+            roleBasedInsertQuery = "INSERT INTO public.\"MenteeTopics\" (\"MenteeID\", \"TopicsID\") VALUES (?, ?)";
+        } else {
+            throw new IllegalArgumentException("User must be a mentor or mentee to add a topic.");
+        }
+
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+             PreparedStatement stmt = conn.prepareStatement(roleBasedInsertQuery)) {
 
             stmt.setInt(1, user.getUserID());
             stmt.setInt(2, topic.getTopicID());
@@ -38,7 +49,9 @@ public class UserHasTopics {
     }
 
     /**
-     * Deletes a topic from the specified user's list of topics in the database.
+     * Deletes a topic from the specified user's list of topics in the database based on their role.
+     * If the user is a mentor, deletes from the MentorTopics table.
+     * If the user is a mentee, deletes from the MenteeTopics table.
      *
      * @param topic The {@link Topics} instance to be removed from the user's topics.
      * @param user The {@link User} instance from whom the topic will be removed.
@@ -46,9 +59,18 @@ public class UserHasTopics {
      * @throws RuntimeException if a database error occurs while deleting the topic.
      */
     public boolean deleteTopic(Topics topic, User user) {
-        String sqlQuery = "DELETE FROM public.\"UserTopics\" WHERE \"UserID\" = ? AND \"TopicsID\" = ?";
+        String roleBasedDeleteQuery;
+
+        if (user.getRole() == userType.MENTOR) {
+            roleBasedDeleteQuery = "DELETE FROM public.\"MentorTopics\" WHERE \"MentorID\" = ? AND \"TopicsID\" = ?";
+        } else if (user.getRole() == userType.MENTEE) {
+            roleBasedDeleteQuery = "DELETE FROM public.\"MenteeTopics\" WHERE \"MenteeID\" = ? AND \"TopicsID\" = ?";
+        } else {
+            throw new IllegalArgumentException("User must be a mentor or mentee to delete a topic.");
+        }
+
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+             PreparedStatement stmt = conn.prepareStatement(roleBasedDeleteQuery)) {
 
             stmt.setInt(1, user.getUserID());
             stmt.setInt(2, topic.getTopicID());
@@ -61,7 +83,9 @@ public class UserHasTopics {
     }
 
     /**
-     * Retrieves all topics associated with a specific user from the database.
+     * Retrieves all topics associated with a specific user from the database based on their role.
+     * If the user is a mentor, retrieves topics from the MentorTopics table.
+     * If the user is a mentee, retrieves topics from the MenteeTopics table.
      *
      * @param user The {@link User} instance whose topics are to be retrieved.
      * @return A list of {@link Topics} associated with the specified user.
@@ -69,13 +93,24 @@ public class UserHasTopics {
      */
     public List<Topics> getUserTopics(User user) {
         List<Topics> topics = new ArrayList<>();
-        String sqlQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
-                "FROM public.\"Topics\" t " +
-                "JOIN public.\"UserTopics\" ut ON t.\"TopicsID\" = ut.\"TopicsID\" " +
-                "WHERE ut.\"UserID\" = ? AND t.\"isDeleted\" = FALSE";
+
+        String roleBasedQuery;
+        if (user.getRole() == userType.MENTOR) {
+            roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
+                    "FROM public.\"Topics\" t " +
+                    "JOIN public.\"MentorTopics\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +
+                    "WHERE mt.\"MentorID\" = ? AND t.\"isDeleted\" = FALSE";
+        } else if (user.getRole() == userType.MENTEE) {
+            roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
+                    "FROM public.\"Topics\" t " +
+                    "JOIN public.\"MenteeTopics\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +
+                    "WHERE mt.\"MenteeID\" = ? AND t.\"isDeleted\" = FALSE";
+        } else {
+            throw new IllegalArgumentException("User must be a mentor or mentee to retrieve topics.");
+        }
 
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+             PreparedStatement stmt = conn.prepareStatement(roleBasedQuery)) {
 
             stmt.setInt(1, user.getUserID());
             ResultSet rs = stmt.executeQuery();
@@ -95,3 +130,4 @@ public class UserHasTopics {
         return topics;
     }
 }
+
