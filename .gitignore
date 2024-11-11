@@ -31,3 +31,24 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# dependencies
+**/node_modules/
+
+# testing
+/View/coverage
+
+# production
+/View/build
+
+# misc
+View/edu-mentor/node_modules/
+.DS_Store
+View/.env.local
+View/.env.development.local
+View/.env.test.local
+View/.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
