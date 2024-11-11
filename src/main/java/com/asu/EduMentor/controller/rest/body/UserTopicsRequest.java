@@ -11,14 +11,13 @@ public class UserTopicsRequest {
         return user;
     }
 
-
     public boolean setUser(User user) {
         if (user != null) {
             this.user = user;
             return true;
-        }else{
-            return false;
         }
+
+        return false;
     }
 
     public Topics getTopics() {
@@ -29,9 +28,9 @@ public class UserTopicsRequest {
         if (topics != null) {
             this.topics = topics;
             return true;
-        }else{
-            return false;
         }
+
+        return false;
     }
 
 }
