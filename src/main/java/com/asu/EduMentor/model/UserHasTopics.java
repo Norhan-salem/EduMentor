@@ -28,9 +28,9 @@ public class UserHasTopics {
         String roleBasedInsertQuery;
 
         if (user.getRole() == userType.MENTOR) {
-            roleBasedInsertQuery = "INSERT INTO public.\"MT_InterestedIn\" (\"MentorID\", \"TopicsID\") VALUES (?, ?)";
+            roleBasedInsertQuery = "INSERT INTO public.\"MT_InterestedIn\" (\"MentorID\", \"TopicsID\", \"isDeleted\") VALUES (?, ?, FALSE)";
         } else if (user.getRole() == userType.MENTEE) {
-            roleBasedInsertQuery = "INSERT INTO public.\"MTT_InterestedIn\" (\"MenteeID\", \"TopicsID\") VALUES (?, ?)";
+            roleBasedInsertQuery = "INSERT INTO public.\"MTT_InterestedIn\" (\"MenteeID\", \"TopicsID\", \"isDeleted\") VALUES (?, ?, FALSE)";
         } else {
             throw new IllegalArgumentException("User must be a mentor or mentee to add a topic.");
         }
@@ -49,22 +49,22 @@ public class UserHasTopics {
     }
 
     /**
-     * Deletes a topic from the specified user's list of topics in the database based on their role.
-     * If the user is a mentor, deletes from the MentorTopics table.
-     * If the user is a mentee, deletes from the MenteeTopics table.
+     * Soft-deletes a topic from the specified user's list of topics in the database based on their role.
+     * If the user is a mentor, updates the isDeleted flag in the MentorTopics table.
+     * If the user is a mentee, updates the isDeleted flag in the MenteeTopics table.
      *
      * @param topic The {@link Topics} instance to be removed from the user's topics.
      * @param user The {@link User} instance from whom the topic will be removed.
-     * @return True if the topic was successfully deleted, false otherwise.
+     * @return True if the topic was successfully soft-deleted, false otherwise.
      * @throws RuntimeException if a database error occurs while deleting the topic.
      */
     public boolean deleteTopic(Topics topic, User user) {
         String roleBasedDeleteQuery;
 
         if (user.getRole() == userType.MENTOR) {
-            roleBasedDeleteQuery = "DELETE FROM public.\"MT_InterestedIn\" WHERE \"MentorID\" = ? AND \"TopicsID\" = ?";
+            roleBasedDeleteQuery = "UPDATE public.\"MT_InterestedIn\" SET \"isDeleted\" = TRUE WHERE \"MentorID\" = ? AND \"TopicsID\" = ?";
         } else if (user.getRole() == userType.MENTEE) {
-            roleBasedDeleteQuery = "DELETE FROM public.\"MTT_InterestedIn\" WHERE \"MenteeID\" = ? AND \"TopicsID\" = ?";
+            roleBasedDeleteQuery = "UPDATE public.\"MTT_InterestedIn\" SET \"isDeleted\" = TRUE WHERE \"MenteeID\" = ? AND \"TopicsID\" = ?";
         } else {
             throw new IllegalArgumentException("User must be a mentor or mentee to delete a topic.");
         }
@@ -78,12 +78,12 @@ public class UserHasTopics {
 
             return rowsAffected > 0;
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting topic from user", e);
+            throw new RuntimeException("Error soft-deleting topic from user", e);
         }
     }
 
     /**
-     * Retrieves all topics associated with a specific user from the database based on their role.
+     * Retrieves all non-deleted topics associated with a specific user from the database based on their role.
      * If the user is a mentor, retrieves topics from the MentorTopics table.
      * If the user is a mentee, retrieves topics from the MenteeTopics table.
      *
@@ -99,12 +99,12 @@ public class UserHasTopics {
             roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
                     "FROM public.\"Topics\" t " +
                     "JOIN public.\"MT_InterestedIn\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +
-                    "WHERE mt.\"MentorID\" = ? AND t.\"isDeleted\" = FALSE";
+                    "WHERE mt.\"MentorID\" = ? AND mt.\"isDeleted\" = FALSE AND t.\"isDeleted\" = FALSE";
         } else if (user.getRole() == userType.MENTEE) {
             roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
                     "FROM public.\"Topics\" t " +
                     "JOIN public.\"MTT_InterestedIn\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +
-                    "WHERE mt.\"MenteeID\" = ? AND t.\"isDeleted\" = FALSE";
+                    "WHERE mt.\"MenteeID\" = ? AND mt.\"isDeleted\" = FALSE AND t.\"isDeleted\" = FALSE";
         } else {
             throw new IllegalArgumentException("User must be a mentor or mentee to retrieve topics.");
         }
@@ -130,4 +130,5 @@ public class UserHasTopics {
         return topics;
     }
 }
+
 
