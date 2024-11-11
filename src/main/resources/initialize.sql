@@ -303,6 +303,10 @@ CREATE TABLE IF NOT EXISTS public."MT_InterestedIn"
     integer
     NOT
     NULL,
+    "IsDeleted"
+    boolean
+    NOT
+    NULL,
     CONSTRAINT
     "MT_InterestedIn_pkey"
     PRIMARY
@@ -356,8 +360,11 @@ CREATE TABLE IF NOT EXISTS public."Mentor_Availability"
     NOT
     NULL,
     "AvailabilityDuration"
-    double
-    precision
+    double precision
+    NOT
+    NULL,
+    "IsDeleted"
+    boolean
     NOT
     NULL,
     CONSTRAINT
@@ -398,6 +405,10 @@ CREATE TABLE IF NOT EXISTS public."MTT_InterestedIn"
     NULL,
     "TopicsID"
     integer
+    NOT
+    NULL,
+    "IsDeleted"
+    boolean
     NOT
     NULL,
     CONSTRAINT
