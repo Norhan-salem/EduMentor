@@ -32,7 +32,7 @@ public class DonorController {
     }
 
     @GetMapping("/api/getDonations")
-    public ResponseEntity<List<OnlineDonation>> getDonations(@RequestBody OnlineDonor donor){
+    public ResponseEntity<List<OnlineDonation>> getDonations(@RequestParam OnlineDonor donor){
         try {
             return ResponseEntity.ok(donor.getDonations());
         } catch (Exception e) {
@@ -41,7 +41,7 @@ public class DonorController {
     }
 
     @GetMapping("/api/getInvoiceDetails")
-    public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestBody OnlineDonation donation){
+    public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestParam OnlineDonation donation){
         InvoiceDetails invoiceDetails = new InvoiceDetails(donation.getInvoice());
         try {
             return ResponseEntity.ok(invoiceDetails);
