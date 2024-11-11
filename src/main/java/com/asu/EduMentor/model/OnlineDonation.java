@@ -126,7 +126,7 @@ public class OnlineDonation implements CRUD {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int invoiceID = rs.getInt("InvoiceID");
-                    return new Invoice(invoiceID, "Invoice for Donation ID: " + donationID);
+                    return new Invoice(invoiceID);
                 }
             }
         } catch (SQLException e) {
@@ -142,7 +142,7 @@ public class OnlineDonation implements CRUD {
      *
      * @param od The donor who made the donation.
      */
-    public void makeDonation(OnlineDonor od) {
+    public boolean makeDonation(OnlineDonor od) {
         String query = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING \"DonationID\"";
 
@@ -166,6 +166,7 @@ public class OnlineDonation implements CRUD {
         } catch (SQLException e) {
             throw new RuntimeException("Error making donation", e);
         }
+        return true;
     }
 
     /**
