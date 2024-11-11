@@ -211,11 +211,50 @@ public class Mentor extends User {
         return availabilityList;
     }
 
-    public void addAvailability(Availability availability) {
-        // TODO: implement
+    public boolean addAvailability(Availability availability) {
+
+        String sqlQuery = "INSERT INTO public.\"Mentor_Availability\" (\"MentorID\", \"Availability\", \"AvailabilityDuration\", \"isDeleted\") VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+
+            stmt.setInt(1, this.getUserID());
+            stmt.setTimestamp(2, availability.getTime());
+            stmt.setDouble(3, availability.getDuration());
+            stmt.setBoolean(4, availability.isDeleted());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            throw new RuntimeException("Error adding availability for mentor", e);
+        }
+
     }
 
-    public void deleteAvailability(Availability availability) {
-        // TODO: implement
+    public boolean deleteAvailability(Availability availability) {
+
+        String sqlQuery = "UPDATE public.\"Mentor_Availability\" " +
+                "SET \"isDeleted\" = TRUE " +
+                "WHERE \"MentorID\" = ? AND \"Availability\" = ? AND \"AvailabilityDuration\" = ? AND \"isDeleted\" = FALSE";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+
+            stmt.setInt(1, this.getUserID());
+            stmt.setTimestamp(2, availability.getTime());
+            stmt.setDouble(3, availability.getDuration());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            throw new RuntimeException("Error deleting availability for mentor", e);
+        }
+
     }
 }
