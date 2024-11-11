@@ -20,7 +20,7 @@ public class UserHasTopics {
      * If the user is a mentee, adds to the MenteeTopics table.
      *
      * @param topic The {@link Topics} instance to be associated with the user.
-     * @param user The {@link User} instance to which the topic will be added.
+     * @param user  The {@link User} instance to which the topic will be added.
      * @return True if the topic was successfully added, false otherwise.
      * @throws RuntimeException if a database error occurs while adding the topic.
      */
@@ -54,7 +54,7 @@ public class UserHasTopics {
      * If the user is a mentee, updates the isDeleted flag in the MenteeTopics table.
      *
      * @param topic The {@link Topics} instance to be removed from the user's topics.
-     * @param user The {@link User} instance from whom the topic will be removed.
+     * @param user  The {@link User} instance from whom the topic will be removed.
      * @return True if the topic was successfully soft-deleted, false otherwise.
      * @throws RuntimeException if a database error occurs while deleting the topic.
      */
