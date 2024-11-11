@@ -43,7 +43,7 @@ public class TopicsController {
     }
 
     @GetMapping("/getUserTopics")
-    public ResponseEntity<List<Topics>> getUserTopics(@RequestBody User user) {
+    public ResponseEntity<List<Topics>> getUserTopics(@RequestParam User user) {
         UserHasTopics userHasTopics = new UserHasTopics();
 
         try {
