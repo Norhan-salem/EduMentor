@@ -5,27 +5,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * A decorator class for the Invoice that adds specific charges to the total invoice amount.
+ * A subclass of Invoice that represents an invoice with additional charges.
  */
-public class InvoiceDetails extends InvoiceDecorator {
+public class InvoiceDetails extends Invoice {
 
     private double amountCharged;
 
     /**
-     * Constructs an InvoiceDetails with a specified base invoice and additional charge.
+     * Constructs an InvoiceDetails with a specified invoice ID and additional charge.
      *
-     * @param invoice The base invoice being decorated.
-     * @throws IllegalArgumentException if amountCharged is negative.
+     * @param invoiceID The unique invoice ID.
      */
-    public InvoiceDetails(Invoice invoice) {
-        super(invoice);
-        this.amountCharged = getAmountChargedFromDB(invoice.getInvoiceID());
+    public InvoiceDetails(int invoiceID) {
+        super(invoiceID);
+        this.amountCharged = getAmountChargedFromDB(invoiceID);
     }
 
     /**
      * Returns the total amount of the invoice including the additional charge.
      *
-     * @return Total amount of the invoice with additional charge.
+     * @return Total amount of the invoice with the additional charge.
      */
     @Override
     public double getTotal() {
@@ -82,3 +81,4 @@ public class InvoiceDetails extends InvoiceDecorator {
         this.amountCharged = amountCharged;
     }
 }
+
