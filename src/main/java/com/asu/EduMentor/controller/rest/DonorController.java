@@ -42,7 +42,7 @@ public class DonorController {
 
     @GetMapping("/api/getInvoiceDetails")
     public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestParam OnlineDonation donation){
-        InvoiceDetails invoiceDetails = new InvoiceDetails(donation.getInvoice());
+        InvoiceDetails invoiceDetails = new InvoiceDetails(donation.getInvoice().getInvoiceID());
         try {
             return ResponseEntity.ok(invoiceDetails);
         } catch (Exception e) {
