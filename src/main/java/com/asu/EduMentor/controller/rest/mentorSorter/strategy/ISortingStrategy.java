@@ -1,4 +1,4 @@
-package com.asu.EduMentor.controller.rest;
+package com.asu.EduMentor.controller.rest.mentorSorter.strategy;
 
 import com.asu.EduMentor.model.Mentor;
 
