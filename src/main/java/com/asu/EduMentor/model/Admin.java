@@ -4,18 +4,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Admin extends User{
+public class Admin extends User {
 
     private boolean status;
 
-    public Admin(String firstName, String lastName, String email, String password)
-    {
+    public Admin(String firstName, String lastName, String email, String password) {
         super(firstName, lastName, userType.ADMIN, email, password);
         this.status = false;
     }
 
-    public Admin(String firstName, String lastName, String email, String password, boolean status)
-    {
+    public Admin(String firstName, String lastName, String email, String password, boolean status) {
         super(firstName, lastName, userType.ADMIN, email, password);
         this.status = status;
     }
@@ -29,12 +27,10 @@ public class Admin extends User{
     }
 
     @Override
-    public Admin create()
-    {
+    public Admin create() {
         String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\") VALUES (?, ?, ?, ?, ?)";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getFirstName());
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
@@ -44,28 +40,22 @@ public class Admin extends User{
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next())
-            {
+            if (rs.next()) {
                 this.setUserID(rs.getInt("UserID"));
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error creating user", e);
         }
 
         String adminQuery = "INSERT INTO public.\"Admin\" (\"UserID\", \"Status\") VALUES (?, ?)";
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(adminQuery))
-        {
+             PreparedStatement stmt = conn.prepareStatement(adminQuery)) {
             stmt.setInt(1, this.getUserID());
             stmt.setBoolean(2, this.status);
 
             stmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error creating admin", e);
         }
@@ -74,19 +64,16 @@ public class Admin extends User{
     }
 
     @Override
-    public Object update(Object updatedObject)
-    {
-        if(!(updatedObject instanceof User))
-        {
+    public Object update(Object updatedObject) {
+        if (!(updatedObject instanceof User)) {
             throw new IllegalArgumentException("Invalid object type");
         }
 
         Admin updatedAdmin = (Admin) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(userQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedAdmin.getFirstName());
             stmt.setString(2, updatedAdmin.getLastName());
             stmt.setString(3, updatedAdmin.getEmail());
@@ -94,24 +81,19 @@ public class Admin extends User{
             stmt.setInt(5, updatedAdmin.getUserID());
 
             stmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error updating admin", e);
         }
 
         String adminQuery = "UPDATE public.\"Admin\" SET \"Status\" = ? WHERE \"AdminID\" = ?";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement adminStmt = conn.prepareStatement(adminQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement adminStmt = conn.prepareStatement(adminQuery)) {
             adminStmt.setBoolean(1, updatedAdmin.isStatus());
             adminStmt.setInt(2, updatedAdmin.getUserID());
 
             adminStmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error updating admin", e);
         }
@@ -120,17 +102,14 @@ public class Admin extends User{
     }
 
     @Override
-    public Object read(int id)
-    {
+    public Object read(int id) {
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next())
-            {
+            if (rs.next()) {
                 int userID = rs.getInt("UserID");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
@@ -142,9 +121,7 @@ public class Admin extends User{
                 a.setUserID(userID);
                 return a;
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading admin", e);
         }
@@ -152,17 +129,14 @@ public class Admin extends User{
     }
 
     @Override
-    public List<Object> readAll()
-    {
+    public List<Object> readAll() {
         List<Object> admins = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int userID = rs.getInt("UserID");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
@@ -175,9 +149,7 @@ public class Admin extends User{
                 admin.setUserID(userID);
                 admins.add(admin);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading all admins", e);
         }

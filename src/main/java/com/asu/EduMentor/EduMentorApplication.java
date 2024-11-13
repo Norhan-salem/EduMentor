@@ -10,26 +10,26 @@ import org.springframework.web.filter.CorsFilter;
 @SpringBootApplication
 public class EduMentorApplication {
 
-	@Bean
-	public CorsFilter corsFilter() {
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		CorsConfiguration config = new CorsConfiguration();
-		//config.setAllowCredentials(true); // you USUALLY want this
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("OPTIONS");
-		config.addAllowedMethod("HEAD");
-		config.addAllowedMethod("GET");
-		config.addAllowedMethod("PUT");
-		config.addAllowedMethod("POST");
-		config.addAllowedMethod("DELETE");
-		config.addAllowedMethod("PATCH");
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EduMentorApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(EduMentorApplication.class, args);
-	}
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        //config.setAllowCredentials(true); // you USUALLY want this
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("HEAD");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("PATCH");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
 
 }
