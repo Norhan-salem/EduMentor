@@ -15,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/search")
 public class SearchController {
 
+    MentorSorter mentorSorter;
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> searchUsers(@RequestParam("search") String search) {
         List<User> users = User.findUsersBySearchTerm(search);
