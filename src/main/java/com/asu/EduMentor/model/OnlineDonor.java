@@ -31,9 +31,9 @@ public class OnlineDonor extends User {
     @Override
     public Object create() {
 
-        String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\", \"IsDeleted\") VALUES (?, ?, ?, ?, ?, FALSE)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
+        String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\") VALUES (?, ?, ?, ?, ?)";
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getFirstName());
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
@@ -51,9 +51,8 @@ public class OnlineDonor extends User {
             throw new RuntimeException("Error creating donor", e);
         }
 
-        String donorQuery = "INSERT INTO public.\"OnlineDonor\" (\"UserID\", \"NumberofDonations\") VALUES (?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(donorQuery)) {
+        String donorQuery = "INSERT INTO public.\"OnlineDonor\" (\"OnlineDonorID\", \"NumberofDonations\") VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(donorQuery)) {
             stmt.setInt(1, this.getUserID());
             stmt.setInt(2, this.getNumberOfDonations());
 
