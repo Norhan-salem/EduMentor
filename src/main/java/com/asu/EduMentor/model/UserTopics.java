@@ -12,7 +12,7 @@ import java.util.List;
  * It provides methods to add, delete, and retrieve topics associated with a specific user
  * in the database based on their role.
  */
-public class UserHasTopics {
+public class UserTopics {
 
     /**
      * Adds a topic to the specified user's list of topics in the database based on their role.
