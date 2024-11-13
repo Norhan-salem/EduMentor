@@ -1,5 +1,5 @@
 package com.asu.EduMentor.controller.rest;
 
-public interface CurrencyConversionService {
+public interface ICurrencyConversionService {
     double getConversionRate(String targetCurrency);
 }

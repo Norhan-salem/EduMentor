@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestClientException;
 
 @Service
-public class CurrencyConversionServiceImpl implements CurrencyConversionService {
+public class CurrencyConversionServiceImpl implements ICurrencyConversionService {
 
     private static final String API_URL = "https://v6.exchangerate-api.com/v6/da762ace32b2903e9653ddf5/latest/USD";
 

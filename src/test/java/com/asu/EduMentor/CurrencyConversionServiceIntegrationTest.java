@@ -1,6 +1,6 @@
 package com.asu.EduMentor;
 
-import com.asu.EduMentor.controller.rest.CurrencyConversionService;
+import com.asu.EduMentor.controller.rest.ICurrencyConversionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CurrencyConversionServiceIntegrationTest {
 
     @Autowired
-    private CurrencyConversionService currencyConversionService;
+    private ICurrencyConversionService currencyConversionService;
 
     @Test
     public void testFetchConversionRateFromAPI() {
