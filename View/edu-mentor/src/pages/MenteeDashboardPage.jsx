@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import UpcomingSessions from '../components/UpcomingSessions';
+import { Container, Row, Col} from 'react-bootstrap';
+import RegsiterUpcomingSessions from '../components/RegisterUpcomingSessions';
 import AttendedHours from '../components/AttendedHours';
 import Interests from '../components/InterestsSelection';
 
@@ -37,7 +37,7 @@ const MenteeDashboardPage = () => {
       <Row>
         {/* Upcoming Sessions */}
         <Col md={6}>
-          <UpcomingSessions 
+          <RegsiterUpcomingSessions
             sessions={sessions} 
             handleRegister={handleRegister} 
           />
