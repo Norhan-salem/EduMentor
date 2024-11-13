@@ -22,14 +22,13 @@ public class InvoiceDetails extends Invoice {
     }
 
     /**
-     * Returns the total amount of the invoice including the additional charge.
+     * Returns the charged amount of the invoice.
      *
-     * @return Total amount of the invoice with the additional charge.
+     * @return charged amount of the invoice.
      */
     @Override
     public double getTotal() {
-        // Get the total amount from the base invoice and add the amountCharged.
-        return super.getTotal() + amountCharged;
+        return amountCharged;
     }
 
     /**

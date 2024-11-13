@@ -1,5 +1,7 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.controller.rest.CurrencyConversionService;
+
 public class CurrencyConverterDecorator extends InvoiceDecorator {
     private final double conversionRate;
     private String currency;

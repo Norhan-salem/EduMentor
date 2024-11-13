@@ -112,9 +112,9 @@ public class OnlineDonation implements CRUD {
     }
 
     /**
-     * Retrieves the associated Invoice object for this donation.
+     * Retrieves the associated InvoiceDetails object for this donation.
      *
-     * @return The Invoice associated with this donation or null if not found.
+     * @return The InvoiceDetails associated with this donation or null if not found.
      */
     public Invoice getInvoice() {
         String query = "SELECT \"InvoiceID\" FROM public.\"OnlineDonation\" WHERE \"DonationID\" = ?";
@@ -126,7 +126,7 @@ public class OnlineDonation implements CRUD {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int invoiceID = rs.getInt("InvoiceID");
-                    return new Invoice(invoiceID);
+                    return new InvoiceDetails(invoiceID);
                 }
             }
         } catch (SQLException e) {
