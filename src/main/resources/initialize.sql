@@ -7,19 +7,6 @@ SELECT 1
 FROM pg_database
 WHERE datname = 'EDUMentor';
 
--- Step 2: If the above query returns no rows, then execute the following statement:
-CREATE
-DATABASE "EDUMentor"
-   WITH
-   OWNER = postgres
-   ENCODING = 'UTF8'
-   LC_COLLATE = 'English_United States.1252'
-   LC_CTYPE = 'English_United States.1252'
-   LOCALE_PROVIDER = 'libc'
-   TABLESPACE = pg_default
-   CONNECTION LIMIT = -1
-   IS_TEMPLATE = False;
-
 
 --1 Table: public.User
 
@@ -27,32 +14,25 @@ DATABASE "EDUMentor"
 
 CREATE TABLE IF NOT EXISTS public."User"
 (
-    "UserID" integer NOT NULL DEFAULT nextval
-(
-    '"User_UserID_seq"'::regclass
-),
+    "UserID" integer NOT NULL DEFAULT nextval('"User_UserID_seq"'::regclass),
     "Email" text COLLATE pg_catalog."default" NOT NULL,
-    "FirstName" character varying
-(
-    30
-) COLLATE pg_catalog."default" NOT NULL,
-    "LastName" character varying
-(
-    30
-) COLLATE pg_catalog."default" NOT NULL,
-    "Role" smallint NOT NULL,
+    "FirstName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "LastName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "Role" integer NOT NULL,
     "Password" text COLLATE pg_catalog."default",
-    "IsDeleted" boolean NOT NULL,
-    CONSTRAINT "User_pkey" PRIMARY KEY
-(
-    "UserID"
+    "IsDeleted" boolean NOT NULL DEFAULT false,
+    CONSTRAINT "User_pkey" PRIMARY KEY ("UserID"),
+    CONSTRAINT "User_fkey" FOREIGN KEY ("Role")
+        REFERENCES public."Role" ("RoleID") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
 )
-    )
-    TABLESPACE pg_default;
+
+TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."User"
-    OWNER to postgres;
-
+    OWNER to adminadmin;
 
 --2 Table: public.OnlineDonor
 
@@ -60,10 +40,7 @@ ALTER TABLE IF EXISTS public."User"
 
 CREATE TABLE IF NOT EXISTS public."OnlineDonor"
 (
-    "OnlineDonorID" integer NOT NULL DEFAULT nextval
-(
-    '"OnlineDonor_OnlineDonorID_seq"'::regclass
-),
+    "OnlineDonorID" serial NOT NULL,
     "NumberofDonations" smallint NOT NULL,
     CONSTRAINT "OnlineDonor_pkey" PRIMARY KEY
 (
@@ -83,7 +60,7 @@ CREATE TABLE IF NOT EXISTS public."OnlineDonor"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."OnlineDonor"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --3 Table: public.Admin
@@ -92,10 +69,7 @@ ALTER TABLE IF EXISTS public."OnlineDonor"
 
 CREATE TABLE IF NOT EXISTS public."Admin"
 (
-    "AdminID" integer NOT NULL DEFAULT nextval
-(
-    '"Admin_AdminID_seq"'::regclass
-),
+    "AdminID" serial NOT NULL,
     "Status" boolean NOT NULL,
     CONSTRAINT "Admin_pkey" PRIMARY KEY
 (
@@ -115,7 +89,7 @@ CREATE TABLE IF NOT EXISTS public."Admin"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Admin"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --4 Table: public.Mentor
@@ -124,10 +98,7 @@ ALTER TABLE IF EXISTS public."Admin"
 
 CREATE TABLE IF NOT EXISTS public."Mentor"
 (
-    "MentorID" integer NOT NULL DEFAULT nextval
-(
-    '"Mentor_MentorID_seq"'::regclass
-),
+    "MentorID" serial NOT NULL,
     CONSTRAINT "Mentor_pkey" PRIMARY KEY
 (
     "MentorID"
@@ -146,7 +117,7 @@ CREATE TABLE IF NOT EXISTS public."Mentor"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Mentor"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --5 Table: public.Mentee
@@ -155,10 +126,7 @@ ALTER TABLE IF EXISTS public."Mentor"
 
 CREATE TABLE IF NOT EXISTS public."Mentee"
 (
-    "MenteeID" integer NOT NULL DEFAULT nextval
-(
-    '"Mentee_MenteeID_seq"'::regclass
-),
+    "MenteeID" serial NOT NULL,
     "LearningHours" double precision NOT NULL,
     "NumberOfAttandedSessions" integer NOT NULL,
     CONSTRAINT "Mentee_pkey" PRIMARY KEY
@@ -179,7 +147,7 @@ CREATE TABLE IF NOT EXISTS public."Mentee"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Mentee"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --6 Table: public.OnlineDonation
@@ -188,18 +156,12 @@ ALTER TABLE IF EXISTS public."Mentee"
 
 CREATE TABLE IF NOT EXISTS public."OnlineDonation"
 (
-    "DonationID" integer NOT NULL DEFAULT nextval
-(
-    '"OnlineDonation_DonationID_seq"'::regclass
-),
+    "DonationID" serial NOT NULL,
     "Amount" double precision NOT NULL,
     "PaymentType" smallint NOT NULL,
-    "InvoiceID" integer NOT NULL DEFAULT nextval
-(
-    '"OnlineDonation_InvoiceID_seq"'::regclass
-),
+    "InvoiceID" serial NOT NULL,
     "AmountCharged" double precision NOT NULL,
-    "IsDeleted" boolean NOT NULL,
+    "IsDeleted" boolean NOT NULL DEFAULT false,
     CONSTRAINT "OnlineDonation_pkey" PRIMARY KEY
 (
     "DonationID"
@@ -208,7 +170,7 @@ CREATE TABLE IF NOT EXISTS public."OnlineDonation"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."OnlineDonation"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --7 Table: public.Session
@@ -217,14 +179,11 @@ ALTER TABLE IF EXISTS public."OnlineDonation"
 
 CREATE TABLE IF NOT EXISTS public."Session"
 (
-    "SessionID" bigint NOT NULL DEFAULT nextval
-(
-    '"Session_SessionID_seq"'::regclass
-),
+    "SessionID" bigserial NOT NULL,
     "SessionName" text COLLATE pg_catalog."default" NOT NULL,
     "Duration" double precision NOT NULL,
     "Date" timestamp without time zone NOT NULL,
-    "IsDeleted" boolean NOT NULL,
+    "IsDeleted" boolean NOT NULL DEFAULT false,
     CONSTRAINT "Session_pkey" PRIMARY KEY
 (
     "SessionID"
@@ -233,14 +192,7 @@ CREATE TABLE IF NOT EXISTS public."Session"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Session"
-    OWNER to postgres;
-
-TABLESPACE
-pg_default;
-
-ALTER TABLE IF EXISTS public."Session"
-    OWNER to postgres;
-
+    OWNER to adminadmin;
 
 --8 Table: public.Feedback
 
@@ -248,13 +200,10 @@ ALTER TABLE IF EXISTS public."Session"
 
 CREATE TABLE IF NOT EXISTS public."Feedback"
 (
-    "FeedbackID" bigint NOT NULL DEFAULT nextval
-(
-    '"Feedback_FeedbackID_seq"'::regclass
-),
+    "FeedbackID" bigserial NOT NULL,
     "Comment" text COLLATE pg_catalog."default" NOT NULL,
     "Stars" smallint NOT NULL,
-    "IsDeleted" boolean NOT NULL,
+    "IsDeleted" boolean NOT NULL DEFAULT false,
     CONSTRAINT "Feedback_pkey" PRIMARY KEY
 (
     "FeedbackID"
@@ -263,7 +212,7 @@ CREATE TABLE IF NOT EXISTS public."Feedback"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Feedback"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --9 Table: public.Topics
@@ -272,12 +221,9 @@ ALTER TABLE IF EXISTS public."Feedback"
 
 CREATE TABLE IF NOT EXISTS public."Topics"
 (
-    "TopicsID" integer NOT NULL DEFAULT nextval
-(
-    '"Topics_TopicsID_seq"'::regclass
-),
+    "TopicsID" serial NOT NULL,
     "TopicsName" text COLLATE pg_catalog."default" NOT NULL,
-    "IsDeleted" boolean NOT NULL,
+    "IsDeleted" boolean NOT NULL DEFAULT false,
     CONSTRAINT "Topics_pkey" PRIMARY KEY
 (
     "TopicsID"
@@ -286,7 +232,7 @@ CREATE TABLE IF NOT EXISTS public."Topics"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Topics"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --10 Table: public.MT_InterestedIn
@@ -303,6 +249,11 @@ CREATE TABLE IF NOT EXISTS public."MT_InterestedIn"
     integer
     NOT
     NULL,
+    "IsDeleted"
+    boolean
+    NOT
+    NULL
+    DEFAULT false,
     CONSTRAINT
     "MT_InterestedIn_pkey"
     PRIMARY
@@ -335,7 +286,7 @@ CREATE TABLE IF NOT EXISTS public."MT_InterestedIn"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."MT_InterestedIn"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --11 Table: public.Mentor_Availability
@@ -356,10 +307,14 @@ CREATE TABLE IF NOT EXISTS public."Mentor_Availability"
     NOT
     NULL,
     "AvailabilityDuration"
-    double
-    precision
+    double precision
     NOT
     NULL,
+    "IsDeleted"
+    boolean
+    NOT
+    NULL
+    DEFAULT false,
     CONSTRAINT
     "Mentor_Availability_pkey"
     PRIMARY
@@ -383,7 +338,7 @@ CREATE TABLE IF NOT EXISTS public."Mentor_Availability"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Mentor_Availability"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --12 Table: public.MTT_InterestedIn
@@ -400,6 +355,11 @@ CREATE TABLE IF NOT EXISTS public."MTT_InterestedIn"
     integer
     NOT
     NULL,
+    "IsDeleted"
+    boolean
+    NOT
+    NULL
+    DEFAULT false,
     CONSTRAINT
     "MTT_InterestedIn_pkey"
     PRIMARY
@@ -432,7 +392,7 @@ CREATE TABLE IF NOT EXISTS public."MTT_InterestedIn"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."MTT_InterestedIn"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --13 Table: public.ODD_Makes
@@ -488,7 +448,7 @@ CREATE TABLE IF NOT EXISTS public."ODD_Makes"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."ODD_Makes"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --14 Table: public.AS_Makes
@@ -537,7 +497,7 @@ CREATE TABLE IF NOT EXISTS public."AS_Makes"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."AS_Makes"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --15 Table: public.SMTT_Takes
@@ -586,7 +546,7 @@ CREATE TABLE IF NOT EXISTS public."SMTT_Takes"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."SMTT_Takes"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --16 Table: public.FS_Has
@@ -634,7 +594,7 @@ CREATE TABLE IF NOT EXISTS public."FS_Has"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."FS_Has"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --17 Table: public.FM_Gives
@@ -683,7 +643,7 @@ CREATE TABLE IF NOT EXISTS public."FM_Gives"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."FM_Gives"
-    OWNER to postgres;
+    OWNER to adminadmin;
 
 
 --18 Table: public.SM_Gives
@@ -732,4 +692,21 @@ CREATE TABLE IF NOT EXISTS public."SM_Gives"
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."SM_Gives"
-    OWNER to postgres;
+    OWNER to adminadmin;
+
+
+--19 Table: public.Role
+
+-- DROP TABLE IF EXISTS public."Role";
+
+CREATE TABLE IF NOT EXISTS public."Role"
+(
+    "RoleID" integer NOT NULL DEFAULT nextval('"Role_RoleID_seq"'::regclass),
+    "Role" text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Role_pkey" PRIMARY KEY ("RoleID")
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Role"
+    OWNER to adminadmin;
