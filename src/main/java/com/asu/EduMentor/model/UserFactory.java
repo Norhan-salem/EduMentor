@@ -2,7 +2,7 @@ package com.asu.EduMentor.model;
 
 public class UserFactory {
 
-    public static User createUser(userType type, String firstName, String lastName, String email, String password) {
+    public static User createUser(UserType type, String firstName, String lastName, String email, String password) {
         switch (type) {
             case MENTOR:
                 return new Mentor(firstName, lastName, email, password);

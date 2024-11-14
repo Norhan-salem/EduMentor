@@ -1,13 +1,16 @@
-package com.asu.EduMentor.model;
+package com.asu.EduMentor.model.invoice.decorator;
+
+import com.asu.EduMentor.model.Invoice;
 
 /**
  * A decorator class for the Invoice that adds tax to the total invoice amount.
  */
 public class TaxDecorator extends InvoiceDecorator {
+
     private static final double TAX_RATE = 0.12;
 
     /**
-     * Constructs a TaxDecorator with a specified base invoice and applies the hard-coded tax rate.
+     * Constructs a TaxDecorator with a specified base invoice and applies the static tax rate.
      *
      * @param invoice The base invoice being decorated.
      */
@@ -35,5 +38,6 @@ public class TaxDecorator extends InvoiceDecorator {
         return TAX_RATE;
     }
 }
+
 
 

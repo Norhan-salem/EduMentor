@@ -11,12 +11,12 @@ public class OnlineDonor extends User {
 
 
     public OnlineDonor(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, userType.ONLINEDONOR, email, password);
+        super(firstName, lastName, UserType.ONLINEDONOR, email, password);
         this.numberOfDonations = 0;
     }
 
     public OnlineDonor(String firstName, String lastName, String email, String password, int numberOfDonations) {
-        super(firstName, lastName, userType.ONLINEDONOR, email, password);
+        super(firstName, lastName, UserType.ONLINEDONOR, email, password);
         this.numberOfDonations = numberOfDonations;
     }
 
@@ -175,6 +175,7 @@ public class OnlineDonor extends User {
                 "FROM public.\"OnlineDonation\" o " +
                 "JOIN public.\"ODD_Makes\" d ON o.\"DonationID\" = d.\"DonationID\" " +
                 "WHERE d.\"OnlineDonorID\" = ? AND o.\"IsDeleted\" = False ";
+
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, this.getUserID());
@@ -184,17 +185,21 @@ public class OnlineDonor extends User {
             while (rs.next()) {
                 int donationID = rs.getInt("DonationID");
                 double amount = rs.getDouble("Amount");
-                int paymentType = rs.getInt("PaymentType");
+                int paymentTypeOrdinal = rs.getInt("PaymentType");
+
+                // Convert the int (ordinal) to the PaymentType enum
+                PaymentType paymentType = PaymentType.values()[paymentTypeOrdinal];
 
                 OnlineDonation donation = new OnlineDonation(paymentType, amount);
                 donation.setDonationID(donationID);
                 donations.add(donation);
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             throw new RuntimeException("Error retrieving donations", e);
         }
 
         return donations;
     }
+
 }

@@ -62,10 +62,10 @@ public class SessionController {
     @PostMapping("/getUserSessions")
     public ResponseEntity<List<Session>> getUserSessions(@RequestBody User user) {
         try {
-            if (user.getRole() == userType.MENTOR) {
+            if (user.getRole() == UserType.MENTOR) {
                 Mentor mentor = new Mentor(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
                 return ResponseEntity.ok(mentor.getGivenSessions());
-            } else if (user.getRole() == userType.MENTEE) {
+            } else if (user.getRole() == UserType.MENTEE) {
                 Mentee mentee = new Mentee(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
                 return ResponseEntity.ok(mentee.getAttendedSessions());
             } else {

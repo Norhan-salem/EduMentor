@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class SortByTotalHours implements ISortingStrategy {
+public class TotalHoursSortingStrategy implements ISortingStrategy {
     @Override
     public ArrayList<Mentor> sort(ArrayList<Mentor> mentors) {
         Collections.sort(mentors, Comparator.comparingDouble(Mentor::getTotalHours).reversed());

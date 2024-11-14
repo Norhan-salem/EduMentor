@@ -4,14 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Represents an online donation in the system, allowing CRUD operations on donation records.
- * Implements the CRUD interface for standard create, read, update, and delete functionality.
- */
 public class OnlineDonation implements CRUD {
     private int donationID;
-    private int paymentType;
+    private PaymentType paymentType;
     private double amount;
     private boolean isDeleted;
 
@@ -21,7 +16,7 @@ public class OnlineDonation implements CRUD {
      * @param paymentType The type of payment used for the donation.
      * @param amount      The donation amount.
      */
-    public OnlineDonation(int paymentType, double amount) {
+    public OnlineDonation(PaymentType paymentType, double amount) {
         setPaymentType(paymentType);
         setAmount(amount);
         this.isDeleted = false;
@@ -53,18 +48,18 @@ public class OnlineDonation implements CRUD {
      *
      * @return The payment type used for this donation.
      */
-    public int getPaymentType() {
+    public PaymentType getPaymentType() {
         return paymentType;
     }
 
     /**
-     * Sets the payment type with validation.
+     * Sets the payment type.
      *
      * @param paymentType The payment type to assign to this donation.
      */
-    public void setPaymentType(int paymentType) {
-        if (paymentType <= 0) {
-            throw new IllegalArgumentException("Payment type must be a positive integer.");
+    public void setPaymentType(PaymentType paymentType) {
+        if (paymentType == null) {
+            throw new IllegalArgumentException("Payment type cannot be null.");
         }
         this.paymentType = paymentType;
     }
@@ -112,9 +107,9 @@ public class OnlineDonation implements CRUD {
     }
 
     /**
-     * Retrieves the associated Invoice object for this donation.
+     * Retrieves the associated InvoiceDetails object for this donation.
      *
-     * @return The Invoice associated with this donation or null if not found.
+     * @return The InvoiceDetails associated with this donation or null if not found.
      */
     public Invoice getInvoice() {
         String query = "SELECT \"InvoiceID\" FROM public.\"OnlineDonation\" WHERE \"DonationID\" = ?";
@@ -126,7 +121,7 @@ public class OnlineDonation implements CRUD {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int invoiceID = rs.getInt("InvoiceID");
-                    return new Invoice(invoiceID);
+                    return new InvoiceDetails(invoiceID);
                 }
             }
         } catch (SQLException e) {
@@ -140,9 +135,10 @@ public class OnlineDonation implements CRUD {
      * Processes the donation by inserting a new entry in the OnlineDonation table.
      * Generates a unique donation ID and links the donation to an Invoice.
      *
+     * @param paymentType The type of payment used for the donation (Visa, MasterCard, etc.).
      * @param od The donor who made the donation.
      */
-    public boolean makeDonation(OnlineDonor od) {
+    public boolean makeDonation(OnlineDonor od, PaymentType paymentType) {
         String query = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING \"DonationID\"";
 
@@ -150,7 +146,7 @@ public class OnlineDonation implements CRUD {
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setDouble(1, amount);
-            stmt.setInt(2, paymentType);
+            stmt.setInt(2, paymentType.ordinal());  // Store the enum ordinal (int)
             stmt.setInt(3, getInvoice().getInvoiceID());
             stmt.setDouble(4, amount);
             stmt.setBoolean(5, false);
@@ -176,7 +172,7 @@ public class OnlineDonation implements CRUD {
      */
     @Override
     public Object create() {
-        makeDonation(null);
+        makeDonation(null, this.paymentType);
         return this;
     }
 
@@ -195,7 +191,7 @@ public class OnlineDonation implements CRUD {
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setDouble(1, updatedDonation.getAmount());
-            stmt.setInt(2, updatedDonation.getPaymentType());
+            stmt.setInt(2, updatedDonation.getPaymentType().ordinal());  // Store the enum ordinal
             stmt.setBoolean(3, updatedDonation.isDeleted());
             stmt.setInt(4, updatedDonation.getDonationID());
 
@@ -222,7 +218,7 @@ public class OnlineDonation implements CRUD {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    OnlineDonation donation = new OnlineDonation(rs.getInt("PaymentType"), rs.getDouble("Amount"));
+                    OnlineDonation donation = new OnlineDonation(PaymentType.values()[rs.getInt("PaymentType")], rs.getDouble("Amount"));
                     donation.setDonationID(rs.getInt("DonationID"));
                     donation.setDeleted(rs.getBoolean("IsDeleted"));
                     return donation;
@@ -250,7 +246,7 @@ public class OnlineDonation implements CRUD {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                OnlineDonation donation = new OnlineDonation(rs.getInt("PaymentType"), rs.getDouble("Amount"));
+                OnlineDonation donation = new OnlineDonation(PaymentType.values()[rs.getInt("PaymentType")], rs.getDouble("Amount"));
                 donation.setDonationID(rs.getInt("DonationID"));
                 donation.setDeleted(rs.getBoolean("IsDeleted"));
                 donations.add(donation);
@@ -270,7 +266,7 @@ public class OnlineDonation implements CRUD {
      */
     @Override
     public boolean delete(int id) {
-        String query = "UPDATE public.\"OnlineDonation\" SET \"IsDeleted\" = true WHERE \"DonationID\" = ?";
+        String query = "UPDATE public.\"OnlineDonation\" SET \"IsDeleted\" = TRUE WHERE \"DonationID\" = ?";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -283,4 +279,6 @@ public class OnlineDonation implements CRUD {
         }
     }
 }
+
+
 

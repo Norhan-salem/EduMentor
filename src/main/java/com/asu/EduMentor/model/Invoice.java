@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Invoice {
+public abstract class Invoice {
 
     private int invoiceID;
 
@@ -40,30 +40,37 @@ public class Invoice {
     }
 
     /**
+     * Abstract method to get the total amount associated with this invoice.
+     * Each subclass will implement this to provide specific behavior.
+     *
+     * @return The amount associated with this invoice.
+     */
+    public abstract double getTotal();
+    /**
      * Gets the total amount associated with this invoice by retrieving the 'Amount'
      * from the OnlineDonation table where the 'InvoiceID' matches the current invoice ID.
      *
      * @return The amount associated with this invoice.
      */
-    public double getTotal() {
-        String query = "SELECT \"Amount\" FROM public.\"OnlineDonation\" WHERE \"InvoiceID\" = ? AND \"IsDeleted\" = false";
-        double total = 0.0;
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, invoiceID);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    total = rs.getDouble("Amount");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error fetching amount for invoice", e);
-        }
-
-        return total;
-    }
+//    public double getTotal() {
+//        String query = "SELECT \"Amount\" FROM public.\"OnlineDonation\" WHERE \"InvoiceID\" = ? AND \"IsDeleted\" = false";
+//        double total = 0.0;
+//
+//        try (Connection conn = DBConnection.getInstance().getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(query)) {
+//
+//            stmt.setInt(1, invoiceID);
+//
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                if (rs.next()) {
+//                    total = rs.getDouble("Amount");
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Error fetching amount for invoice", e);
+//        }
+//
+//        return total;
+//    }
 }
 
