@@ -8,9 +8,9 @@ import java.sql.SQLException;
 
 public final class DBConnection {
     private static volatile DBConnection instance;
-    private final String url = "jdbc:postgresql://sdp-db.ct0m6ak00bfv.eu-north-1.rds.amazonaws.com/EduMentor";
-    private final String username = "";
-    private final String password = "";
+    private final String url = System.getenv("DB_URL");
+    private final String username = System.getenv("DB_USERNAME");;
+    private final String password = System.getenv("DB_PASSWORD");
     // Method to get the database connection
     //  variables
     @Getter
