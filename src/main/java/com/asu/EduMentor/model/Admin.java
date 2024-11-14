@@ -28,9 +28,10 @@ public class Admin extends User {
 
     @Override
     public Admin create() {
+
         String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\") VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getFirstName());
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
@@ -48,9 +49,8 @@ public class Admin extends User {
             throw new RuntimeException("Error creating user", e);
         }
 
-        String adminQuery = "INSERT INTO public.\"Admin\" (\"UserID\", \"Status\") VALUES (?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(adminQuery)) {
+        String adminQuery = "INSERT INTO public.\"Admin\" (\"AdminID\", \"Status\") VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(adminQuery)) {
             stmt.setInt(1, this.getUserID());
             stmt.setBoolean(2, this.status);
 

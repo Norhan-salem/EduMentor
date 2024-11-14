@@ -46,8 +46,8 @@ public class Mentee extends User {
     public Object create() {
 
         String userQuery = "INSERT INTO public.\"User\" (\"FirstName\", \"LastName\", \"Email\", \"Password\", \"Role\") VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getFirstName());
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
@@ -65,9 +65,8 @@ public class Mentee extends User {
             throw new RuntimeException("Error creating user", e);
         }
 
-        String mentorQuery = "INSERT INTO public.\"Mentee\" (\"UserID\", \"LearningHours\", \"NumberOfAttandedSessions\") VALUES (?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(mentorQuery)) {
+        String menteeQuery = "INSERT INTO public.\"Mentee\" (\"MenteeID\", \"LearningHours\", \"NumberOfAttandedSessions\") VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(menteeQuery)) {
             stmt.setInt(1, this.getUserID());
             stmt.setDouble(2, this.getLearningHours());
             stmt.setInt(3, this.getNumberOfAttendedSessions());
