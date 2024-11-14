@@ -1,4 +1,6 @@
-package com.asu.EduMentor.model;
+package com.asu.EduMentor.model.invoice.decorator;
+
+import com.asu.EduMentor.model.Invoice;
 
 /**
  * A decorator class for the Invoice that adds tax to the total invoice amount.

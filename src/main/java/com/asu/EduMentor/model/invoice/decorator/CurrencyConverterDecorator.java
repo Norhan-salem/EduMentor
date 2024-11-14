@@ -1,6 +1,7 @@
-package com.asu.EduMentor.model;
+package com.asu.EduMentor.model.invoice.decorator;
 
-import com.asu.EduMentor.controller.rest.ICurrencyConversionService;
+import com.asu.EduMentor.service.ICurrencyConversionService;
+import com.asu.EduMentor.model.Invoice;
 
 public class CurrencyConverterDecorator extends InvoiceDecorator {
     private final double conversionRate;

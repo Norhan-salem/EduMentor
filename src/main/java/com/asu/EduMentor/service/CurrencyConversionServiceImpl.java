@@ -1,5 +1,6 @@
-package com.asu.EduMentor.controller.rest;
+package com.asu.EduMentor.service;
 
+import com.asu.EduMentor.controller.rest.ExchangeRateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

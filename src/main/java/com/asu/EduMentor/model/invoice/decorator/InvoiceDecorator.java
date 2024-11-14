@@ -1,4 +1,7 @@
-package com.asu.EduMentor.model;
+package com.asu.EduMentor.model.invoice.decorator;
+
+import com.asu.EduMentor.model.Invoice;
+
 /**
  * An abstract decorator class that extends the {@link Invoice} class and
  * serves as the base for additional decorators to add functionality to an invoice.

@@ -2,10 +2,12 @@ package com.asu.EduMentor.controller.rest.body;
 
 import com.asu.EduMentor.model.OnlineDonation;
 import com.asu.EduMentor.model.OnlineDonor;
+import com.asu.EduMentor.model.PaymentType;
 
 public class DonorDonationRequest {
     OnlineDonation onlineDonation;
     OnlineDonor onlineDonor;
+    PaymentType paymentType;
 
     public OnlineDonation getOnlineDonation() {
         return onlineDonation;
@@ -32,4 +34,9 @@ public class DonorDonationRequest {
 
         return false;
     }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
 }

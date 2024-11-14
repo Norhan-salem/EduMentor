@@ -1,10 +1,7 @@
 package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
-import com.asu.EduMentor.model.Invoice;
-import com.asu.EduMentor.model.InvoiceDetails;
-import com.asu.EduMentor.model.OnlineDonation;
-import com.asu.EduMentor.model.OnlineDonor;
+import com.asu.EduMentor.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +17,10 @@ public class DonorController {
     public ResponseEntity<Boolean> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest){
         OnlineDonation donation = donorDonationRequest.getOnlineDonation();
         OnlineDonor donor = donorDonationRequest.getOnlineDonor();
+        PaymentType paymentType = donorDonationRequest.getPaymentType();
 
         try {
-            if (!donation.makeDonation(donor)){
+            if (!donation.makeDonation(donor, paymentType)){
                 throw new Exception("Make donation failed");
             }
             return ResponseEntity.ok().body(true);
