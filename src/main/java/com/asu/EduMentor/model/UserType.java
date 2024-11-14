@@ -1,6 +1,6 @@
 package com.asu.EduMentor.model;
 
-public enum userType {
+public enum UserType {
     ADMIN,
     MENTOR,
     MENTEE,

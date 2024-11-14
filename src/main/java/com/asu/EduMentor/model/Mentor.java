@@ -9,12 +9,12 @@ public class Mentor extends User {
     private double totalHours;
 
     public Mentor(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, userType.MENTOR, email, password);
+        super(firstName, lastName, UserType.MENTOR, email, password);
         this.totalHours = 0;
     }
 
     public Mentor(String firstName, String lastName, String email, String password, double totalHours) {
-        super(firstName, lastName, userType.MENTOR, email, password);
+        super(firstName, lastName, UserType.MENTOR, email, password);
         this.totalHours = totalHours;
     }
 

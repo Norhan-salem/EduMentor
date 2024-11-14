@@ -1,6 +1,6 @@
 package com.asu.EduMentor.controller.rest.paymentProcessor.strategy;
 
-public class PayByMasterCard implements IPaymentStrategy {
+public class MasterCardPaymentStrategy implements IPaymentStrategy {
 
     @Override
     public void processPayment(double amount) {

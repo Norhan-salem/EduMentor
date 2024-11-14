@@ -27,9 +27,9 @@ public class UserTopics {
     public boolean addTopic(Topics topic, User user) {
         String roleBasedInsertQuery;
 
-        if (user.getRole() == userType.MENTOR) {
+        if (user.getRole() == UserType.MENTOR) {
             roleBasedInsertQuery = "INSERT INTO public.\"MT_InterestedIn\" (\"MentorID\", \"TopicsID\", \"isDeleted\") VALUES (?, ?, FALSE)";
-        } else if (user.getRole() == userType.MENTEE) {
+        } else if (user.getRole() == UserType.MENTEE) {
             roleBasedInsertQuery = "INSERT INTO public.\"MTT_InterestedIn\" (\"MenteeID\", \"TopicsID\", \"isDeleted\") VALUES (?, ?, FALSE)";
         } else {
             throw new IllegalArgumentException("User must be a mentor or mentee to add a topic.");
@@ -61,9 +61,9 @@ public class UserTopics {
     public boolean deleteTopic(Topics topic, User user) {
         String roleBasedDeleteQuery;
 
-        if (user.getRole() == userType.MENTOR) {
+        if (user.getRole() == UserType.MENTOR) {
             roleBasedDeleteQuery = "UPDATE public.\"MT_InterestedIn\" SET \"isDeleted\" = TRUE WHERE \"MentorID\" = ? AND \"TopicsID\" = ?";
-        } else if (user.getRole() == userType.MENTEE) {
+        } else if (user.getRole() == UserType.MENTEE) {
             roleBasedDeleteQuery = "UPDATE public.\"MTT_InterestedIn\" SET \"isDeleted\" = TRUE WHERE \"MenteeID\" = ? AND \"TopicsID\" = ?";
         } else {
             throw new IllegalArgumentException("User must be a mentor or mentee to delete a topic.");
@@ -95,12 +95,12 @@ public class UserTopics {
         List<Topics> topics = new ArrayList<>();
 
         String roleBasedQuery;
-        if (user.getRole() == userType.MENTOR) {
+        if (user.getRole() == UserType.MENTOR) {
             roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
                     "FROM public.\"Topics\" t " +
                     "JOIN public.\"MT_InterestedIn\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +
                     "WHERE mt.\"MentorID\" = ? AND mt.\"isDeleted\" = FALSE AND t.\"isDeleted\" = FALSE";
-        } else if (user.getRole() == userType.MENTEE) {
+        } else if (user.getRole() == UserType.MENTEE) {
             roleBasedQuery = "SELECT t.\"TopicsID\", t.\"TopicsName\" " +
                     "FROM public.\"Topics\" t " +
                     "JOIN public.\"MTT_InterestedIn\" mt ON t.\"TopicsID\" = mt.\"TopicsID\" " +

@@ -9,12 +9,12 @@ public class Admin extends User {
     private boolean status;
 
     public Admin(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, userType.ADMIN, email, password);
+        super(firstName, lastName, UserType.ADMIN, email, password);
         this.status = false;
     }
 
     public Admin(String firstName, String lastName, String email, String password, boolean status) {
-        super(firstName, lastName, userType.ADMIN, email, password);
+        super(firstName, lastName, UserType.ADMIN, email, password);
         this.status = status;
     }
 

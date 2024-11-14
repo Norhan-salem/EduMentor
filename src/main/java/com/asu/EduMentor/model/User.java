@@ -12,12 +12,12 @@ public abstract class User implements CRUD {
     private int userID;
     private String firstName;
     private String lastName;
-    private userType role;
+    private UserType role;
     private String email;
     private String password;
     private boolean isDeleted = false;
 
-    public User(String firstName, String lastName, userType role, String email, String password) {
+    public User(String firstName, String lastName, UserType role, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
@@ -66,7 +66,7 @@ public abstract class User implements CRUD {
     }
 
     private static User createUserFromResultSet(ResultSet rs) throws SQLException {
-        userType role = userType.valueOf(rs.getString("Role"));
+        UserType role = UserType.valueOf(rs.getString("Role"));
 
         User user = switch (role) {
             case ADMIN -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
@@ -107,11 +107,11 @@ public abstract class User implements CRUD {
         this.lastName = lastName;
     }
 
-    public userType getRole() {
+    public UserType getRole() {
         return role;
     }
 
-    public void setRole(userType role) {
+    public void setRole(UserType role) {
         this.role = role;
     }
 

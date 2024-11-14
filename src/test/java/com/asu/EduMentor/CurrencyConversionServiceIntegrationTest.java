@@ -1,6 +1,6 @@
 package com.asu.EduMentor;
 
-import com.asu.EduMentor.controller.rest.ICurrencyConversionService;
+import com.asu.EduMentor.service.ICurrencyConversionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

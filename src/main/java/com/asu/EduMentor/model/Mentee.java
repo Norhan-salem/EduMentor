@@ -11,17 +11,17 @@ public class Mentee extends User {
 
 
     public Mentee() {
-        super("", "", userType.MENTEE, "", "");
+        super("", "", UserType.MENTEE, "", "");
     }
 
     public Mentee(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, userType.MENTEE, email, password);
+        super(firstName, lastName, UserType.MENTEE, email, password);
         this.numberOfAttendedSessions = 0;
         this.learningHours = 0;
     }
 
     public Mentee(String firstName, String lastName, String email, String password, int numberOfAttendedSessions, double learningHours) {
-        super(firstName, lastName, userType.MENTEE, email, password);
+        super(firstName, lastName, UserType.MENTEE, email, password);
         this.numberOfAttendedSessions = numberOfAttendedSessions;
         this.learningHours = learningHours;
     }
