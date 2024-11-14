@@ -34,7 +34,8 @@ public final class DBConnection {
 
     public static DBConnection getInstance() {
         if (instance == null) {
-            synchronized (DBConnection.class) {
+            synchronized (DBConnection.class) {//by using synchronized we garantee that no 2
+                                               //threads can enter the method at the same time
                 if (instance == null) {
                     instance = new DBConnection();
                 }
@@ -42,6 +43,5 @@ public final class DBConnection {
         }
         return instance;
     }
-
 
 }
