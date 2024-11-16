@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import { validateForm } from '../utils/validation';
 import axios from 'axios';
+import config from "../config";
 
 const roles = ['Mentor', 'Mentee'];
 
@@ -51,7 +52,7 @@ const SignUpForm = () => {
 
     // *** Axios request to the backend ***
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/signup', requestBody);
+        const response = await axios.post(`${config.backendUrl}/api/auth/signup`, requestBody);
       setSuccessMessage('Signup successful!');
       console.log('Response:', response.data);
     } catch (error) {

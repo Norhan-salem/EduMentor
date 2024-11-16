@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import axios from 'axios';
+import config from "../config";
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ const LoginForm = () => {
 
     // Send login request to backend
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', requestBody);
+      const response = await axios.post(`${config.backendUrl}/api/auth/login`, requestBody);
       console.log('Login response:', response.data);
       setSuccessMessage('Login successful!');
       // localStorage.setItem('authToken', response.data.token);
