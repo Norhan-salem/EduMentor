@@ -2,16 +2,9 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import { validateForm } from '../utils/validation';
+import axios from 'axios';
 
 const roles = ['Mentor', 'Mentee'];
-const interestOptions = [
-  'Technology',
-  'History',
-  'Health',
-  'Business',
-  'Art',
-  'Science',
-];
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -20,31 +13,52 @@ const SignUpForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('');
-  const [interests, setInterests] = useState([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSignUp = (e) => {
+  // Handle form submission
+  const handleSignUp = async (e) => {
+    console.log('sebeeeni fe 7ali b2a')
     e.preventDefault();
-    const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, interests, agreedToTerms);
 
-    if (Object.values(validationErrors).some(error => error)) {
+    // commented 34an zhe2t bs
+    // Validate form fields
+    /* const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
+    if (Object.values(validationErrors).some((error) => error)) {
       setErrors(validationErrors);
       return;
-    }
+    } */
 
+    // Clear previous errors
     setErrors({});
-    // Sign-up logic here
-    console.log('Signing up with', { firstName, lastName, email, password, role, interests });
-  };
+    setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
 
-  const handleInterestChange = (e) => {
-    const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-    if (selectedValues.length <= 3) {
-      setInterests(selectedValues);
-      if (selectedValues.length > 0) {
-        setErrors((prev) => ({ ...prev, interests: '' }));
-      }
+    // Request body structure for signup
+    const requestBody = {
+      firstName,
+      lastName,
+      credentials: {
+        email,
+        password,
+      },
+      role: role === 'Mentor' ? 1 : 2,
+    };
+
+    // *** Axios request to the backend ***
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/signup', requestBody);
+      setSuccessMessage('Signup successful!');
+      console.log('Response:', response.data);
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || 'Signup failed. Please try again.');
+      console.error('Error during signup:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,32 +119,27 @@ const SignUpForm = () => {
         </Form.Select>
         <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicInterests">
-        <Form.Label>Interests</Form.Label>
-        <Form.Select multiple value={interests} onChange={handleInterestChange} required isInvalid={!!errors.interests}>
-          <option value="">Select interests (up to 3)</option>
-          {interestOptions.map((interest) => (
-            <option key={interest} value={interest}>
-              {interest}
-            </option>
-          ))}
-        </Form.Select>
-        <Form.Control.Feedback type="invalid">{errors.interests}</Form.Control.Feedback>
-        <Form.Text className="text-muted">
-          Hold down the Ctrl (Windows) or Command (Mac) button to select multiple options.
-        </Form.Text>
-      </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicTerms">
-        <Form.Check 
-          type="checkbox" 
-          label="I agree to the terms and conditions" 
-          checked={agreedToTerms} 
-          onChange={(e) => setAgreedToTerms(e.target.checked)} 
-          isInvalid={!!errors.agreedToTerms}
-        />
-        <Form.Control.Feedback type="invalid">{errors.agreedToTerms}</Form.Control.Feedback>
+      <Form.Check
+        type="checkbox"
+        label="I agree to the terms and conditions"
+        checked={agreedToTerms}
+        onChange={(e) => setAgreedToTerms(e.target.checked)}
+        isInvalid={!!errors.agreedToTerms}
+      />
+      <Form.Control.Feedback type="invalid">
+        {errors.agreedToTerms}
+      </Form.Control.Feedback>
       </Form.Group>
-      <Button variant="primary" type="submit" className="w-100">
+
+
+      {/* Loading, success, and error messages */}
+      {loading && <p>Loading...</p>}
+      {successMessage && <p className="text-success">{successMessage}</p>}
+      {errorMessage && <p className="text-danger">{errorMessage}</p>}
+
+      {/* Submit Button */}
+      <Button variant="primary" type="submit" className="w-100" disabled={loading}>
         Sign Up
       </Button>
     </Form>
@@ -138,3 +147,5 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+
+

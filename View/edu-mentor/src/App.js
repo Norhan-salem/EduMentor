@@ -9,6 +9,8 @@ import Footer from './components/Footer';
 import './App.css';
 import MentorDashboardPage from './pages/MentorDashboardPage';
 import MenteeDashboardPage from './pages/MenteeDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import CreateSessionPage from './pages/CreateSessionPage';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/Mentor" element={<MentorDashboardPage />} />
         <Route path="/Mentee" element={<MenteeDashboardPage />} />
+        <Route path="/Admin" element={<AdminDashboardPage />} />
+        <Route path="/create-session" element={<CreateSessionPage />} />
       </Routes>
       <Footer />
     </Router>

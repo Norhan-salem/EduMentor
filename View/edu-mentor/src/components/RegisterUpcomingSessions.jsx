@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 
-const UpcomingSessions = ({ sessions, handleRegister }) => {
+const RegisterUpcomingSessions = ({ sessions, handleRegister }) => {
   return (
     <Card className="mb-4">
       <Card.Body>
@@ -38,5 +38,5 @@ const UpcomingSessions = ({ sessions, handleRegister }) => {
   );
 };
 
-export default UpcomingSessions;
+export default RegisterUpcomingSessions;
 
