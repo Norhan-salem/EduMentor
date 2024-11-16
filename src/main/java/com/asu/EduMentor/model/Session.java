@@ -23,7 +23,7 @@ public class Session implements CRUD {
     public static List<Session> findSessionsBySearchTerm(String search) {
         List<Session> sessions = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE " +
-                "(\"SessionName\" ILIKE ? OR TO_CHAR(\"Date\", 'YYYY-MM-DD') ILIKE ?) AND \"isDeleted\" = FALSE";
+                "(\"SessionName\" ILIKE ? OR TO_CHAR(\"Date\", 'YYYY-MM-DD') ILIKE ?) AND \"IsDeleted\" = FALSE";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
@@ -122,7 +122,7 @@ public class Session implements CRUD {
             throw new IllegalArgumentException("Invalid object type");
         }
 
-        String sqlQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? WHERE \"SessionID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setDate(1, new java.sql.Date(updatedSession.getDate().getTime()));
@@ -141,7 +141,7 @@ public class Session implements CRUD {
     @Override
     public Object read(int id) {
 
-        String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"SessionID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
@@ -167,7 +167,7 @@ public class Session implements CRUD {
     public List<Object> readAll() {
 
         List<Object> sessions = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
@@ -194,7 +194,7 @@ public class Session implements CRUD {
     @Override
     public boolean delete(int id) {
 
-        String sqlQuery = "UPDATE public.\"Session\" SET \"isDeleted\" = TRUE WHERE \"SessionID\" = ?";
+        String sqlQuery = "UPDATE public.\"Session\" SET \"IsDeleted\" = TRUE WHERE \"SessionID\" = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);

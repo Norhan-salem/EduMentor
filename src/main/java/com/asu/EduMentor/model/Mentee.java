@@ -91,7 +91,7 @@ public class Mentee extends User {
 
         Mentee updatedMentee = (Mentee) updatedObject;
 
-        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
+        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedMentee.getFirstName());
@@ -128,7 +128,7 @@ public class Mentee extends User {
     // TODO: Refactor this method to be static
     {
 
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
@@ -158,7 +158,7 @@ public class Mentee extends User {
     public List<Object> readAll() {
 
         List<Object> mentees = new ArrayList<>();
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();

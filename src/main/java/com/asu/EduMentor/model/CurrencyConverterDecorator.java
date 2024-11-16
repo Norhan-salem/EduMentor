@@ -1,9 +1,12 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.invoice.decorator.InvoiceDecorator;
+import com.asu.EduMentor.service.ICurrencyConversionService;
+
 public class CurrencyConverterDecorator extends InvoiceDecorator {
     private final double conversionRate;
     private String currency;
-    private final CurrencyConversionService currencyConversionService;
+    private final ICurrencyConversionService currencyConversionService;
 
     /**
      * Constructs a CurrencyConverterDecorator with a specified base invoice, target currency, and a currency conversion service.
@@ -13,7 +16,7 @@ public class CurrencyConverterDecorator extends InvoiceDecorator {
      * @param currencyConversionService The service responsible for fetching conversion rates.
      * @throws IllegalArgumentException if currency is null or empty.
      */
-    public CurrencyConverterDecorator(Invoice invoice, String currency, CurrencyConversionService currencyConversionService) {
+    public CurrencyConverterDecorator(Invoice invoice, String currency, ICurrencyConversionService currencyConversionService) {
         super(invoice);
         setCurrency(currency);
         this.currencyConversionService = currencyConversionService;

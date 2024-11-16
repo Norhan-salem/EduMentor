@@ -70,7 +70,7 @@ public class Topics implements CRUD {
             throw new IllegalArgumentException("Invalid object type");
         }
 
-        String sqlQuery = "UPDATE public.\"Topics\" SET \"TopicsName\" = ? WHERE \"TopicsID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "UPDATE public.\"Topics\" SET \"TopicsName\" = ? WHERE \"TopicsID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, updatedTopic.getTopicsName());
@@ -89,7 +89,7 @@ public class Topics implements CRUD {
     @Override
     public Object read(int id) {
 
-        String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"TopicsID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"TopicsID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
@@ -115,7 +115,7 @@ public class Topics implements CRUD {
     public List<Object> readAll() {
 
         List<Object> topics = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
@@ -140,7 +140,7 @@ public class Topics implements CRUD {
     @Override
     public boolean delete(int id) {
 
-        String sqlQuery = "UPDATE public.\"Topics\" SET \"isDeleted\" = TRUE WHERE \"TopicsID\" = ?";
+        String sqlQuery = "UPDATE public.\"Topics\" SET \"IsDeleted\" = TRUE WHERE \"TopicsID\" = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);

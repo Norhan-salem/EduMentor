@@ -73,7 +73,7 @@ public class Mentor extends User {
 
         Mentor updatedMentor = (Mentor) updatedObject;
 
-        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
+        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedMentor.getFirstName());
@@ -94,7 +94,7 @@ public class Mentor extends User {
     @Override
     public Object read(int id) {
 
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"MentorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"MentorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
@@ -123,7 +123,7 @@ public class Mentor extends User {
     public List<Object> readAll() {
 
         List<Object> mentors = new ArrayList<>();
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"AdminID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"AdminID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
@@ -212,7 +212,7 @@ public class Mentor extends User {
 
     public boolean addAvailability(Availability availability) {
 
-        String sqlQuery = "INSERT INTO public.\"Mentor_Availability\" (\"MentorID\", \"Availability\", \"AvailabilityDuration\", \"isDeleted\") VALUES (?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO public.\"Mentor_Availability\" (\"MentorID\", \"Availability\", \"AvailabilityDuration\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
@@ -236,8 +236,8 @@ public class Mentor extends User {
     public boolean deleteAvailability(Availability availability) {
 
         String sqlQuery = "UPDATE public.\"Mentor_Availability\" " +
-                "SET \"isDeleted\" = TRUE " +
-                "WHERE \"MentorID\" = ? AND \"Availability\" = ? AND \"AvailabilityDuration\" = ? AND \"isDeleted\" = FALSE";
+                "SET \"IsDeleted\" = TRUE " +
+                "WHERE \"MentorID\" = ? AND \"Availability\" = ? AND \"AvailabilityDuration\" = ? AND \"IsDeleted\" = FALSE";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {

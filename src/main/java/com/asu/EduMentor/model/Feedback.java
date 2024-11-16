@@ -82,7 +82,7 @@ public class Feedback implements CRUD {
             throw new IllegalArgumentException("Invalid object type");
         }
 
-        String sqlQuery = "UPDATE public.\"Feedback\" SET \"Comment\" = ?, \"Stars\" = ? WHERE \"FeedbackID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "UPDATE public.\"Feedback\" SET \"Comment\" = ?, \"Stars\" = ? WHERE \"FeedbackID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, updatedFeedback.getComment());
@@ -103,7 +103,7 @@ public class Feedback implements CRUD {
     @Override
     public Object read(int id) {
 
-        String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"FeedbackID\" = ? AND \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"FeedbackID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
@@ -132,7 +132,7 @@ public class Feedback implements CRUD {
     public List<Object> readAll() {
 
         List<Object> feedbacks = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
@@ -159,7 +159,7 @@ public class Feedback implements CRUD {
     @Override
     public boolean delete(int id) {
 
-        String sqlQuery = "UPDATE public.\"Feedback\" SET \"isDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
+        String sqlQuery = "UPDATE public.\"Feedback\" SET \"IsDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);

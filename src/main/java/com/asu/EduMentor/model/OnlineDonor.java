@@ -76,7 +76,7 @@ public class OnlineDonor extends User {
 
         OnlineDonor updatedDonor = (OnlineDonor) updatedObject;
 
-        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
+        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedDonor.getFirstName());
@@ -110,7 +110,7 @@ public class OnlineDonor extends User {
     @Override
     public Object read(int id) {
 
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
@@ -141,7 +141,7 @@ public class OnlineDonor extends User {
     public List<Object> readAll() {
 
         List<Object> donors = new ArrayList<>();
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();

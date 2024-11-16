@@ -26,7 +26,7 @@ public abstract class User implements CRUD {
     }
 
     public static User findByEmail(String email) {
-        String sql = "SELECT * FROM public.\"User\" WHERE \"Email\" = ? AND \"isDeleted\" = FALSE";
+        String sql = "SELECT * FROM public.\"User\" WHERE \"Email\" = ? AND \"IsDeleted\" = FALSE";
         try (PreparedStatement stmt = DBConnection.getInstance().getConnection().prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
@@ -43,7 +43,7 @@ public abstract class User implements CRUD {
     public static List<User> findUsersBySearchTerm(String search) {
         List<User> userList = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"User\" WHERE " +
-                "(\"FirstName\" ILIKE ? OR \"LastName\" ILIKE ? OR \"Email\" ILIKE ?) AND \"isDeleted\" = FALSE";
+                "(\"FirstName\" ILIKE ? OR \"LastName\" ILIKE ? OR \"Email\" ILIKE ?) AND \"IsDeleted\" = FALSE";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
@@ -153,7 +153,7 @@ public abstract class User implements CRUD {
 
     @Override
     public boolean delete(int id) {
-        String sqlQuery = "UPDATE public.\"User\" SET \"isDeleted\" = TRUE WHERE \"UserID\" = ?";
+        String sqlQuery = "UPDATE public.\"User\" SET \"IsDeleted\" = TRUE WHERE \"UserID\" = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);

@@ -71,7 +71,7 @@ public class Admin extends User {
 
         Admin updatedAdmin = (Admin) updatedObject;
 
-        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"isDeleted\" = FALSE";
+        String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedAdmin.getFirstName());
@@ -103,7 +103,7 @@ public class Admin extends User {
 
     @Override
     public Object read(int id) {
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
@@ -131,7 +131,7 @@ public class Admin extends User {
     @Override
     public List<Object> readAll() {
         List<Object> admins = new ArrayList<>();
-        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"isDeleted\" = FALSE";
+        String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
