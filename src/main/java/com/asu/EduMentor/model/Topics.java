@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Topics implements CRUD{
+public class Topics implements CRUD {
 
     private int topicID;
     private String topicsName;
@@ -43,22 +43,18 @@ public class Topics implements CRUD{
     public Object create() {
 
         String sqlQuery = "INSERT INTO public.\"Topics\" (\"TopicsName\", \"IsDeleted\") VALUES (?, ?)";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getTopicsName());
             stmt.setBoolean(2, this.isDeleted());
 
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next())
-            {
+            if (rs.next()) {
                 this.setTopicID(rs.getInt("TopicsID"));
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error creating topic", e);
         }
@@ -70,24 +66,18 @@ public class Topics implements CRUD{
     @Override
     public Object update(Object updatedObject) {
 
-        if(!(updatedObject instanceof Topics))
-        {
+        if (!(updatedObject instanceof Topics updatedTopic)) {
             throw new IllegalArgumentException("Invalid object type");
         }
 
-        Topics updatedTopic = (Topics) updatedObject;
-
         String sqlQuery = "UPDATE public.\"Topics\" SET \"TopicsName\" = ? WHERE \"TopicsID\" = ? AND \"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, updatedTopic.getTopicsName());
             stmt.setInt(2, updatedTopic.getTopicID());
 
             stmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error updating topic", e);
         }
@@ -100,14 +90,12 @@ public class Topics implements CRUD{
     public Object read(int id) {
 
         String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"TopicsID\" = ? AND \"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next())
-            {
+            if (rs.next()) {
                 int topicID = rs.getInt("TopicsID");
                 String name = rs.getString("TopicsName");
 
@@ -115,9 +103,7 @@ public class Topics implements CRUD{
                 t.setTopicID(topicID);
                 return t;
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading topic", e);
         }
@@ -130,13 +116,11 @@ public class Topics implements CRUD{
 
         List<Object> topics = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"isDeleted\" = FALSE";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int topicID = rs.getInt("TopicsID");
                 String name = rs.getString("TopicsName");
 
@@ -144,9 +128,7 @@ public class Topics implements CRUD{
                 t.setTopicID(topicID);
                 topics.add(t);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error reading all topics", e);
         }
@@ -159,15 +141,12 @@ public class Topics implements CRUD{
     public boolean delete(int id) {
 
         String sqlQuery = "UPDATE public.\"Topics\" SET \"isDeleted\" = TRUE WHERE \"TopicsID\" = ?";
-        try(Connection conn = DBConnection.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery))
-        {
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             //e.printStackTrace();
             throw new RuntimeException("Error deleting topic", e);
         }

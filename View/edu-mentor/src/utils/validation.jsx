@@ -76,11 +76,11 @@ export const validateUsername = (username) => {
       errors.role = 'Role is required';
     }
 
-    if (interests.length === 0) {
-      errors.interests = 'At least one interest must be selected';
-    } else if (interests.length > 3) {
-      errors.interests = 'You can select up to 3 interests';
-    }
+    // if (interests.length === 0) {
+    //   errors.interests = 'At least one interest must be selected';
+    // } else if (interests.length > 3) {
+    //   errors.interests = 'You can select up to 3 interests';
+    // }
 
     if (!agreedToTerms) {
       errors.agreedToTerms = 'You must agree to the terms and conditions';

@@ -6,6 +6,7 @@ public class Availability {
 
     private Timestamp time;
     private double duration;
+    private boolean isDeleted;
 
 
     public Availability(Timestamp time, double duration) {
@@ -27,5 +28,13 @@ public class Availability {
 
     public void setDuration(double duration) {
         this.duration = duration;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

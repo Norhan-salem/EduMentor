@@ -8,14 +8,13 @@ import java.sql.SQLException;
 
 public final class DBConnection {
     private static volatile DBConnection instance;
-
+    private final String url = System.getenv("DB_URL");
+    private final String username = System.getenv("DB_USERNAME");;
+    private final String password = System.getenv("DB_PASSWORD");
     // Method to get the database connection
     //  variables
     @Getter
-    private Connection connection;
-    private final String url = "jdbc:postgresql://localhost:5432/EDUMentor"; // Update with your database
-    private final String username = "admin"; // Update with your username
-    private final String password = "admin"; // Update with your password
+    private final Connection connection;
 
     private DBConnection() {
         // Initialize the database connection
@@ -35,7 +34,8 @@ public final class DBConnection {
 
     public static DBConnection getInstance() {
         if (instance == null) {
-            synchronized (DBConnection.class) {
+            synchronized (DBConnection.class) {//by using synchronized we garantee that no 2
+                                               //threads can enter the method at the same time
                 if (instance == null) {
                     instance = new DBConnection();
                 }
@@ -43,6 +43,5 @@ public final class DBConnection {
         }
         return instance;
     }
-
 
 }
