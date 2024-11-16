@@ -33,7 +33,7 @@ const LoginForm = () => {
 
     // Send login request to backend
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', requestBody);
+      const response = await axios.post('http://backend:1234/api/auth/login', requestBody);
       console.log('Login response:', response.data);
       setSuccessMessage('Login successful!');
       // localStorage.setItem('authToken', response.data.token);

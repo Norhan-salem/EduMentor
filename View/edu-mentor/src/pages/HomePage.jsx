@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { Container, Button, Form } from 'react-bootstrap';
 import MentorCard from '../components/MentorCard';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
