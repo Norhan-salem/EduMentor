@@ -51,7 +51,7 @@ const SignUpForm = () => {
 
     // *** Axios request to the backend ***
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/signup', requestBody);
+      const response = await axios.post('http://backend:1234/api/auth/signup', requestBody);
       setSuccessMessage('Signup successful!');
       console.log('Response:', response.data);
     } catch (error) {
