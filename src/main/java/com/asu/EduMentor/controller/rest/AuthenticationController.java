@@ -2,10 +2,7 @@ package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.CredentialsBody;
 import com.asu.EduMentor.controller.rest.body.SignUpBody;
-import com.asu.EduMentor.model.Admin;
-import com.asu.EduMentor.model.Mentee;
-import com.asu.EduMentor.model.Mentor;
-import com.asu.EduMentor.model.User;
+import com.asu.EduMentor.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,14 +26,16 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<Boolean> signup(@RequestBody SignUpBody userBody) {
-        User newUser = switch (userBody.getRole()) {
-            case 0 -> new Admin(userBody.getFirstName(), userBody.getLastName(),
+        UserType userType = UserType.fromRoleId(userBody.getRole());
+        User newUser = switch (userType) {
+            case ADMIN -> new Admin(userBody.getFirstName(), userBody.getLastName(),
                     userBody.getCredentials().getEmail(), userBody.getCredentials().getPassword());
-            case 1 -> new Mentor(userBody.getFirstName(), userBody.getLastName(),
+            case MENTOR -> new Mentor(userBody.getFirstName(), userBody.getLastName(),
                     userBody.getCredentials().getEmail(), userBody.getCredentials().getPassword());
-            case 2 -> new Mentee(userBody.getFirstName(), userBody.getLastName(),
+            case MENTEE -> new Mentee(userBody.getFirstName(), userBody.getLastName(),
                     userBody.getCredentials().getEmail(), userBody.getCredentials().getPassword());
-            default -> throw new IllegalArgumentException("Invalid role");
+            case ONLINEDONOR -> new OnlineDonor(userBody.getFirstName(), userBody.getLastName(),
+                    userBody.getCredentials().getEmail(), userBody.getCredentials().getPassword());
         };
 
         newUser.create();
