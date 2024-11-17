@@ -3,6 +3,7 @@ package com.asu.EduMentor.controller.rest;
 import com.asu.EduMentor.controller.rest.body.RegisterMenteeRequest;
 import com.asu.EduMentor.controller.rest.body.RegisterMentorRequest;
 import com.asu.EduMentor.model.*;
+import com.asu.EduMentor.socialMediaNotifier.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ public class SessionController {
     public ResponseEntity<Boolean> addSession(@RequestBody Session session) {
         try {
             session.create();
+            NotificationService.getInstance().notifyObserver();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }

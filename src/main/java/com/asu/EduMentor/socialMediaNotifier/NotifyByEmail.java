@@ -13,6 +13,7 @@ public class NotifyByEmail implements INotificationObserver{
 
     @Override
     public boolean update() {
+        printNotifyMethod();
         return false;
     }
 }
