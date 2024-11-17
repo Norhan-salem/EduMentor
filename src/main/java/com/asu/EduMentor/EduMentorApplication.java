@@ -1,5 +1,9 @@
 package com.asu.EduMentor;
 
+import com.asu.EduMentor.socialMediaNotifier.NotificationService;
+import com.asu.EduMentor.socialMediaNotifier.NotifyByEmail;
+import com.asu.EduMentor.socialMediaNotifier.NotifyByFacebook;
+import com.asu.EduMentor.socialMediaNotifier.NotifyByTwitter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +16,9 @@ public class EduMentorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(EduMentorApplication.class, args);
+        NotifyByFacebook notifyByFacebook = new NotifyByFacebook(NotificationService.getInstance());
+        NotifyByEmail notifyByEmail = new NotifyByEmail(NotificationService.getInstance());
+        NotifyByTwitter notifyByTwitter = new NotifyByTwitter(NotificationService.getInstance());
     }
 
     @Bean
