@@ -5,9 +5,20 @@ import com.asu.EduMentor.model.OnlineDonor;
 import com.asu.EduMentor.model.PaymentType;
 
 public class DonorDonationRequest {
-    OnlineDonation onlineDonation;
-    OnlineDonor onlineDonor;
-    PaymentType paymentType;
+    private OnlineDonation onlineDonation;
+    private OnlineDonor onlineDonor;
+    private PaymentType paymentType;
+    private double amount;
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        if (amount > 0) {
+            this.amount = amount;
+        }
+    }
 
     public OnlineDonation getOnlineDonation() {
         return onlineDonation;

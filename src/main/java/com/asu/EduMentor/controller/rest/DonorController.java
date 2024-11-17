@@ -1,9 +1,14 @@
 package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
-import com.asu.EduMentor.model.*;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.MasterCardPaymentStrategy;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProcessor;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
+import com.asu.EduMentor.model.InvoiceDetails;
+import com.asu.EduMentor.model.OnlineDonation;
+import com.asu.EduMentor.model.OnlineDonor;
+import com.asu.EduMentor.model.PaymentType;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +23,15 @@ public class DonorController {
         OnlineDonation donation = donorDonationRequest.getOnlineDonation();
         OnlineDonor donor = donorDonationRequest.getOnlineDonor();
         PaymentType paymentType = donorDonationRequest.getPaymentType();
+
+        PaymentProcessor paymentProcessor = new PaymentProcessor();
+
+        if (paymentType == PaymentType.MASTERCARD) {
+            paymentProcessor.setPaymentStrategy(new MasterCardPaymentStrategy());
+        } else if (paymentType == PaymentType.VISA){
+            paymentProcessor.setPaymentStrategy(new VisaPaymentStrategy());
+        }
+        paymentProcessor.executePayment(donorDonationRequest.getAmount());
 
         try {
             if (!donation.makeDonation(donor, paymentType)){
