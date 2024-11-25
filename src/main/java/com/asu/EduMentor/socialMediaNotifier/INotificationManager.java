@@ -1,8 +1,10 @@
 package com.asu.EduMentor.socialMediaNotifier;
 
-public interface INotificationManager {
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+public interface INotificationManager {//this is our subject
     public  boolean addObserver(INotificationObserver observer);
     public boolean removeObserver(INotificationObserver observer);
-    public boolean notifyObserver();
+    public boolean notifyObserver() throws UnirestException;
 
 }
