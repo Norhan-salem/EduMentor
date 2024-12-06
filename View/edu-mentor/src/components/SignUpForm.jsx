@@ -47,7 +47,7 @@ const SignUpForm = () => {
         email,
         password,
       },
-      role: role === 'Mentor' ? 1 : 2,
+      role: role === 'Mentor' ? 2 : 3,
     };
 
     // *** Axios request to the backend ***
