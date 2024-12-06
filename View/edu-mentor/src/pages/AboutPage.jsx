@@ -15,7 +15,7 @@ const AboutPage = () => {
         </Col>
         <Col md={6}>
           <img
-            src="../../assets/images/edumentormission.png"
+            src="https://static.startuptalky.com/2022/05/Coaching-vs-mentoring-StartupTalky.jpg"
             alt="EduMentor Mission"
             className="img-fluid rounded shadow"
           />
