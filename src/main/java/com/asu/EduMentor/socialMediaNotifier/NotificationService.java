@@ -10,7 +10,7 @@ public class NotificationService implements INotificationManager{
     private NotificationService() {
        observers = new ArrayList<INotificationObserver>();
     }
-    public NotificationService getInstance(){
+    public static NotificationService getInstance(){
         if(notificaton == null){
             notificaton = new NotificationService();
         }
