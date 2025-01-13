@@ -5,3 +5,28 @@
     border-radius: var(--border-radius);
     margin: 5rem;
 }
+/* Invoice Component Styles */
+.invoice-card {
+    background-color: #f2f2ed;
+    border: 1px solid var(--primary-color);
+    max-width: 500px;
+    margin: 2rem auto;
+    color: var(--text-color-dark);
+  }
+  
+  .invoice-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .invoice-details {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .invoice-item {
+    margin-bottom: 0.8rem;
+  }
+  
+  

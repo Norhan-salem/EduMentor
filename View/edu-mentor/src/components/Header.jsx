@@ -23,6 +23,14 @@ const Header = () => {
     navigate('/');
   };
 
+  // Map backend enums to frontend roles
+  const userTypeMap = {
+    ADMIN: 'admin',
+    MENTOR: 'mentor',
+    MENTEE: 'mentee',
+    ONLINEDONOR: 'donor',
+  };
+
   return (
     <Navbar expand="lg" sticky="top" className="custom-navbar">
       <Container>
@@ -63,7 +71,7 @@ const Header = () => {
             ) : (
               <>
                 {/* Show different links based on userType */}
-                {user.userType === 'mentor' && (
+                {user.userType === userTypeMap.MENTOR && (
                   <Nav.Link
                     as={Link}
                     to="/mentor-dashboard"
@@ -72,7 +80,7 @@ const Header = () => {
                     Dashboard
                   </Nav.Link>
                 )}
-                {user.userType === 'mentee' && (
+                {user.userType === userTypeMap.MENTEE && (
                   <Nav.Link
                     as={Link}
                     to="/mentee-dashboard"
@@ -81,13 +89,22 @@ const Header = () => {
                     Dashboard
                   </Nav.Link>
                 )}
-                {user.userType === 'admin' && (
+                {user.userType === userTypeMap.ADMIN && (
                   <Nav.Link
                     as={Link}
                     to="/admin-dashboard"
                     className={`nav-link ${isActive('/admin-dashboard') ? 'active-link' : ''}`}
                   >
                     Dashboard
+                  </Nav.Link>
+                )}
+                {user.userType === userTypeMap.ONLINEDONOR && (
+                  <Nav.Link
+                    as={Link}
+                    to="/donations"
+                    className={`nav-link ${isActive('/donations') ? 'active-link' : ''}`}
+                  >
+                    Donations
                   </Nav.Link>
                 )}
 

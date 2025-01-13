@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import { useAuthContext } from '../context/useAuthContext';
-import { validateForm } from '../utils/validation'; 
+import { validateForm } from '../utils/validation';
 
-const roles = ['Mentor', 'Mentee'];
+const roles = ['Mentor', 'Mentee', 'Donor'];
 
 const SignUpForm = () => {
   const { register, loading, errorMessage, successMessage } = useAuthContext();
@@ -19,24 +19,26 @@ const SignUpForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+  
     // Clear previous errors
     setErrors({});
-    
+  
     // Validate form data
     const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+  
     try {
-      const userType = role === 'Mentor' ? 2 : 3;
-      await register(email, password, userType);
+      // Map roles to userType ID
+      const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4; // 2 for Mentor, 3 for Mentee, 4 for Donor
+      await register(email, password, userType, firstName, lastName);
     } catch (error) {
-      console.error("Signup failed:", error);
+      console.error('Signup failed:', error);
     }
   };
+  
 
   return (
     <Form onSubmit={handleSignUp} className="auth-form">
@@ -141,4 +143,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-
