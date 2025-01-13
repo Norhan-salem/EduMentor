@@ -1,5 +1,6 @@
 package com.asu.EduMentor;
 
+import com.asu.EduMentor.socialMediaNotifier.EmailNotificationFacade;
 import com.asu.EduMentor.socialMediaNotifier.NotificationService;
 import com.asu.EduMentor.socialMediaNotifier.NotifyByEmail;
 import com.asu.EduMentor.socialMediaNotifier.NotifyByFacebook;
@@ -22,7 +23,7 @@ public class EduMentorApplication {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsFilter corsFilter() throws UnirestException {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         //config.setAllowCredentials(true); // you USUALLY want this

@@ -30,7 +30,7 @@ public class NotificationService implements INotificationManager{
     }
 
     @Override
-    public boolean notifyObserver() {
+    public boolean notifyObserver(){
         boolean error = true;
         for(INotificationObserver observer : this.observers){
             if(!observer.update()){
