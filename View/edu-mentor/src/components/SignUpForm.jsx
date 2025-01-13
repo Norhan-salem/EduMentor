@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
-import { validateForm } from '../utils/validation';
-import axios from 'axios';
-import config from "../config";
+import { useAuthContext } from '../context/useAuthContext';
+import { validateForm } from '../utils/validation'; 
 
 const roles = ['Mentor', 'Mentee'];
 
 const SignUpForm = () => {
+  const { register, loading, errorMessage, successMessage } = useAuthContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,39 +16,25 @@ const SignUpForm = () => {
   const [role, setRole] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignUp = async (e) => {
-    console.log('sebeeeni fe 7ali b2a');
     e.preventDefault();
 
     // Clear previous errors
     setErrors({});
-    setLoading(true);
-    setErrorMessage('');
-    setSuccessMessage('');
-
-    const requestBody = {
-      firstName,
-      lastName,
-      credentials: {
-        email,
-        password,
-      },
-      role: role === 'Mentor' ? 2 : 3,
-    };
+    
+    // Validate form data
+    const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     try {
-      const response = await axios.post(`${config.backendUrl}/api/auth/signup`, requestBody);
-      setSuccessMessage('Signup successful!');
-      console.log('Response:', response.data);
+      const userType = role === 'Mentor' ? 2 : 3;
+      await register(email, password, userType);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Signup failed. Please try again.');
-      console.error('Error during signup:', error);
-    } finally {
-      setLoading(false);
+      console.error("Signup failed:", error);
     }
   };
 
@@ -155,5 +141,4 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-
 
