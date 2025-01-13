@@ -12,6 +12,7 @@ import MenteeDashboardPage from './pages/MenteeDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import CreateSessionPage from './pages/CreateSessionPage';
 import ResultsPage from './pages/ResultsPage';
+import DonationsPage from './pages/DisplayDonationsPage';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
         <Route path="/create-session" element={<CreateSessionPage />} />
         <Route path="/results" element={<ResultsPage />} />
+        <Route path="/donations" element={<DonationsPage />} />
       </Routes>
       <Footer />
     </Router>

@@ -29,4 +29,53 @@
     margin-bottom: 0.8rem;
   }
   
+  .donations-page {
+    padding: 20px;
+  }
+  
+  .donations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .donation-card {
+    background-color: var(--background-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .donation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .donation-card-body {
+    padding: 15px;
+  }
+  
+  .donation-card .card-title {
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+  
+  .donation-card .card-text {
+    color: var(--text-color-dark);
+  }
+  
+  .donation-card .card-text:first-child {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .loading {
+    color: var(--text-color-dark);
+    text-align: center;
+  }
+  
+  .error {
+    color: var(--text-color-dark);
+    text-align: center;
+  }
   

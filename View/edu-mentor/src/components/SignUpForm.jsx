@@ -117,17 +117,15 @@ const SignUpForm = () => {
         <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
       </Form.Group>
 
-      {/* Terms Section */}
-      <Form.Group className="mb-3" controlId="formBasicTerms">
-        <Form.Check
+      <div className="mb-3">
+        <input
           type="checkbox"
-          label="I agree to the terms and conditions"
+          id="terms"
           checked={agreedToTerms}
           onChange={(e) => setAgreedToTerms(e.target.checked)}
-          isInvalid={!!errors.agreedToTerms}
         />
-        <Form.Control.Feedback type="invalid">{errors.agreedToTerms}</Form.Control.Feedback>
-      </Form.Group>
+      <label htmlFor="terms" className='px-2'>I agree to the terms and conditions</label>
+    </div>
 
       {/* Feedback Messages */}
       {loading && <p>Loading...</p>}
