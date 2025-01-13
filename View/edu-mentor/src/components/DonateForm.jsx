@@ -41,7 +41,6 @@ const DonateForm = () => {
     }
 
     setErrors({});
-    // Donation logic here
     console.log('Donating:', { firstName, lastName, email, amount, currency, paymentOption, cardNumber, expiryDate, cvv });
   };
 
@@ -191,7 +190,7 @@ const DonateForm = () => {
       {errors.amount && <div className="text-danger">{errors.amount}</div>}
       {errors.currency && <div className="text-danger">{errors.currency}</div>}
 
-      <Button variant="primary" type="submit" className="w-100">
+      <Button type="submit" className="w-100 home-button">
         Donate
       </Button>
     </Form>

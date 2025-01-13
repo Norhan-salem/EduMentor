@@ -11,7 +11,7 @@ const AboutPage = () => {
           <p>
             At EduMentor, our mission is to provide accessible and high-quality mentorship to students in low-income countries, helping them unlock their potential and gain essential skills for their future.
           </p>
-          <Button variant="primary" className="mt-3">Learn More</Button>
+          <Button className="mt-3 home-button">Learn More</Button>
         </Col>
         <Col md={6}>
           <img
@@ -44,7 +44,7 @@ const AboutPage = () => {
           <Card className="border-0 shadow-sm">
             <Card.Body>
               <h5>Community</h5>
-              <p>Building a supportive network of mentors, mentees, and educators dedicated to lifelong learning.</p>
+              <p>Building a supportive network of mentors and mentees dedicated to lifelong learning.</p>
             </Card.Body>
           </Card>
         </Col>

@@ -1,0 +1,7 @@
+.donate-form {
+    background-color: var(--background-color) !important;
+    padding: 2rem;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    margin: 5rem;
+}

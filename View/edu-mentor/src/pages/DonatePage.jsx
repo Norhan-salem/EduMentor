@@ -1,5 +1,6 @@
 import React from 'react';
 import DonateForm from '../components/DonateForm';
+import '../styles/Donate.css';
 
 const DonatePage = () => {
   return (

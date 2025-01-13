@@ -1,59 +1,119 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import '../css/Header.css';
-
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring';
+import { useAuthContext } from '../context/useAuthContext';
+import '../styles/Header.css';
 
 const Header = () => {
+  const { user, logout } = useAuthContext();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const donateBtnAnim = useSpring({
+    transform: 'scale(1.1)',
+    config: { tension: 250, friction: 15 },
+    loop: { reverse: true },
+  });
+
+  const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <Navbar bg="primary" variant="dark" expand="lg" className="mb-4" style={{ padding: '1rem' }}>
-      <Navbar.Brand as={Link} to="/" className="fw-bold fs-4">
-        EduMentor
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse className="justify-content-end" id="basic-navbar-nav">
-        <Nav>
-          <Nav.Link as={Link} to="/" className="me-3" style={{ fontWeight: '500' }}>
-            Home
-          </Nav.Link>
-          <Nav.Link as={Link} to="/about" className="me-3" style={{ fontWeight: '500' }}>
-            About
-          </Nav.Link>
-          <Nav.Link as={Link} to="/login" className="me-3" style={{ fontWeight: '500' }}>
-            Login
-          </Nav.Link>
-          {/* Special "Donate Here" link */}
-          <Nav.Link
-            as={Link}
-            to="/donate"
-            className="me-3 special-donate-link"
-            style={{
-              color: 'white',
-              backgroundColor: '#2c2b2b',
-              padding: '0.5rem 1rem',
-              borderRadius: '5px',
-              fontWeight: '600',
-              textShadow: '1px 1px 2px rgba(0,0,0,0.3)', 
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
-              transition: 'transform 0.2s, background-color 0.2s', 
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#29465b'; 
-              e.target.style.transform = 'scale(1.05)'; 
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#2c2b2b';
-              e.target.style.transform = 'scale(1)';
-            }}
-          >
-            Donate Here
-          </Nav.Link>
-        </Nav>
-      </Navbar.Collapse>
+    <Navbar expand="lg" sticky="top" className="custom-navbar">
+      <Container>
+        {/* Left Section: Brand */}
+        <Navbar.Brand as={Link} to="/" className="brand">
+          EduMentor
+        </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="navbar-nav" />
+
+        {/* Centered Navigation Links */}
+        <Navbar.Collapse id="navbar-nav" className="justify-content-center">
+          <Nav className="nav-links">
+            <Nav.Link
+              as={Link}
+              to="/"
+              className={`nav-link ${isActive('/') ? 'active-link' : ''}`}
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/about"
+              className={`nav-link ${isActive('/about') ? 'active-link' : ''}`}
+            >
+              About
+            </Nav.Link>
+
+            {/* Conditionally Render Login or User-specific links */}
+            {!user ? (
+              <Nav.Link
+                as={Link}
+                to="/auth"
+                className={`nav-link ${isActive('/auth') ? 'active-link' : ''}`}
+              >
+                Login
+              </Nav.Link>
+            ) : (
+              <>
+                {/* Show different links based on userType */}
+                {user.userType === 'mentor' && (
+                  <Nav.Link
+                    as={Link}
+                    to="/mentor-dashboard"
+                    className={`nav-link ${isActive('/mentor-dashboard') ? 'active-link' : ''}`}
+                  >
+                    Dashboard
+                  </Nav.Link>
+                )}
+                {user.userType === 'mentee' && (
+                  <Nav.Link
+                    as={Link}
+                    to="/mentee-dashboard"
+                    className={`nav-link ${isActive('/mentee-dashboard') ? 'active-link' : ''}`}
+                  >
+                    Dashboard
+                  </Nav.Link>
+                )}
+                {user.userType === 'admin' && (
+                  <Nav.Link
+                    as={Link}
+                    to="/admin-dashboard"
+                    className={`nav-link ${isActive('/admin-dashboard') ? 'active-link' : ''}`}
+                  >
+                    Dashboard
+                  </Nav.Link>
+                )}
+
+                {/* Logout link */}
+                <Nav.Link
+                  as={Link}
+                  to="#"
+                  onClick={handleLogout}
+                  className={`nav-link ${isActive('/logout') ? 'active-link' : ''}`}
+                >
+                  Logout
+                </Nav.Link>
+              </>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+
+        {/* Donate Button on the Right */}
+        <animated.div style={donateBtnAnim} className="donate-btn-container">
+          <Link as={Link} to="/donate" className="donate-btn">
+            Donate
+          </Link>
+        </animated.div>
+      </Container>
     </Navbar>
   );
 };
 
 export default Header;
-
-

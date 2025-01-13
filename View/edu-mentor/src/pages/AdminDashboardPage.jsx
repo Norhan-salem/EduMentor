@@ -21,7 +21,7 @@ const AdminDashboardPage = () => {
     
           <Row className="mb-4">
             <Col className="d-flex justify-content-end">
-              <Button variant="primary" onClick={() => navigate('/create-session')}>
+              <Button className = 'home-button' onClick={() => navigate('/create-session')}>
                 Create New Session
               </Button>
             </Col>

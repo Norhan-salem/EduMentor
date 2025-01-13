@@ -11,7 +11,7 @@ const MentoringHours = ({ taughtHours }) => {
   };
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 auth-form">
       <Card.Body>
         <Card.Title>Mentoring Hours</Card.Title>
         <div>

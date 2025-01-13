@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, InputGroup, Button } from 'react-bootstrap';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
 const PasswordToggle = ({ password, setPassword }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,11 +17,12 @@ const PasswordToggle = ({ password, setPassword }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button variant="outline-secondary" onClick={togglePasswordVisibility}>
-        {showPassword ? 'Hide' : 'Show'}
+      <Button className = 'home-button' onClick={togglePasswordVisibility}>
+        {showPassword ? <BsEyeSlash /> : <BsEye />}
       </Button>
     </InputGroup>
   );
 };
 
 export default PasswordToggle;
+

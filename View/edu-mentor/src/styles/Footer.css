@@ -1,12 +1,13 @@
 .footer {
-    background-color: #2c2b2b;
-    color: #eee;
+    background-color: var(--text-color-dark);
+    color: var(--background-color);
     height: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
     margin-top: 20px;
+    font-family: 'Facad';
   }
   
   .footer-content {
@@ -21,7 +22,7 @@
     text-align: center;
   }
   
-  .footer-brand h2 {
+  .footer-brand h3 {
     font-size: 24px;
     margin-bottom: 10px;
   }
@@ -32,27 +33,32 @@
   }
   
   .footer-links a {
-    color: #eee;
+    color: var(--background-color);
     text-decoration: none;
     display: block;
     margin: 5px 0;
   }
   
   .footer-links a:hover {
-    color: #ccc;
+    color: var(--hover-color);
   }
   
   .footer-socials .icons a {
-    color: #eee;
+    color: var(--background-color);
     margin: 0 10px;
     font-size: 24px;
+  }
+
+  .footer-socials .icons a:hover {
+    color: var(--hover-color);
   }
   
   .footer-bottom {
     text-align: center;
-    border-top: 1px solid #5e5e5e;
+    border-top: 1px solid var(--hover-color);
     padding: 10px 0;
     font-size: 14px;
+    color: var(--hover-color);
   }
   
   

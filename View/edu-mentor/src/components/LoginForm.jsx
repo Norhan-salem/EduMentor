@@ -47,8 +47,8 @@ const LoginForm = () => {
   };
 
   return (
-    <Form onSubmit={handleLogin}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+    <Form onSubmit={handleLogin} className='auth-form'>
+      <Form.Group className="mb-3 auth-form" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
           type="email"
@@ -74,7 +74,7 @@ const LoginForm = () => {
       {errorMessage && <p className="text-danger">{errorMessage}</p>}
       {successMessage && <p className="text-success">{successMessage}</p>}
 
-      <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+      <Button type="submit" className="w-100 home-button" disabled={loading}>
         Log In
       </Button>
     </Form>

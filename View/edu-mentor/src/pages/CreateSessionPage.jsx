@@ -45,8 +45,8 @@ const CreateSessionPage = ({ addSession }) => {
 
   return (
     <Container className="mt-5">
-      <h2>Create New Session</h2>
-      <Form onSubmit={handleSubmit}>
+      <h2 className='text-center'>Create New Session</h2>
+      <Form onSubmit={handleSubmit} className='donate-form'>
         <Form.Group className="mb-3">
           <Form.Label>Date</Form.Label>
           <Form.Control type="date" name="date" value={newSession.date} onChange={handleChange} required />
@@ -88,7 +88,7 @@ const CreateSessionPage = ({ addSession }) => {
           <Form.Control as="textarea" rows={3} name="description" value={newSession.description} onChange={handleChange} />
         </Form.Group>
 
-        <Button variant="primary" type="submit">Create Session</Button>
+        <Button type="submit" className='w-100 home-button'>Create Session</Button>
       </Form>
     </Container>
   );

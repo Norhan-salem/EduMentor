@@ -3,7 +3,7 @@ import { Card, Table } from 'react-bootstrap';
 
 const AssignedSessions = ({ sessions }) => {
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 auth-form">
       <Card.Body>
         <Card.Title>Assigned Sessions</Card.Title>
         <Table striped bordered hover>

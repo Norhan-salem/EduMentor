@@ -1,14 +1,14 @@
+
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Form, Row, Col} from 'react-bootstrap';
+import { Container, Button, Form, Row, Col } from 'react-bootstrap';
 import MentorCard from '../components/MentorCard';
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import axios from 'axios';
-import config from '../config';
+import '../styles/Home.css';
 
 const mentorsData = [
   { name: "John Doe", bio: "Software Engineer", image: "https://via.placeholder.com/150" },
@@ -29,13 +29,13 @@ const HomePage = () => {
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.get(`${config.backendUrl}/api/search/users?search=${searchQuery}`);
-      setUsers(response.data);
-      navigate('/results', { state: { users: response.data } });
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
+    // try {
+    //   const response = await search();
+    //   setUsers(response);
+    //   navigate('/results', { state: { users: response } });
+    // } catch (error) {
+    //   console.error('Error fetching users:', error);
+    // }
   };
 
   const sliderSettings = {
@@ -49,42 +49,27 @@ const HomePage = () => {
   return (
     <div>
       {/* Hero Section */}
-      <Container fluid className="bg-light text-start px-4" data-aos="fade-in">
-      <Row className="align-items-center">
-        {/* Left Column: Text and Button */}
-        <Col md={6} className="text-md-start text-center ps-5">
-          <h1 className="display-4">Empowering the Next Generation</h1>
-          <p className="lead">Connecting mentors with students in developing countries.</p>
-          <Button variant="primary" size="lg" className="mt-3">
-            Get Started
-          </Button>
-        </Col>
-
-        {/* Right Column: Image */}
-        <Col md={5} className="text-center">
-          <img
-            src="https://corp.tutorocean.com/wp-content/uploads/2021/10/find-a-tutor-image-final-19-1.png"
-            alt="Empowerment"
-            className="img-fluid"
-          />
-        </Col>
-      </Row>
-    </Container>
+      <Container fluid className="home-bg-light" data-aos="fade-in">
+        <Row className="align-items-center">
+          <Col md={6} className="text-md-start text-center ps-5">
+            <h1 className="home-heading">Empowering the Next Generation</h1>
+            <p className="home-lead">Connecting mentors with students in developing countries.</p>
+            <Button className="home-button">Get Started</Button>
+          </Col>
+        </Row>
+      </Container>
 
       {/* Search Bar */}
       <Container className="py-5" data-aos="fade-up">
-        <Form onSubmit={handleSearchSubmit} className="d-flex mb-4">
+        <Form onSubmit={handleSearchSubmit} className="home-form">
           <Form.Control
             type="text"
             placeholder="Search for a mentor..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            className="home-form-input"
           />
-          <Button
-            type="submit"
-            variant="primary"
-            className="ms-2"
-          >
+          <Button type="submit" className="home-button">
             <i className="bi bi-search"></i>
           </Button>
         </Form>
@@ -94,30 +79,29 @@ const HomePage = () => {
       <Container className="py-5 text-center" data-aos="fade-up">
         <h2 className="mb-5">How It Works</h2>
         <div className="d-flex justify-content-around flex-wrap gap-4">
-          <div className="how-it-works-step p-4 bg-light rounded shadow-sm">
-            <div className="icon-container mb-3">
-              <i className="bi bi-person-plus-fill text-primary" style={{ fontSize: '2rem' }}></i>
+          <div className="home-how-it-works-step">
+            <div className="home-how-it-works-icon-container mb-3">
+              <i className="bi bi-person-plus-fill home-how-it-works-icon"></i>
             </div>
             <h5 className="fw-bold">1. Sign Up</h5>
-            <p className="text-muted">Join the platform and create your profile.</p>
+            <p>Join the platform and create your profile.</p>
           </div>
-          <div className="how-it-works-step p-4 bg-light rounded shadow-sm">
-            <div className="icon-container mb-3">
-              <i className="bi bi-search text-primary" style={{ fontSize: '2rem' }}></i>
+          <div className="home-how-it-works-step">
+            <div className="home-how-it-works-icon-container mb-3">
+              <i className="bi bi-search home-how-it-works-icon"></i>
             </div>
             <h5 className="fw-bold">2. Find a Mentor</h5>
-            <p className="text-muted">Search and connect with experts in your field.</p>
+            <p>Search and connect with experts in your field.</p>
           </div>
-          <div className="how-it-works-step p-4 bg-light rounded shadow-sm">
-            <div className="icon-container mb-3">
-              <i className="bi bi-lightbulb text-primary" style={{ fontSize: '2rem' }}></i>
+          <div className="home-how-it-works-step">
+            <div className="home-how-it-works-icon-container mb-3">
+              <i className="bi bi-lightbulb home-how-it-works-icon"></i>
             </div>
             <h5 className="fw-bold">3. Start Learning</h5>
-            <p className="text-muted">Engage in personalized mentoring sessions.</p>
+            <p>Engage in personalized mentoring sessions.</p>
           </div>
         </div>
       </Container>
-
 
       {/* Mentor Slider */}
       <Container className="py-5" data-aos="fade-in">
@@ -125,38 +109,34 @@ const HomePage = () => {
         <Slider {...sliderSettings}>
           {mentorsData.map((mentor, index) => (
             <div key={index} className="px-3">
-              <MentorCard
-                name={mentor.name}
-                bio={mentor.bio}
-                image={mentor.image}
-              />
+              <MentorCard name={mentor.name} bio={mentor.bio} image={mentor.image} />
             </div>
           ))}
         </Slider>
       </Container>
 
       {/* Testimonials */}
-      <Container fluid className="bg-primary text-white py-5" data-aos="fade-up">
+      <Container fluid className="home-testimonials-section" data-aos="fade-up">
         <Container>
-          <h2 className="text-center mb-4">Testimonials</h2>
+          <h2 className="home-testimonials-heading">Testimonials</h2>
           <Slider {...sliderSettings}>
             <div>
-              <p className="text-center">
+              <p className="home-testimonials-text">
                 "EduMentor helped me find the perfect mentor to guide me in my career."
               </p>
-              <p className="text-center">- Sasa</p>
+              <p>- Sasa</p>
             </div>
             <div>
-              <p className="text-center">
+              <p className="home-testimonials-text">
                 "The platform is easy to use and has amazing mentors!"
               </p>
-              <p className="text-center">- Sarah</p>
+              <p>- Sarah</p>
             </div>
             <div>
-              <p className="text-center">
+              <p className="home-testimonials-text">
                 "I was able to mentor and give back to the community."
               </p>
-              <p className="text-center">- Nada</p>
+              <p>- Nada</p>
             </div>
           </Slider>
         </Container>
