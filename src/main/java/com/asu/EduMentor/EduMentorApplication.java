@@ -32,12 +32,6 @@ public class EduMentorApplication {
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
         source.registerCorsConfiguration("/**", config);
-        //-----------------------------------------------------
-        EmailNotificationFacade emailFacade = new EmailNotificationFacade();
-        String recipientEmail = "sasasherif74@gmail.com";
-        String subject = "Test Email from EduMentor";
-        String content = "Hello! This is a test email from the EduMentor system.";
-        emailFacade.sendEmail(subject, content, recipientEmail);
         return new CorsFilter(source);
     }
 

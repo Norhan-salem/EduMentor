@@ -1,7 +1,5 @@
 package com.asu.EduMentor.socialMediaNotifier;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -32,7 +30,7 @@ public class NotificationService implements INotificationManager{
     }
 
     @Override
-    public boolean notifyObserver() throws UnirestException {
+    public boolean notifyObserver(){
         boolean error = true;
         for(INotificationObserver observer : this.observers){
             if(!observer.update()){
