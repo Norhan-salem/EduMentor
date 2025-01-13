@@ -7,9 +7,9 @@ import Interests from '../components/InterestsSelection';
 
 const MentorDashboardPage = () => {
   const [sessions] = useState([
-    { date: '2024-11-07', duration: '2 hours', topic: 'Math Tutoring' },
-    { date: '2024-11-09', duration: '1.5 hours', topic: 'Science Tutoring' },
-    { date: '2024-11-12', duration: '3 hours', topic: 'Programming' },
+    { date: '2024-11-07', duration: '4 hours', topic: 'Math Tutoring' },
+    { date: '2024-11-09', duration: '11.5 hours', topic: 'Science Tutoring' },
+    { date: '2024-11-12', duration: '15 hours', topic: 'Programming' },
   ]);
 
   const [availability, setAvailability] = useState([
@@ -18,7 +18,7 @@ const MentorDashboardPage = () => {
     { date: '2024-11-10', time: '9:00 AM - 11:00 AM', status: 'Free' },
   ]);
 
-  const [taughtHours, setTaughtHours] = useState(6);
+  const [taughtHours, setTaughtHours] = useState(70);
   const [interests, setInterests] = useState([]);
 
   const handleInterestChange = (interest) => {

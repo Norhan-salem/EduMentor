@@ -11,6 +11,7 @@ import MentorDashboardPage from './pages/MentorDashboardPage';
 import MenteeDashboardPage from './pages/MenteeDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import CreateSessionPage from './pages/CreateSessionPage';
+import ResultsPage from './pages/ResultsPage';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/Mentee" element={<MenteeDashboardPage />} />
         <Route path="/Admin" element={<AdminDashboardPage />} />
         <Route path="/create-session" element={<CreateSessionPage />} />
+        <Route path="/results" element={<ResultsPage />} />
       </Routes>
       <Footer />
     </Router>

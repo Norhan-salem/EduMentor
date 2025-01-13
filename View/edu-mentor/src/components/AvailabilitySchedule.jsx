@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, Table, Form } from 'react-bootstrap';
 
-const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange }) => {
+const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange, handleDeleteAvailability }) => {
   return (
     <Card className="mb-4">
       <Card.Body>
@@ -12,6 +12,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -44,6 +45,11 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                     <option>Free</option>
                     <option>Booked</option>
                   </Form.Control>
+                </td>
+                <td>
+                  <Button variant="danger" onClick={() => handleDeleteAvailability(index)}>
+                    Delete
+                  </Button>
                 </td>
               </tr>
             ))}

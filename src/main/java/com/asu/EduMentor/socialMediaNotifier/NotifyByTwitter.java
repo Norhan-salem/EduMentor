@@ -12,6 +12,7 @@ public class NotifyByTwitter implements INotificationObserver{
     }
     @Override
     public boolean update() {
+        printNotifyMethod();
         return false;
     }
 }
