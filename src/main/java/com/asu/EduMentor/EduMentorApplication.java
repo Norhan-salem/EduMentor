@@ -1,5 +1,6 @@
 package com.asu.EduMentor;
 
+import com.asu.EduMentor.logging.LoggingThread;
 import com.asu.EduMentor.socialMediaNotifier.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +18,10 @@ public class EduMentorApplication {
         NotifyByFacebook notifyByFacebook = new NotifyByFacebook(NotificationService.getInstance());
         NotifyByEmail notifyByEmail = new NotifyByEmail(NotificationService.getInstance(), new EmailNotificationFacade());
         NotifyByTwitter notifyByTwitter = new NotifyByTwitter(NotificationService.getInstance());
+
+        // start the logging thread
+        LoggingThread loggingThread = new LoggingThread();
+        new Thread(loggingThread).start();
     }
 
     @Bean
