@@ -21,8 +21,6 @@ import java.util.List;
 @RequestMapping("/api/search")
 public class SearchController {
 
-    MentorSorter mentorSorter;
-
     @GetMapping("/users")
     public ResponseEntity<List<User>> searchUsers(@RequestParam("search") String search) {
         List<User> users = User.findUsersBySearchTerm(search);
@@ -36,8 +34,7 @@ public class SearchController {
     }
 
     @GetMapping("/mentors")
-    public ResponseEntity<List<Mentor>> searchMentors(@RequestParam("search") String search,
-                                                      @RequestParam String sortMethod) {
+    public ResponseEntity<List<Mentor>> searchMentors(@RequestParam("search") String search) {
         // Find users matching the search term
         List<User> users = User.findUsersBySearchTerm(search);
 
@@ -47,20 +44,7 @@ public class SearchController {
                 .map(user -> (Mentor) user) // Cast User to Mentor
                 .toList();
 
-        // Set the sorting strategy based on the sortMethod parameter
-        if ("name".equalsIgnoreCase(sortMethod)) {
-            mentorSorter.setSortingStrategy(new NameSortingStrategy());
-        } else if ("total_hours".equalsIgnoreCase(sortMethod)) {
-            mentorSorter.setSortingStrategy((new TotalHoursSortingStrategy()));
-        } else {
-            return ResponseEntity.badRequest().body(null); // Return 400 for invalid sortMethod
-        }
-
-        // Sort the mentors
-        List<Mentor> sortedMentors = mentorSorter.executeSort((ArrayList<Mentor>) mentors);
-
-        // Return the sorted list of mentors
-        return ResponseEntity.ok(sortedMentors);
+        return ResponseEntity.ok(mentors);
     }
 
 }
