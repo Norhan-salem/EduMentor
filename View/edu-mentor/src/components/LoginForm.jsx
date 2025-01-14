@@ -14,13 +14,16 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
+    // Clear previous error message on reattempt
+    setErrorMessage('');
+  
     // Validate form inputs
     if (!email || !password) {
       setErrorMessage('Both email and password are required.');
       return;
     }
-
+  
     try {
       await login(email, password);
       setSuccessMessage('Login successful!');
@@ -29,6 +32,7 @@ const LoginForm = () => {
       setErrorMessage(error.message || 'Login failed. Please try again.');
     }
   };
+  
 
   return (
     <Form onSubmit={handleLogin} className="auth-form">
