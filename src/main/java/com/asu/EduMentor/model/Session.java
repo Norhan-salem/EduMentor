@@ -25,8 +25,8 @@ public class Session implements CRUD {
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE " +
                 "(\"SessionName\" ILIKE ? OR TO_CHAR(\"Date\", 'YYYY-MM-DD') ILIKE ?) AND \"IsDeleted\" = FALSE";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             String searchPattern = "%" + search + "%";
             stmt.setString(1, searchPattern);
@@ -95,8 +95,8 @@ public class Session implements CRUD {
     public Object create() {
 
         String sqlQuery = "INSERT INTO public.\"Session\" (\"Date\", \"Duration\", \"SessionName\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setDate(1, new java.sql.Date(this.date.getTime()));
             stmt.setDouble(2, this.duration);
             stmt.setString(3, this.name);
@@ -123,8 +123,8 @@ public class Session implements CRUD {
         }
 
         String sqlQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setDate(1, new java.sql.Date(updatedSession.getDate().getTime()));
             stmt.setDouble(2, updatedSession.getDuration());
             stmt.setString(3, updatedSession.getName());
@@ -142,8 +142,8 @@ public class Session implements CRUD {
     public Object read(int id) {
 
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -168,8 +168,8 @@ public class Session implements CRUD {
 
         List<Object> sessions = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -195,8 +195,8 @@ public class Session implements CRUD {
     public boolean delete(int id) {
 
         String sqlQuery = "UPDATE public.\"Session\" SET \"IsDeleted\" = TRUE WHERE \"SessionID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -210,8 +210,8 @@ public class Session implements CRUD {
     public List<Feedback> getSessionFeedback() {
         List<Feedback> feedbacks = new ArrayList<>();
         String query = "SELECT * FROM public.\"Feedback\" WHERE \"SessionID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setLong(1, this.sessionID);
             ResultSet rs = stmt.executeQuery();
@@ -239,8 +239,8 @@ public class Session implements CRUD {
                 "JOIN public.\"Mentor\" m ON u.\"UserID\" = m.\"MentorID\" " +
                 "JOIN public.\"SM_Gives\" sg ON m.\"MentorID\" = sg.\"MentorID\" " +
                 "WHERE sg.\"SessionID\" = ?;";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setLong(1, this.sessionID);
 
@@ -272,8 +272,8 @@ public class Session implements CRUD {
                 "JOIN public.\"Mentee\" m ON u.\"UserID\" = m.\"MenteeID\" " +
                 "JOIN public.\"SMTT_Takes\" st ON m.\"MenteeID\" = st.\"MenteeID\" " +
                 "WHERE st.\"SessionID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setLong(1, this.sessionID);
 
@@ -302,8 +302,8 @@ public class Session implements CRUD {
 
     public boolean addMentor(Mentor mentor) {
         String sqlQuery = "INSERT INTO public.\"SM_Gives\" (\"SessionID\", \"MentorID\") VALUES (?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setLong(1, this.sessionID);
             stmt.setInt(2, mentor.getUserID());
@@ -320,8 +320,8 @@ public class Session implements CRUD {
 
     public boolean addMentee(Mentee mentee) {
         String sqlQuery = "INSERT INTO public.\"SMTT_Takes\" (\"SessionID\", \"MenteeID\") VALUES (?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setLong(1, this.sessionID);
             stmt.setInt(2, mentee.getUserID());

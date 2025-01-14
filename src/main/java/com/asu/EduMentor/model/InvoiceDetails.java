@@ -50,8 +50,8 @@ public class InvoiceDetails extends Invoice {
         String query = "SELECT \"AmountCharged\" FROM public.\"OnlineDonation\" WHERE \"InvoiceID\" = ? AND \"IsDeleted\" = false";
         double amountCharged = 0.0;
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, invoiceID);
 

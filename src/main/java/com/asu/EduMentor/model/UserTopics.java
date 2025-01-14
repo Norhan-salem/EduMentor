@@ -35,8 +35,8 @@ public class UserTopics {
             throw new IllegalArgumentException("User must be a mentor or mentee to add a topic.");
         }
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(roleBasedInsertQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(roleBasedInsertQuery)) {
 
             stmt.setInt(1, user.getUserID());
             stmt.setInt(2, topic.getTopicID());
@@ -69,8 +69,8 @@ public class UserTopics {
             throw new IllegalArgumentException("User must be a mentor or mentee to delete a topic.");
         }
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(roleBasedDeleteQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(roleBasedDeleteQuery)) {
 
             stmt.setInt(1, user.getUserID());
             stmt.setInt(2, topic.getTopicID());
@@ -109,8 +109,8 @@ public class UserTopics {
             throw new IllegalArgumentException("User must be a mentor or mentee to retrieve topics.");
         }
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(roleBasedQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(roleBasedQuery)) {
 
             stmt.setInt(1, user.getUserID());
             ResultSet rs = stmt.executeQuery();

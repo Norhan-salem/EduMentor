@@ -43,8 +43,8 @@ public class Topics implements CRUD {
     public Object create() {
 
         String sqlQuery = "INSERT INTO public.\"Topics\" (\"TopicsName\", \"IsDeleted\") VALUES (?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getTopicsName());
             stmt.setBoolean(2, this.isDeleted());
 
@@ -71,8 +71,8 @@ public class Topics implements CRUD {
         }
 
         String sqlQuery = "UPDATE public.\"Topics\" SET \"TopicsName\" = ? WHERE \"TopicsID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, updatedTopic.getTopicsName());
             stmt.setInt(2, updatedTopic.getTopicID());
 
@@ -90,8 +90,8 @@ public class Topics implements CRUD {
     public Object read(int id) {
 
         String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"TopicsID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -116,8 +116,8 @@ public class Topics implements CRUD {
 
         List<Object> topics = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Topics\" WHERE \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -141,8 +141,8 @@ public class Topics implements CRUD {
     public boolean delete(int id) {
 
         String sqlQuery = "UPDATE public.\"Topics\" SET \"IsDeleted\" = TRUE WHERE \"TopicsID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

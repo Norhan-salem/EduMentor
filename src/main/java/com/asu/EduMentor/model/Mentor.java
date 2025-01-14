@@ -75,8 +75,8 @@ public class Mentor extends User {
         Mentor updatedMentor = (Mentor) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedMentor.getFirstName());
             stmt.setString(2, updatedMentor.getLastName());
             stmt.setString(3, updatedMentor.getEmail());
@@ -96,8 +96,8 @@ public class Mentor extends User {
     public Object read(int id) {
 
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"MentorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -125,8 +125,8 @@ public class Mentor extends User {
 
         List<Object> mentors = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" FROM public.\"Mentor\" m JOIN public.\"User\" u ON m.\"AdminID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -157,8 +157,8 @@ public class Mentor extends User {
                 "JOIN public.\"SM_Gives\" sg ON s.\"SessionID\" = sg.\"SessionID\" " +
                 "WHERE sg.\"MentorID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();
@@ -188,8 +188,8 @@ public class Mentor extends User {
         String query = "SELECT a.\"Availability\", a.\"AvailabilityDuration\" " +
                 "FROM public.\"Mentor_Availability\" a " +
                 "WHERE a.\"MentorID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();
@@ -215,8 +215,8 @@ public class Mentor extends User {
 
         String sqlQuery = "INSERT INTO public.\"Mentor_Availability\" (\"MentorID\", \"Availability\", \"AvailabilityDuration\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setInt(1, this.getUserID());
             stmt.setTimestamp(2, availability.getTime());
@@ -240,8 +240,8 @@ public class Mentor extends User {
                 "SET \"IsDeleted\" = TRUE " +
                 "WHERE \"MentorID\" = ? AND \"Availability\" = ? AND \"AvailabilityDuration\" = ? AND \"IsDeleted\" = FALSE";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             stmt.setInt(1, this.getUserID());
             stmt.setTimestamp(2, availability.getTime());

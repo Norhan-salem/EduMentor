@@ -114,8 +114,8 @@ public class OnlineDonation implements CRUD {
     public Invoice getInvoice() {
         String query = "SELECT \"InvoiceID\" FROM public.\"OnlineDonation\" WHERE \"DonationID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, donationID);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -142,7 +142,8 @@ public class OnlineDonation implements CRUD {
         String query = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING \"DonationID\"";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setDouble(1, amount);
@@ -187,8 +188,8 @@ public class OnlineDonation implements CRUD {
         OnlineDonation updatedDonation = (OnlineDonation) updatedObject;
         String query = "UPDATE public.\"OnlineDonation\" SET \"Amount\" = ?, \"PaymentType\" = ?, \"IsDeleted\" = ? WHERE \"DonationID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setDouble(1, updatedDonation.getAmount());
             stmt.setInt(2, updatedDonation.getPaymentType().ordinal());  // Store the enum ordinal
@@ -212,8 +213,8 @@ public class OnlineDonation implements CRUD {
     public Object read(int id) {
         String query = "SELECT * FROM public.\"OnlineDonation\" WHERE \"DonationID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -241,8 +242,8 @@ public class OnlineDonation implements CRUD {
         List<Object> donations = new ArrayList<>();
         String query = "SELECT * FROM public.\"OnlineDonation\"";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -268,8 +269,8 @@ public class OnlineDonation implements CRUD {
     public boolean delete(int id) {
         String query = "UPDATE public.\"OnlineDonation\" SET \"IsDeleted\" = TRUE WHERE \"DonationID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
