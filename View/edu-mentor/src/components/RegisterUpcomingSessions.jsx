@@ -3,7 +3,7 @@ import { Card, Table, Button } from 'react-bootstrap';
 
 const RegisterUpcomingSessions = ({ sessions, handleRegister }) => {
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 auth-form">
       <Card.Body>
         <Card.Title>Upcoming Sessions</Card.Title>
         <Table striped bordered hover>
@@ -24,7 +24,7 @@ const RegisterUpcomingSessions = ({ sessions, handleRegister }) => {
                 <td>
                   <Button
                     onClick={() => handleRegister(session)}
-                    variant="primary"
+                    className='home-button'
                   >
                     Register
                   </Button>

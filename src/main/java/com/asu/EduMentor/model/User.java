@@ -45,8 +45,8 @@ public abstract class User implements CRUD {
         String sqlQuery = "SELECT * FROM public.\"User\" WHERE " +
                 "(\"FirstName\" ILIKE ? OR \"LastName\" ILIKE ? OR \"Email\" ILIKE ?) AND \"IsDeleted\" = FALSE";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             String searchPattern = "%" + search + "%";
             stmt.setString(1, searchPattern);
@@ -66,16 +66,18 @@ public abstract class User implements CRUD {
     }
 
     private static User createUserFromResultSet(ResultSet rs) throws SQLException {
-        UserType role = UserType.valueOf(rs.getString("Role"));
+        UserType role = UserType.fromRoleId(Integer.parseInt(rs.getString("Role")));
 
         User user = switch (role) {
             case ADMIN -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
                     rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
             case MENTOR -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
-                    rs.getString("Email"), rs.getString("Password"), rs.getDouble("TotalHours"));
+                    rs.getString("Email"), rs.getString("Password"), 0);
             case MENTEE -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
                     rs.getString("Email"), rs.getString("Password"),
-                    rs.getInt("NumberOfAttendedSessions"), rs.getDouble("LearningHours"));
+                    0, 0);
+            case ONLINEDONOR -> new OnlineDonor(rs.getString("FirstName"), rs.getString("LastName"),
+                    rs.getString("Email"), rs.getString("Password"), 0);
             default -> throw new IllegalArgumentException("Invalid role in database");
         };
 
@@ -154,8 +156,8 @@ public abstract class User implements CRUD {
     @Override
     public boolean delete(int id) {
         String sqlQuery = "UPDATE public.\"User\" SET \"IsDeleted\" = TRUE WHERE \"UserID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

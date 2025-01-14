@@ -46,30 +46,17 @@ const ResultsPage = () => {
   return (
     <Container className="py-5">
       <h1 className="mb-4 text-center">Search Results</h1>
-
       <Row className="mb-4">
-        <Col md={8}>
-          <InputGroup>
-            <Form.Control
-              type="text"
-              placeholder="Search by Name or Email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search Mentors"
-            />
-          </InputGroup>
-        </Col>
-        <Col md={4} className="text-md-end">
+        <Col className='d-flex justify-content-end'>
           <Button
-            variant="outline-primary"
             onClick={() => setSortOption('alphabetical')}
-            className="me-2"
+            className="me-2 home-button"
           >
             <FaSortAlphaDown /> Sort by Name
           </Button>
           <Button
-            variant="outline-primary"
             onClick={() => setSortOption('hours')}
+            className='home-button'
           >
             <FaSortNumericDown /> Sort by Hours
           </Button>
@@ -79,17 +66,9 @@ const ResultsPage = () => {
       <Row data-aos="fade-up">
         {sortedUsers.map((user, index) => (
           <Col key={index} md={4} className="mb-4">
-            <Card className="shadow-sm hover-shadow-lg border-0 rounded-3">
-              <Card.Body className="p-4">
+            <Card className="shadow-sm hover-shadow-lg border-0">
+              <Card.Body className="p-4 auth-form">
                 <div className="d-flex align-items-center mb-3">
-                  {/* profile picture */}
-                  <div className="avatar me-3">
-                    <img
-                      src="https://via.placeholder.com/50"
-                      alt={user.name}
-                      className="rounded-circle"
-                    />
-                  </div>
                   <div>
                     <Card.Title>{user.name}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{user.email}</Card.Subtitle>
@@ -99,9 +78,9 @@ const ResultsPage = () => {
                 <Card.Text className="mb-2">Mentoring Hours: {user.mentoringHours}</Card.Text>
                 <Card.Text>Interests: {user.interests}</Card.Text>
 
-                <Button variant="outline-primary" className="mt-3">
+{/*                 <Button variant="outline-primary" className="mt-3">
                   View Profile
-                </Button>
+                </Button> */}
               </Card.Body>
             </Card>
           </Col>

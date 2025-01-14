@@ -3,7 +3,7 @@ import { Table, Card, Button } from 'react-bootstrap';
 
 const SessionTable = ({ sessions, onDeleteSession }) => {
   return (
-    <Card className="mb-4 shadow-sm">
+    <Card className="mb-4 shadow-sm auth-form">
       <Card.Body>
         <Card.Title>Upcoming Sessions</Card.Title>
         <Table responsive striped bordered hover>
@@ -26,7 +26,7 @@ const SessionTable = ({ sessions, onDeleteSession }) => {
                 <td>{session.topic}</td>
                 <td>{session.mentor}</td>
                 <td>
-                  <Button variant="danger" size="sm" onClick={() => onDeleteSession(session.id)}>
+                  <Button className = 'delete-btn' size="sm" onClick={() => onDeleteSession(session.id)}>
                     Delete
                   </Button>
                 </td>

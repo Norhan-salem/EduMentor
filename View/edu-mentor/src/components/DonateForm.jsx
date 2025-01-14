@@ -1,9 +1,11 @@
+// src/components/DonateForm.js
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import Invoice from './invoice';
 
 const currencies = ['EGP', 'USD', 'EUR', 'GBP', 'CAD'];
 const predefinedAmounts = [10, 25, 50, 100];
-const paymentOptions = ['Visa', 'MasterCard', 'PayPal', 'Bank Transfer'];
+const paymentOptions = ['Card', 'Bank Transfer'];
 
 const DonateForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -18,8 +20,32 @@ const DonateForm = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [errors, setErrors] = useState({});
+  const [invoice, setInvoice] = useState(null);
 
-  const handleDonate = (e) => {
+  // Dummy function to simulate donation API call
+  const makeDonation = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, donationId: '12345' });
+      }, 2000);
+    });
+  };
+
+  // Dummy function to simulate fetching invoice details
+  const showInvoice = (donationId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          donationId,
+          amount,
+          currency,
+          date: new Date().toLocaleString(),
+        });
+      }, 1000);
+    });
+  };
+
+  const handleDonate = async (e) => {
     e.preventDefault();
     const validationErrors = {};
     
@@ -41,8 +67,17 @@ const DonateForm = () => {
     }
 
     setErrors({});
-    // Donation logic here
-    console.log('Donating:', { firstName, lastName, email, amount, currency, paymentOption, cardNumber, expiryDate, cvv });
+
+    // Call the dummy makeDonation function
+    const donationResponse = await makeDonation();
+
+    if (donationResponse.success) {
+      // Fetch the invoice details after the donation is successful
+      const invoiceDetails = await showInvoice(donationResponse.donationId);
+      setInvoice(invoiceDetails); // Set the invoice state
+    } else {
+      alert('Donation failed');
+    }
   };
 
   const handleAmountChange = (e) => {
@@ -58,6 +93,7 @@ const DonateForm = () => {
 
   return (
     <Form onSubmit={handleDonate} className="donate-form">
+      {/* Form fields */}
       <Form.Group className="mb-3" controlId="formBasicFirstName">
         <Form.Label>First Name</Form.Label>
         <Form.Control
@@ -191,9 +227,12 @@ const DonateForm = () => {
       {errors.amount && <div className="text-danger">{errors.amount}</div>}
       {errors.currency && <div className="text-danger">{errors.currency}</div>}
 
-      <Button variant="primary" type="submit" className="w-100">
+      <Button type="submit" className="w-100 home-button">
         Donate
       </Button>
+
+      {/* Display invoice after donation */}
+      <Invoice invoice={invoice} />
     </Form>
   );
 };

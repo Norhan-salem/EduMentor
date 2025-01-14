@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
+import { useAuthContext } from '../context/useAuthContext';
 import { validateForm } from '../utils/validation';
-import axios from 'axios';
-import config from "../config";
+import { useNavigate } from 'react-router-dom';
 
-const roles = ['Mentor', 'Mentee'];
+const roles = ['Mentor', 'Mentee', 'Donor'];
 
 const SignUpForm = () => {
+  const { register, loading} = useAuthContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,79 +17,70 @@ const SignUpForm = () => {
   const [role, setRole] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  // Handle form submission
   const handleSignUp = async (e) => {
-    console.log('sebeeeni fe 7ali b2a')
     e.preventDefault();
-
-    // commented 34an zhe2t bs
-    // Validate form fields
-    /* const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
-    if (Object.values(validationErrors).some((error) => error)) {
+  
+    setErrorMessage('');
+  
+    // Validate form data
+    const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
-    } */
-
-    // Clear previous errors
-    setErrors({});
-    setLoading(true);
-    setErrorMessage('');
-    setSuccessMessage('');
-
-    // Request body structure for signup
-    const requestBody = {
-      firstName,
-      lastName,
-      credentials: {
-        email,
-        password,
-      },
-      role: role === 'Mentor' ? 2 : 3,
-    };
-
-    // *** Axios request to the backend ***
+    }
+  
     try {
-        const response = await axios.post(`${config.backendUrl}/api/auth/signup`, requestBody);
+      // Map roles to userType ID
+      const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4;
+      await register(firstName, lastName, email, password, userType);
       setSuccessMessage('Signup successful!');
-      console.log('Response:', response.data);
+      navigate('/');
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Signup failed. Please try again.');
-      console.error('Error during signup:', error);
-    } finally {
-      setLoading(false);
+      setErrorMessage(error.message || 'Signup failed. Please try again.');
     }
   };
+  
+  
 
   return (
-    <Form onSubmit={handleSignUp}>
-      <Form.Group className="mb-3" controlId="formBasicFirstName">
-        <Form.Label>First Name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter first name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          isInvalid={!!errors.firstName}
-        />
-        <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicLastName">
-        <Form.Label>Last Name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter last name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          isInvalid={!!errors.lastName}
-        />
-        <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
-      </Form.Group>
+    <Form onSubmit={handleSignUp} className="auth-form">
+      <Row>
+        {/* Name Section */}
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="formBasicFirstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter first name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              isInvalid={!!errors.firstName}
+            />
+            <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="formBasicLastName">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              isInvalid={!!errors.lastName}
+            />
+            <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Email Section */}
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>Email Address</Form.Label>
         <Form.Control
           type="email"
           placeholder="Enter email"
@@ -98,16 +90,26 @@ const SignUpForm = () => {
         />
         <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <PasswordToggle password={password} setPassword={setPassword} />
-        <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-        <Form.Label>Confirm Password</Form.Label>
-        <PasswordToggle password={confirmPassword} setPassword={setConfirmPassword} />
-        <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
-      </Form.Group>
+
+      <Row>
+        {/* Password Section */}
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <PasswordToggle password={password} setPassword={setPassword} />
+            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+            <Form.Label>Confirm Password</Form.Label>
+            <PasswordToggle password={confirmPassword} setPassword={setConfirmPassword} />
+            <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Role Section */}
       <Form.Group className="mb-3" controlId="formBasicRole">
         <Form.Label>Role</Form.Label>
         <Form.Select value={role} onChange={(e) => setRole(e.target.value)} required isInvalid={!!errors.role}>
@@ -120,27 +122,24 @@ const SignUpForm = () => {
         </Form.Select>
         <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicTerms">
-      <Form.Check
-        type="checkbox"
-        label="I agree to the terms and conditions"
-        checked={agreedToTerms}
-        onChange={(e) => setAgreedToTerms(e.target.checked)}
-        isInvalid={!!errors.agreedToTerms}
-      />
-      <Form.Control.Feedback type="invalid">
-        {errors.agreedToTerms}
-      </Form.Control.Feedback>
-      </Form.Group>
 
+      <div className="mb-3">
+        <input
+          type="checkbox"
+          id="terms"
+          checked={agreedToTerms}
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+        />
+      <label htmlFor="terms" className='px-2'>I agree to the terms and conditions</label>
+    </div>
 
-      {/* Loading, success, and error messages */}
+      {/* Feedback Messages */}
       {loading && <p>Loading...</p>}
       {successMessage && <p className="text-success">{successMessage}</p>}
       {errorMessage && <p className="text-danger">{errorMessage}</p>}
 
       {/* Submit Button */}
-      <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+      <Button type="submit" className="w-100 home-button" disabled={loading}>
         Sign Up
       </Button>
     </Form>
@@ -148,5 +147,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-
-

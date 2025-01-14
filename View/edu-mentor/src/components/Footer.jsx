@@ -1,12 +1,12 @@
 import React from 'react';
-import '../css/Footer.css';
+import '../styles/Footer.css';
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-brand">
-          <h2>EduMentor</h2>
+          <h3>EduMentor</h3>
           <p>Empowering communities through mentorship.</p>
         </div>
         <div className="footer-links">

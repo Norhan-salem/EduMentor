@@ -17,7 +17,8 @@ public class OnlineDonor extends User {
 
     public OnlineDonor(String firstName, String lastName, String email, String password, int numberOfDonations) {
         super(firstName, lastName, UserType.ONLINEDONOR, email, password);
-        this.numberOfDonations = numberOfDonations;
+        List<OnlineDonation> donations = getDonations();
+        this.numberOfDonations = donations.size();
     }
 
     public int getNumberOfDonations() {
@@ -38,7 +39,7 @@ public class OnlineDonor extends User {
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
             stmt.setString(4, this.getPassword());
-            stmt.setInt(5, 3);
+            stmt.setInt(5, 4);
 
             stmt.executeUpdate();
 
@@ -77,8 +78,8 @@ public class OnlineDonor extends User {
         OnlineDonor updatedDonor = (OnlineDonor) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedDonor.getFirstName());
             stmt.setString(2, updatedDonor.getLastName());
             stmt.setString(3, updatedDonor.getEmail());
@@ -92,8 +93,7 @@ public class OnlineDonor extends User {
         }
 
         String menteeQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = ? WHERE \"OnlineDonorID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement adminStmt = conn.prepareStatement(menteeQuery)) {
+        try (PreparedStatement adminStmt = conn.prepareStatement(menteeQuery)) {
             adminStmt.setInt(1, updatedDonor.getNumberOfDonations());
             adminStmt.setInt(3, updatedDonor.getUserID());
 
@@ -111,8 +111,8 @@ public class OnlineDonor extends User {
     public Object read(int id) {
 
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -142,8 +142,8 @@ public class OnlineDonor extends User {
 
         List<Object> donors = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", d.\"NumberofDonations\" FROM public.\"OnlineDonor\" d JOIN public.\"User\" u ON d.\"OnlineDonorID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -176,8 +176,8 @@ public class OnlineDonor extends User {
                 "JOIN public.\"ODD_Makes\" d ON o.\"DonationID\" = d.\"DonationID\" " +
                 "WHERE d.\"OnlineDonorID\" = ? AND o.\"IsDeleted\" = False ";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();

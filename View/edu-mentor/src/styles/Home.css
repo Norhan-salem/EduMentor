@@ -1,0 +1,87 @@
+body {
+  color: var(--text-color-dark) !important;
+}
+
+.home-bg-light {
+  background: linear-gradient(135deg, var(--background-color), var(--primary-color));
+  padding: 6rem 2rem;
+}
+
+.home-heading {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-color-dark);
+}
+
+.home-lead {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: var(--text-color-dark);
+}
+
+.home-button {
+  background-color: var(--primary-color) !important;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-3px);
+}
+
+/* Search Bar */
+.home-form {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.home-form-input {
+  background-color: var(--background-color);
+
+}
+
+/* How It Works */
+.home-how-it-works-step {
+  background-color: var(--background-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  text-align: center;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-how-it-works-step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.home-how-it-works-icon {
+  color: var(--primary-color);
+  font-size: 2rem;
+}
+
+/* Testimonials Section */
+.home-testimonials-section {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.home-testimonials-heading {
+  font-size: 2rem;
+}
+
+.home-testimonials-text {
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.home-mentor-card{
+  background-color: var(--background-color) !important;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+  border: 1px solid var(--primary-color) !important;
+}

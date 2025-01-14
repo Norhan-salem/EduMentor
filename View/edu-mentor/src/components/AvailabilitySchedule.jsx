@@ -3,10 +3,10 @@ import { Card, Button, Table, Form } from 'react-bootstrap';
 
 const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange, handleDeleteAvailability }) => {
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 shadow-lg auth-form">
       <Card.Body>
-        <Card.Title>Availability Schedule</Card.Title>
-        <Table striped bordered hover>
+        <Card.Title className=" mb-4">Availability Schedule</Card.Title>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>Date</th>
@@ -24,6 +24,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                     name="date"
                     value={entry.date}
                     onChange={(e) => handleScheduleChange(e, index)}
+                    className="schedule-input"
                   />
                 </td>
                 <td>
@@ -33,6 +34,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                     value={entry.time}
                     onChange={(e) => handleScheduleChange(e, index)}
                     placeholder="e.g., 9:00 AM - 11:00 AM"
+                    className="schedule-input"
                   />
                 </td>
                 <td>
@@ -41,13 +43,17 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                     name="status"
                     value={entry.status}
                     onChange={(e) => handleScheduleChange(e, index)}
+                    className="schedule-input"
                   >
                     <option>Free</option>
                     <option>Booked</option>
                   </Form.Control>
                 </td>
                 <td>
-                  <Button variant="danger" onClick={() => handleDeleteAvailability(index)}>
+                  <Button
+                    onClick={() => handleDeleteAvailability(index)}
+                    className="delete-btn"
+                  >
                     Delete
                   </Button>
                 </td>
@@ -55,12 +61,15 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
             ))}
           </tbody>
         </Table>
-        <Button onClick={handleAddAvailability} variant="outline-primary" className="mb-3">
-          Add Availability
-        </Button>
+        <div>
+          <Button onClick={handleAddAvailability} className="home-button">
+            Add Availability
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
 };
 
 export default AvailabilitySchedule;
+

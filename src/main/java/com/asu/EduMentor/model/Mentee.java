@@ -22,8 +22,9 @@ public class Mentee extends User {
 
     public Mentee(String firstName, String lastName, String email, String password, int numberOfAttendedSessions, double learningHours) {
         super(firstName, lastName, UserType.MENTEE, email, password);
-        this.numberOfAttendedSessions = numberOfAttendedSessions;
-        this.learningHours = learningHours;
+        List<Session> sessions = getAttendedSessions();
+        this.numberOfAttendedSessions = sessions.size();
+        this.learningHours = sessions.stream().mapToDouble(Session::getDuration).sum();
     }
 
     public double getLearningHours() {
@@ -52,7 +53,7 @@ public class Mentee extends User {
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
             stmt.setString(4, this.getPassword());
-            stmt.setInt(5, 2);
+            stmt.setInt(5, 3);
 
             stmt.executeUpdate();
 
@@ -92,8 +93,8 @@ public class Mentee extends User {
         Mentee updatedMentee = (Mentee) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedMentee.getFirstName());
             stmt.setString(2, updatedMentee.getLastName());
             stmt.setString(3, updatedMentee.getEmail());
@@ -107,8 +108,7 @@ public class Mentee extends User {
         }
 
         String menteeQuery = "UPDATE public.\"Mentee\" SET \"LearningHours\" = ?, \"NumberOfAttandedSessions\" = ? WHERE \"MenteeID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement adminStmt = conn.prepareStatement(menteeQuery)) {
+        try (PreparedStatement adminStmt = conn.prepareStatement(menteeQuery)) {
             adminStmt.setDouble(1, updatedMentee.getLearningHours());
             adminStmt.setInt(2, updatedMentee.getNumberOfAttendedSessions());
             adminStmt.setInt(3, updatedMentee.getUserID());
@@ -129,8 +129,8 @@ public class Mentee extends User {
     {
 
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -159,8 +159,8 @@ public class Mentee extends User {
 
         List<Object> mentees = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", m.\"LearningHours\", m.\"NumberOfAttandedSessions\" FROM public.\"Mentee\" m JOIN public.\"User\" u ON m.\"MenteeID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -192,8 +192,8 @@ public class Mentee extends User {
                 "JOIN public.\"SMTT_Takes\" st ON s.\"SessionID\" = st.\"SessionID\" " +
                 "WHERE st.\"MenteeID\" = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());
 
             ResultSet rs = stmt.executeQuery();

@@ -1,0 +1,112 @@
+:root {
+  --primary-color: #0aa5ff;
+  --accent-color: #f3d853;
+  --background-color: #fefdf7;
+  --text-color-dark: #001a29;
+  --hover-color: #f6d110;
+  --donate-hover-color: #f6d110;
+  --border-radius: 0.5rem;
+}
+
+.custom-navbar {
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  height: 13vh;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-navbar .brand {
+  color: var(--background-color);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+  font-family: 'LG';
+}
+
+.custom-navbar .brand:hover {
+  color: var(--accent-color);
+}
+
+/* Navbar Links */
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-link {
+  color: var(--text-color-dark);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-right: 2rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--background-color);
+  transform: translateY(-2px);
+}
+
+.donate-btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.donate-btn {
+  background-color: var(--accent-color) !important;
+  border-radius: 30px;
+  text-transform: uppercase;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0.5rem 1.5rem !important;
+  animation: glow 1.5s infinite alternate;
+  text-decoration: none;
+  color: var(--text-color-dark);
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 8px var(--accent-color), 0 0 16px var(--accent-color);
+  }
+  100% {
+    box-shadow: 0 0 20px var(--hover-color), 0 0 30px var(--hover-color);
+  }
+}
+
+.donate-btn:hover {
+  background-color: var(--donate-hover-color) !important;
+  color: var(--text-color-dark);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 0 30px var(--hover-color), 0 0 40px var(--hover-color);
+}
+
+.donate-btn:focus {
+  outline: none;
+}
+
+.donate-btn:active {
+  transform: scale(1.05) rotate(0deg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.custom-navbar.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: var(--primary-color);
+}
+
+.nav-link.active-link {
+  color: var(--accent-color);
+  border-bottom: 3px solid var(--accent-color);
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+}

@@ -3,12 +3,12 @@ import { Card, Button } from 'react-bootstrap';
 
 const MentorCard = ({ name, bio, image }) => {
   return (
-    <Card className="mb-4 shadow-sm">
-      <Card.Img variant="top" src={image} />
+    <Card className="mb-4 shadow-sm home-mentor-card">
+      <Card.Img variant="top" src={image}/>
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         <Card.Text>{bio}</Card.Text>
-        <Button variant="primary">Learn More</Button>
+        <Button className='home-button'>Learn More</Button>
       </Card.Body>
     </Card>
   );

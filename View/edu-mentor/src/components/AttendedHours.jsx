@@ -12,7 +12,7 @@ const AttendedHours = ({ attendedHours }) => {
   };
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 auth-form">
       <Card.Body>
         <Card.Title>Attended Hours</Card.Title>
         <div>

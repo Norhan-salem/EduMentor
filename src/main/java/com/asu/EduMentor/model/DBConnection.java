@@ -1,16 +1,24 @@
 package com.asu.EduMentor.model;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public final class DBConnection {
+    private static final Logger log = LoggerFactory.getLogger(DBConnection.class);
     private static volatile DBConnection instance;
-    private final String url = System.getenv("DB_URL");
-    private final String username = System.getenv("DB_USERNAME");;
-    private final String password = System.getenv("DB_PASSWORD");
+
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private final String url = dotenv.get("DB_URL");
+    private final String username = dotenv.get("DB_USERNAME");
+    private final String password = dotenv.get("DB_PASSWORD");
     // Method to get the database connection
     //  variables
     @Getter
@@ -28,6 +36,7 @@ public final class DBConnection {
             throw new RuntimeException("PostgreSQL Driver not found.", e);
         } catch (SQLException e) {
             //e.printStackTrace();
+            log.info(url);
             throw new RuntimeException("Failed to connect to the database.", e);
         }
     }
