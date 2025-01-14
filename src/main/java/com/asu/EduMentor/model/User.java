@@ -45,8 +45,8 @@ public abstract class User implements CRUD {
         String sqlQuery = "SELECT * FROM public.\"User\" WHERE " +
                 "(\"FirstName\" ILIKE ? OR \"LastName\" ILIKE ? OR \"Email\" ILIKE ?) AND \"IsDeleted\" = FALSE";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
             String searchPattern = "%" + search + "%";
             stmt.setString(1, searchPattern);
@@ -156,8 +156,8 @@ public abstract class User implements CRUD {
     @Override
     public boolean delete(int id) {
         String sqlQuery = "UPDATE public.\"User\" SET \"IsDeleted\" = TRUE WHERE \"UserID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

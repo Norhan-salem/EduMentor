@@ -72,8 +72,8 @@ public class Admin extends User {
         Admin updatedAdmin = (Admin) updatedObject;
 
         String userQuery = "UPDATE public.\"User\" SET \"FirstName\" = ?, \"LastName\" = ?, \"Email\" = ?, \"Password\" = ? WHERE \"UserID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(userQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(userQuery)) {
             stmt.setString(1, updatedAdmin.getFirstName());
             stmt.setString(2, updatedAdmin.getLastName());
             stmt.setString(3, updatedAdmin.getEmail());
@@ -87,8 +87,7 @@ public class Admin extends User {
         }
 
         String adminQuery = "UPDATE public.\"Admin\" SET \"Status\" = ? WHERE \"AdminID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement adminStmt = conn.prepareStatement(adminQuery)) {
+        try (PreparedStatement adminStmt = conn.prepareStatement(adminQuery)) {
             adminStmt.setBoolean(1, updatedAdmin.isStatus());
             adminStmt.setInt(2, updatedAdmin.getUserID());
 
@@ -104,8 +103,8 @@ public class Admin extends User {
     @Override
     public Object read(int id) {
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"UserID\" = ? AND u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -132,8 +131,8 @@ public class Admin extends User {
     public List<Object> readAll() {
         List<Object> admins = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", a.\"Status\" FROM public.\"Admin\" a JOIN public.\"User\" u ON a.\"AdminID\" = u.\"UserID\" WHERE u.\"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

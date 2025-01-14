@@ -53,8 +53,8 @@ public class Feedback implements CRUD {
     public Object create() {
 
         String sqlQuery = "INSERT INTO public.\"Feedback\" (\"Comment\", \"Stars\", \"IsDeleted\") VALUES (?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, this.getComment());
             stmt.setShort(2, this.getRating());
             stmt.setBoolean(3, this.isDeleted());
@@ -83,8 +83,8 @@ public class Feedback implements CRUD {
         }
 
         String sqlQuery = "UPDATE public.\"Feedback\" SET \"Comment\" = ?, \"Stars\" = ? WHERE \"FeedbackID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, updatedFeedback.getComment());
             stmt.setShort(2, updatedFeedback.getRating());
             stmt.setLong(3, updatedFeedback.getFeedbackID());
@@ -104,8 +104,8 @@ public class Feedback implements CRUD {
     public Object read(int id) {
 
         String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"FeedbackID\" = ? AND \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -133,8 +133,8 @@ public class Feedback implements CRUD {
 
         List<Object> feedbacks = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Feedback\" WHERE \"IsDeleted\" = FALSE";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -160,8 +160,8 @@ public class Feedback implements CRUD {
     public boolean delete(int id) {
 
         String sqlQuery = "UPDATE public.\"Feedback\" SET \"IsDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setLong(1, id);
 
             int rowsAffected = stmt.executeUpdate();
