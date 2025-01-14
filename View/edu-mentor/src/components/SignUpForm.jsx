@@ -3,11 +3,12 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import { useAuthContext } from '../context/useAuthContext';
 import { validateForm } from '../utils/validation';
+import { useNavigate } from 'react-router-dom';
 
 const roles = ['Mentor', 'Mentee', 'Donor'];
 
 const SignUpForm = () => {
-  const { register, loading, errorMessage, successMessage } = useAuthContext();
+  const { register, loading} = useAuthContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,29 +17,33 @@ const SignUpForm = () => {
   const [role, setRole] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
-    // Clear previous errors
-    setErrors({});
-
+  
+    setErrorMessage('');
+  
     // Validate form data
     const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+  
     try {
       // Map roles to userType ID
       const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4;
-
       await register(firstName, lastName, email, password, userType);
+      setSuccessMessage('Signup successful!');
+      navigate('/');
     } catch (error) {
-      console.error('Signup failed:', error);
+      setErrorMessage(error.message || 'Signup failed. Please try again.');
     }
   };
+  
   
 
   return (

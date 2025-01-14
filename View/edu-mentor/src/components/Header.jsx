@@ -71,7 +71,7 @@ const Header = () => {
             ) : (
               <>
                 {/* Show different links based on userType */}
-                {user.userType === userTypeMap.MENTOR && (
+                {user.userType === 'MENTOR' && (
                   <Nav.Link
                     as={Link}
                     to="/mentor-dashboard"
@@ -80,7 +80,7 @@ const Header = () => {
                     Dashboard
                   </Nav.Link>
                 )}
-                {user.userType === userTypeMap.MENTEE && (
+                {user.userType === 'MENTEE' && (
                   <Nav.Link
                     as={Link}
                     to="/mentee-dashboard"
@@ -98,7 +98,7 @@ const Header = () => {
                     Dashboard
                   </Nav.Link>
                 )}
-                {user.userType === userTypeMap.ONLINEDONOR && (
+                {user.userType === 'ONLINEDONOR' && (
                   <Nav.Link
                     as={Link}
                     to="/donations"
