@@ -7,6 +7,22 @@ SELECT 1
 FROM pg_database
 WHERE datname = 'EDUMentor';
 
+--19 Table: public.Role
+
+-- DROP TABLE IF EXISTS public."Role";
+
+CREATE TABLE IF NOT EXISTS public."Role"
+(
+    "RoleID" serial NOT NULL,
+    "Role" text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Role_pkey" PRIMARY KEY ("RoleID")
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Role"
+    OWNER to adminadmin;
+
 
 --1 Table: public.User
 
@@ -14,8 +30,8 @@ WHERE datname = 'EDUMentor';
 
 CREATE TABLE IF NOT EXISTS public."User"
 (
-    "UserID" integer NOT NULL DEFAULT nextval('"User_UserID_seq"'::regclass),
-    "Email" text COLLATE pg_catalog."default" NOT NULL,
+    "UserID" serial NOT NULL,
+    "Email" text COLLATE pg_catalog."default" NOT NULL UNIQUE,
     "FirstName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
     "LastName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
     "Role" integer NOT NULL,
@@ -695,18 +711,3 @@ ALTER TABLE IF EXISTS public."SM_Gives"
     OWNER to adminadmin;
 
 
---19 Table: public.Role
-
--- DROP TABLE IF EXISTS public."Role";
-
-CREATE TABLE IF NOT EXISTS public."Role"
-(
-    "RoleID" integer NOT NULL DEFAULT nextval('"Role_RoleID_seq"'::regclass),
-    "Role" text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT "Role_pkey" PRIMARY KEY ("RoleID")
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public."Role"
-    OWNER to adminadmin;
