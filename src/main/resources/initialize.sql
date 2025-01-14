@@ -31,7 +31,7 @@ ALTER TABLE IF EXISTS public."Role"
 CREATE TABLE IF NOT EXISTS public."User"
 (
     "UserID" serial NOT NULL,
-    "Email" text COLLATE pg_catalog."default" NOT NULL,
+    "Email" text COLLATE pg_catalog."default" NOT NULL UNIQUE,
     "FirstName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
     "LastName" character varying(30) COLLATE pg_catalog."default" NOT NULL,
     "Role" integer NOT NULL,

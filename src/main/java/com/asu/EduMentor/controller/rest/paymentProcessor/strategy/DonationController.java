@@ -3,9 +3,11 @@ package com.asu.EduMentor.controller.rest.paymentProcessor.strategy;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +15,8 @@ import java.util.Map;
 @Controller
 public class DonationController {
 
-    private String stripeApiKey = System.getenv("STRIPE_API_KEY");;
-
-    @GetMapping("/")
-    public String showDonationForm() {
-        return "donation";
-    }
+    private static final Dotenv dotenv = Dotenv.load();
+    private String stripeApiKey = dotenv.get("STRIPE_API_KEY");
 
     @PostMapping("/api/donation/create-payment-intent")
     @ResponseBody
