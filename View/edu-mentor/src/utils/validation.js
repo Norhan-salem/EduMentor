@@ -49,7 +49,7 @@ export const validateUsername = (username) => {
     return '';
   };
   
-  export const validateForm = (firstName, lastName, email, password, confirmPassword, role, interests, agreedToTerms) => {
+  export const validateForm = (firstName, lastName, email, password, confirmPassword, role, agreedToTerms) => {
     const errors = {};
 
     if (!firstName) {

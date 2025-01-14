@@ -3,8 +3,9 @@ package com.asu.EduMentor.socialMediaNotifier;
 public class NotifyByEmail implements INotificationObserver {
     private EmailNotificationFacade emailFacade;
 
-    public NotifyByEmail(EmailNotificationFacade emailFacade) {
+    public NotifyByEmail(NotificationService notificationService, EmailNotificationFacade emailFacade) {
         this.emailFacade = emailFacade;
+        notificationService.addObserver(this);
     }
 
     public String printNotifyMethod() {

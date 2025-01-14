@@ -19,21 +19,22 @@ const SignUpForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-  
+
     // Clear previous errors
     setErrors({});
-  
+
     // Validate form data
     const validationErrors = validateForm(firstName, lastName, email, password, confirmPassword, role, agreedToTerms);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-  
+
     try {
       // Map roles to userType ID
-      const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4; // 2 for Mentor, 3 for Mentee, 4 for Donor
-      await register(email, password, userType, firstName, lastName);
+      const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4;
+
+      await register(firstName, lastName, email, password, userType);
     } catch (error) {
       console.error('Signup failed:', error);
     }

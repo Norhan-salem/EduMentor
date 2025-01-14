@@ -6,7 +6,7 @@ public class SignUpBody {
     private String firstName;
     private String lastName;
     private CredentialsBody credentials;
-    private int role;
+    private int userType;
 
     public String getFirstName() {
         return firstName;
@@ -47,14 +47,14 @@ public class SignUpBody {
         this.credentials = credentials;
     }
 
-    public int getRole() {
-        return role;
+    public int getUserType() {
+        return userType;
     }
 
-    public void setRole(int role) {
-        if (role < 0 || role > 2) {
+    public void setUserType(int userType) {
+        if (userType < 0 || userType > 4) {
             throw new IllegalArgumentException("Role must be 0 (Admin), 1 (Mentor), or 2 (Mentee).");
         }
-        this.role = role;
+        this.userType = userType;
     }
 }

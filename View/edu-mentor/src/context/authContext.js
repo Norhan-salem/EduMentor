@@ -84,10 +84,10 @@ export function AuthProvider({ children }) {
   // Login a user
   const login = useCallback(async (email, password) => {
     try {
-      const response = await axiosInstance.post('/api/login', { email, password });
+      const response = await axiosInstance.post('/api/auth/login', { email, password });
+      const { success, user, message } = response.data;
 
-      if (response.data.success) {
-        const user = response.data.user;
+      if (success && user) {
         // Save the user data to localStorage
         if (localStorageAvailable()) {
           localStorage.setItem('user', JSON.stringify(user));
@@ -98,7 +98,7 @@ export function AuthProvider({ children }) {
           payload: { user },
         });
       } else {
-        throw new Error('Invalid email or password.');
+        throw new Error(message || 'Invalid email or password.');
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -107,23 +107,29 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Register a new user
-  const register = useCallback(async (email, password, userType) => {
+  const register = useCallback(async (firstName, lastName, email, password, userType) => {
+    console.log('registering user');
     try {
-      const response = await axiosInstance.post('/api/register', { email, password, userType });
+      const payload = {
+        firstName,
+        lastName,
+        credentials: {
+          email,
+          password,
+        },
+        userType,
+      };
+      const response = await axiosInstance.post('/api/auth/signup', payload);
+      const { success, user, message } = response.data;
 
-      if (response.data.success) {
-        const user = response.data.user;
+      if (success && user) {
         // Save the user data to localStorage
         if (localStorageAvailable()) {
           localStorage.setItem('user', JSON.stringify(user));
         }
-        // Log the user in immediately
-        dispatch({
-          type: 'LOGIN',
-          payload: { user },
-        });
+        return user;
       } else {
-        throw new Error('Registration failed. Please try again.');
+        throw new Error(message || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Error during registration:', error);
