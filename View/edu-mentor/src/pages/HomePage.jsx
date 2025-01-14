@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../styles/Home.css';
+import { searchMentors } from '../services/api';
 
 const mentorsData = [
   { name: "John Doe", bio: "Software Engineer", image: "https://via.placeholder.com/150" },
@@ -20,7 +21,6 @@ const mentorsData = [
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,13 +29,12 @@ const HomePage = () => {
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const response = await search();
-    //   setUsers(response);
-    //   navigate('/results', { state: { users: response } });
-    // } catch (error) {
-    //   console.error('Error fetching users:', error);
-    // }
+    try {
+      const users = await searchMentors(searchQuery);
+      navigate('/results', { state: { users } });
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
   };
 
   const sliderSettings = {

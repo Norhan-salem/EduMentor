@@ -117,6 +117,13 @@ const Header = () => {
                 >
                   Logout
                 </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  to="/profile"
+                  className={`nav-link ${isActive('/profile') ? 'active-link' : ''}`}
+                >
+                  Profile
+                </Nav.Link>
               </>
             )}
           </Nav>

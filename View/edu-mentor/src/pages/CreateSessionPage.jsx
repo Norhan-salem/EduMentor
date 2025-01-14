@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-//import { createSession } from '../api';
+import { createSession } from '../services/api';
 
 const CreateSessionPage = () => {
   const [newSession, setNewSession] = useState({
@@ -35,14 +35,14 @@ const CreateSessionPage = () => {
     const sessionDateTime = `${newSession.date}T${newSession.time}:00`;
 
     const sessionToSubmit = {
-      sessionID: Date.now(),
       date: sessionDateTime,
-      duration: newSession.duration,
-      name: newSession.name,
+      duration: parseFloat(newSession.duration),
+      name: newSession.name.trim(),
     };
 
     try {
-      //await createSession(sessionToSubmit);
+      await createSession(sessionToSubmit);
+      alert('Session created successfully!');
       navigate('/admin-dashboard');
     } catch (error) {
       alert('Failed to create session. Please try again later.');

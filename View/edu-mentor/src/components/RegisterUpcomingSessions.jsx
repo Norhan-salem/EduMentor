@@ -1,7 +1,11 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 
-const RegisterUpcomingSessions = ({ sessions, handleRegister }) => {
+const RegisterUpcomingSessions = ({ sessions, handleRegister, registeredSessions }) => {
+  const isRegistered = (session) => {
+    return registeredSessions.some((registeredSession) => registeredSession.sessionID === session.sessionID);
+  };
+
   return (
     <Card className="mb-4 auth-form">
       <Card.Body>
@@ -9,24 +13,25 @@ const RegisterUpcomingSessions = ({ sessions, handleRegister }) => {
         <Table striped bordered hover>
           <thead>
             <tr>
+              <th>Name</th>
               <th>Date</th>
               <th>Duration</th>
-              <th>Topic</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {sessions.map((session, index) => (
               <tr key={index}>
+                <td>{session.name}</td>
                 <td>{session.date}</td>
                 <td>{session.duration}</td>
-                <td>{session.topic}</td>
                 <td>
                   <Button
                     onClick={() => handleRegister(session)}
                     className='home-button'
+                    disabled={isRegistered(session)}
                   >
-                    Register
+                    {isRegistered(session) ? 'Registered' : 'Register'}
                   </Button>
                 </td>
               </tr>

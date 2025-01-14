@@ -1,33 +1,49 @@
-import React, { useState } from 'react';
-import { Container, Row, Col} from 'react-bootstrap';
-import RegsiterUpcomingSessions from '../components/RegisterUpcomingSessions';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import RegisterUpcomingSessions from '../components/RegisterUpcomingSessions';
+import RegisteredSessions from '../components/RegisteredSessions';
 import AttendedHours from '../components/AttendedHours';
 import Interests from '../components/InterestsSelection';
+import { getSessions, getUserSessions, registerMentee } from '../services/api'; 
+import { useAuthContext } from '../context/useAuthContext';
 
 const MenteeDashboardPage = () => {
-  const [sessions] = useState([
-    { date: '2024-11-07', duration: '2 hours', topic: 'Math Tutoring' },
-    { date: '2024-11-09', duration: '1.5 hours', topic: 'Science Tutoring' },
-  ]);
-
+  const [sessions, setSessions] = useState([]);
+  const [registeredSessions, setRegisteredSessions] = useState([]);
   const [attendedHours, setAttendedHours] = useState(4);
   const [interests, setInterests] = useState([]);
-  const [registeredSessions, setRegisteredSessions] = useState([]);
+  const { user } = useAuthContext();
 
-  const handleInterestChange = (interest) => {
-    setInterests((prevInterests) => {
-      if (prevInterests.includes(interest)) {
-        return prevInterests.filter((i) => i !== interest);
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
       }
-      if (prevInterests.length < 3) {
-        return [...prevInterests, interest];
-      }
-      return prevInterests;
-    });
-  };
+    };
 
-  const handleRegister = (session) => {
-    setRegisteredSessions((prevSessions) => [...prevSessions, session]);
+    const fetchRegisteredSessions = async () => {
+      try {
+        const data = await getUserSessions();
+        setRegisteredSessions(data);
+      } catch (error) {
+        console.error('Error fetching registered sessions:', error);
+      }
+    };
+
+    fetchSessions();
+    fetchRegisteredSessions();
+  }, []);
+
+  const handleRegister = async (session) => {
+    try {
+      await registerMentee(session, user);
+      setRegisteredSessions((prevSessions) => [...prevSessions, session]);
+    } catch (error) {
+      console.error('Error registering for session:', error);
+    }
   };
 
   return (
@@ -37,9 +53,10 @@ const MenteeDashboardPage = () => {
       <Row>
         {/* Upcoming Sessions */}
         <Col md={6}>
-          <RegsiterUpcomingSessions
-            sessions={sessions} 
-            handleRegister={handleRegister} 
+          <RegisterUpcomingSessions
+            sessions={sessions}
+            registeredSessions={registeredSessions}
+            handleRegister={handleRegister}
           />
         </Col>
 
@@ -50,9 +67,24 @@ const MenteeDashboardPage = () => {
       </Row>
 
       <Row>
+        {/* Registered Sessions */}
+        <Col md={12}>
+          <RegisteredSessions sessions={registeredSessions} />
+        </Col>
+      </Row>
+
+      <Row>
         {/* Interests */}
         <Col md={12}>
-          <Interests interests={interests} handleInterestChange={handleInterestChange} />
+          <Interests interests={interests} handleInterestChange={(interest) => setInterests(prev => {
+            if (prev.includes(interest)) {
+              return prev.filter(i => i !== interest);
+            }
+            if (prev.length < 3) {
+              return [...prev, interest];
+            }
+            return prev;
+          })} />
         </Col>
       </Row>
     </Container>

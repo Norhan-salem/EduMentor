@@ -1,7 +1,14 @@
 import React from 'react';
 import { Table, Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-const SessionTable = ({ sessions, onDeleteSession }) => {
+const SessionTable = ({ sessions, onDeleteSession, onAssignMentor }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = (session) => {
+    navigate(`/session-details/${session.sessionID}`, { state: { session } }); 
+  };
+
   return (
     <Card className="mb-4 shadow-sm auth-form">
       <Card.Body>
@@ -9,25 +16,39 @@ const SessionTable = ({ sessions, onDeleteSession }) => {
         <Table responsive striped bordered hover>
           <thead>
             <tr>
+              <th>Name</th>
               <th>Date</th>
-              <th>Time</th>
               <th>Duration</th>
-              <th>Topic</th>
-              <th>Assigned Mentor</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {sessions.map((session) => (
-              <tr key={session.id}>
+              <tr key={session.sessionID}>
+                <td>{session.name}</td>
                 <td>{session.date}</td>
-                <td>{session.time}</td>
                 <td>{session.duration}</td>
-                <td>{session.topic}</td>
-                <td>{session.mentor}</td>
                 <td>
-                  <Button className = 'delete-btn' size="sm" onClick={() => onDeleteSession(session.id)}>
+                  <Button
+                    size="sm"
+                    className="me-2 delete-btn"
+                    onClick={() => onDeleteSession(session)}
+                  >
                     Delete
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="home-button"
+                    onClick={() => onAssignMentor(session)}
+                  >
+                    Assign Mentor
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="home-button"
+                    onClick={() => handleViewDetails(session)}
+                  >
+                    View Details
                   </Button>
                 </td>
               </tr>

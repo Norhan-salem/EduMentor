@@ -1,93 +1,81 @@
 import React, { useState } from 'react';
-import { Container, Button, Form, Row, Col, Card, InputGroup } from 'react-bootstrap';
+import { Container, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { FaSortAlphaDown, FaSortNumericDown } from 'react-icons/fa'; 
-import AOS from 'aos'; 
-import 'aos/dist/aos.css'; 
+import { FaSortAlphaDown, FaSortNumericDown } from 'react-icons/fa';
+import { sortMentors } from '../services/api';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 AOS.init();
 
 const ResultsPage = () => {
   const location = useLocation();
-  // dummy data
-  const users = location.state?.users || [
-    { name: "John Doe", email: "john@gmail.com", mentoringHours: 120, interests: "AI, Web Development" },
-    { name: "Jane Smith", email: "jane@gmail.com", mentoringHours: 90, interests: "Data Science, Machine Learning" },
-    { name: "Alice Brown", email: "alice@outlook.com", mentoringHours: 150, interests: "UX/UI Design, Graphic Design" },
-    { name: "Bob Johnson", email: "bob@techmail.com", mentoringHours: 80, interests: "Cybersecurity, Cloud Computing" },
-    { name: "Mary Williams", email: "mary@domain.com", mentoringHours: 100, interests: "Blockchain, Finance" },
-    { name: "David Wilson", email: "david@devmail.com", mentoringHours: 110, interests: "Web Development, Mobile Apps" },
-    { name: "Olivia Moore", email: "olivia@techcompany.com", mentoringHours: 75, interests: "Software Engineering, Data Analysis" },
-    { name: "Ethan Harris", email: "ethan@startup.com", mentoringHours: 130, interests: "Startups, Entrepreneurship" },
-    { name: "Sophia Martinez", email: "sophia@socialmedia.com", mentoringHours: 140, interests: "Digital Marketing, Content Creation" },
-    { name: "James Taylor", email: "james@techworld.com", mentoringHours: 95, interests: "AI, Robotics" }
-  ];
-
+  const initialUsers = location.state?.users || [];
+  const [users, setUsers] = useState(initialUsers);
   const [sortOption, setSortOption] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  // Filter users based on name or email
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const [loading, setLoading] = useState(false);
 
-  // Sort users based on the selected sort option
-  const sortedUsers = [...filteredUsers].sort((a, b) => {
-    if (sortOption === 'alphabetical') {
-      return a.name.localeCompare(b.name);
-    } else if (sortOption === 'hours') {
-      return b.mentoringHours - a.mentoringHours;
+  const handleSort = async (option) => {
+    setSortOption(option);
+    setLoading(true);
+    try {
+      const sortedUsers = await sortMentors(users, option);
+      setUsers(sortedUsers);
+    } catch (error) {
+      console.error('Error sorting users:', error);
+      alert('Failed to sort users. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    return 0;
-  });
+  };
 
   return (
     <Container className="py-5">
       <h1 className="mb-4 text-center">Search Results</h1>
       <Row className="mb-4">
-        <Col className='d-flex justify-content-end'>
+        <Col className="d-flex justify-content-end">
           <Button
-            onClick={() => setSortOption('alphabetical')}
+            onClick={() => handleSort('alphabetical')}
             className="me-2 home-button"
+            disabled={loading}
           >
             <FaSortAlphaDown /> Sort by Name
           </Button>
           <Button
-            onClick={() => setSortOption('hours')}
-            className='home-button'
+            onClick={() => handleSort('hours')}
+            className="home-button"
+            disabled={loading}
           >
             <FaSortNumericDown /> Sort by Hours
           </Button>
         </Col>
       </Row>
 
+      {loading && (
+        <div className="text-center mb-3">
+          <Spinner animation="border" /> Sorting...
+        </div>
+      )}
+
       <Row data-aos="fade-up">
-        {sortedUsers.map((user, index) => (
+        {users.map((user, index) => (
           <Col key={index} md={4} className="mb-4">
             <Card className="shadow-sm hover-shadow-lg border-0">
               <Card.Body className="p-4 auth-form">
                 <div className="d-flex align-items-center mb-3">
                   <div>
-                    <Card.Title>{user.name}</Card.Title>
+                    <Card.Title>{`${user.firstName} ${user.lastName}`}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{user.email}</Card.Subtitle>
                   </div>
                 </div>
-
-                <Card.Text className="mb-2">Mentoring Hours: {user.mentoringHours}</Card.Text>
-                <Card.Text>Interests: {user.interests}</Card.Text>
-
-{/*                 <Button variant="outline-primary" className="mt-3">
-                  View Profile
-                </Button> */}
+                <Card.Text className="mb-2">Mentoring Hours: {user.totalHours}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
 
-      {sortedUsers.length === 0 && (
+      {!loading && users.length === 0 && (
         <div className="text-center">
           <h4>No mentors found matching your criteria.</h4>
         </div>

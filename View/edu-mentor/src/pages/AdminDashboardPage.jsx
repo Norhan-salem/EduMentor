@@ -2,37 +2,34 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import SessionTable from '../components/SessionTable';
 import { useNavigate } from 'react-router-dom';
+import { cancelSession, searchSessions } from '../services/api';
 
 const AdminDashboardPage = () => {
-  const [sessions, setSessions] = useState([
-    { id: 1, date: '2024-11-15', time: '10:00 AM - 12:00 PM', duration: '2 hours', topic: 'Math Tutoring', mentor: 'John Doe' },
-    { id: 2, date: '2024-11-18', time: '2:00 PM - 4:00 PM', duration: '2 hours', topic: 'Science Tutoring', mentor: 'Jane Smith' },
-  ]);
-
+  const [sessions, setSessions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  
   const navigate = useNavigate();
 
-  const handleDeleteSession = (sessionId) => {
-    setSessions(sessions.filter(session => session.id !== sessionId));
+  const handleDeleteSession = async (session) => {
+    try {
+        await cancelSession(session);
+        setSessions(sessions.filter(s => s.id !== session.sessionID));
+    } catch (error) {
+        console.error('Error deleting session:', error);
+    }
+};
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await searchSessions(searchQuery);
+      setSessions(response.data);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    }
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    // Filter the sessions based on the search query
-    if (searchQuery) {
-      const filteredSessions = sessions.filter(session => 
-        session.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        session.mentor.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setSessions(filteredSessions);
-    } else {
-      // Reset sessions if the search query is cleared
-      setSessions([
-        { id: 1, date: '2024-11-15', time: '10:00 AM - 12:00 PM', duration: '2 hours', topic: 'Math Tutoring', mentor: 'John Doe' },
-        { id: 2, date: '2024-11-18', time: '2:00 PM - 4:00 PM', duration: '2 hours', topic: 'Science Tutoring', mentor: 'Jane Smith' },
-      ]);
-    }
+  const handleAssignMentor = (session) => {
+    navigate('/assign-mentor', { state: { session } });
   };
 
   return (
@@ -41,7 +38,7 @@ const AdminDashboardPage = () => {
 
       <Row className="mb-2">
         <Col className="d-flex justify-content-end">
-          <Button className='home-button' onClick={() => navigate('/create-session')}>
+          <Button className="home-button" onClick={() => navigate('/create-session')}>
             Create New Session
           </Button>
         </Col>
@@ -65,7 +62,11 @@ const AdminDashboardPage = () => {
 
       <Row>
         <Col>
-          <SessionTable sessions={sessions} onDeleteSession={handleDeleteSession} />
+          <SessionTable
+            sessions={sessions}
+            onDeleteSession={handleDeleteSession}
+            onAssignMentor={handleAssignMentor}
+          />
         </Col>
       </Row>
     </Container>
@@ -73,4 +74,3 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
-
