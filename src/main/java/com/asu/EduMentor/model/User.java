@@ -66,16 +66,18 @@ public abstract class User implements CRUD {
     }
 
     private static User createUserFromResultSet(ResultSet rs) throws SQLException {
-        UserType role = UserType.valueOf(rs.getString("Role"));
+        UserType role = UserType.fromRoleId(Integer.parseInt(rs.getString("Role")));
 
         User user = switch (role) {
             case ADMIN -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
                     rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
             case MENTOR -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
-                    rs.getString("Email"), rs.getString("Password"), rs.getDouble("TotalHours"));
+                    rs.getString("Email"), rs.getString("Password"), 0);
             case MENTEE -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
                     rs.getString("Email"), rs.getString("Password"),
-                    rs.getInt("NumberOfAttendedSessions"), rs.getDouble("LearningHours"));
+                    0, 0);
+            case ONLINEDONOR -> new OnlineDonor(rs.getString("FirstName"), rs.getString("LastName"),
+                    rs.getString("Email"), rs.getString("Password"), 0);
             default -> throw new IllegalArgumentException("Invalid role in database");
         };
 

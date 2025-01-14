@@ -17,7 +17,8 @@ public class OnlineDonor extends User {
 
     public OnlineDonor(String firstName, String lastName, String email, String password, int numberOfDonations) {
         super(firstName, lastName, UserType.ONLINEDONOR, email, password);
-        this.numberOfDonations = numberOfDonations;
+        List<OnlineDonation> donations = getDonations();
+        this.numberOfDonations = donations.size();
     }
 
     public int getNumberOfDonations() {

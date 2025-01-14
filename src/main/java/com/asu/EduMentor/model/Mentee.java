@@ -22,8 +22,9 @@ public class Mentee extends User {
 
     public Mentee(String firstName, String lastName, String email, String password, int numberOfAttendedSessions, double learningHours) {
         super(firstName, lastName, UserType.MENTEE, email, password);
-        this.numberOfAttendedSessions = numberOfAttendedSessions;
-        this.learningHours = learningHours;
+        List<Session> sessions = getAttendedSessions();
+        this.numberOfAttendedSessions = sessions.size();
+        this.learningHours = sessions.stream().mapToDouble(Session::getDuration).sum();
     }
 
     public double getLearningHours() {

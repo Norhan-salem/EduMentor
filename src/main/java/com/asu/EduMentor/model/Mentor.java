@@ -15,7 +15,8 @@ public class Mentor extends User {
 
     public Mentor(String firstName, String lastName, String email, String password, double totalHours) {
         super(firstName, lastName, UserType.MENTOR, email, password);
-        this.totalHours = totalHours;
+        List<Session> sessions = getGivenSessions();
+        this.totalHours = sessions.stream().mapToDouble(Session::getDuration).sum();
     }
 
     public double getTotalHours() {
