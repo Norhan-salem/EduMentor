@@ -3,6 +3,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import PasswordToggle from '../utils/PasswordToggle';
 import { useAuthContext } from '../context/useAuthContext';
 import { validateForm } from '../utils/validation';
+import { useNavigate } from 'react-router-dom';
 
 const roles = ['Mentor', 'Mentee', 'Donor'];
 
@@ -16,6 +17,7 @@ const SignUpForm = () => {
   const [role, setRole] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -33,8 +35,8 @@ const SignUpForm = () => {
     try {
       // Map roles to userType ID
       const userType = role === 'Mentor' ? 2 : role === 'Mentee' ? 3 : 4;
-
       await register(firstName, lastName, email, password, userType);
+      navigate('/');
     } catch (error) {
       console.error('Signup failed:', error);
     }

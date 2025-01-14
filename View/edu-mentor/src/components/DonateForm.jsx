@@ -5,7 +5,7 @@ import Invoice from './invoice';
 
 const currencies = ['EGP', 'USD', 'EUR', 'GBP', 'CAD'];
 const predefinedAmounts = [10, 25, 50, 100];
-const paymentOptions = ['Visa', 'MasterCard', 'PayPal', 'Bank Transfer'];
+const paymentOptions = ['Card', 'Bank Transfer'];
 
 const DonateForm = () => {
   const [firstName, setFirstName] = useState('');
