@@ -3,6 +3,8 @@ package com.asu.EduMentor.controller.rest;
 import com.asu.EduMentor.controller.rest.body.CredentialsBody;
 import com.asu.EduMentor.controller.rest.body.SignUpBody;
 import com.asu.EduMentor.controller.rest.response.AuthResponse;
+import com.asu.EduMentor.logging.LoggingMediator;
+import com.asu.EduMentor.logging.SignupLog;
 import com.asu.EduMentor.model.User;
 import com.asu.EduMentor.model.UserFactory;
 import com.asu.EduMentor.model.UserType;
@@ -45,7 +47,7 @@ public class AuthenticationController {
                     userBody.getCredentials().getPassword()
             );
             newUser.create();
-
+            LoggingMediator.getInstance().log(new SignupLog(newUser.getFirstName()));
             return ResponseEntity.ok(AuthResponse.success(newUser));
         } catch (Exception e) {
             log.error("Error during signup", e);

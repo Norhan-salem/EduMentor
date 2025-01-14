@@ -4,6 +4,8 @@ import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.MasterCardPaymentStrategy;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProcessor;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
+import com.asu.EduMentor.logging.DonationLog;
+import com.asu.EduMentor.logging.LoggingMediator;
 import com.asu.EduMentor.model.InvoiceDetails;
 import com.asu.EduMentor.model.OnlineDonation;
 import com.asu.EduMentor.model.OnlineDonor;
@@ -19,7 +21,7 @@ import java.util.List;
 public class DonorController {
 
     @PostMapping("/api/makeDonation")
-    public ResponseEntity<Boolean> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest){
+    public ResponseEntity<Boolean> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest) {
         OnlineDonation donation = donorDonationRequest.getOnlineDonation();
         OnlineDonor donor = donorDonationRequest.getOnlineDonor();
         PaymentType paymentType = donorDonationRequest.getPaymentType();
@@ -28,15 +30,16 @@ public class DonorController {
 
         if (paymentType == PaymentType.MASTERCARD) {
             paymentProcessor.setPaymentStrategy(new MasterCardPaymentStrategy());
-        } else if (paymentType == PaymentType.VISA){
+        } else if (paymentType == PaymentType.VISA) {
             paymentProcessor.setPaymentStrategy(new VisaPaymentStrategy());
         }
         paymentProcessor.executePayment(donorDonationRequest.getAmount());
 
         try {
-            if (!donation.makeDonation(donor, paymentType)){
+            if (!donation.makeDonation(donor, paymentType)) {
                 throw new Exception("Make donation failed");
             }
+            LoggingMediator.getInstance().log(new DonationLog(donor.getFirstName(), donation.getAmount()));
             return ResponseEntity.ok().body(true);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
@@ -44,7 +47,7 @@ public class DonorController {
     }
 
     @GetMapping("/api/getDonations")
-    public ResponseEntity<List<OnlineDonation>> getDonations(@RequestParam OnlineDonor donor){
+    public ResponseEntity<List<OnlineDonation>> getDonations(@RequestParam OnlineDonor donor) {
         try {
             return ResponseEntity.ok(donor.getDonations());
         } catch (Exception e) {
@@ -53,7 +56,7 @@ public class DonorController {
     }
 
     @GetMapping("/api/getInvoiceDetails")
-    public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestParam OnlineDonation donation){
+    public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestParam OnlineDonation donation) {
         InvoiceDetails invoiceDetails = new InvoiceDetails(donation.getInvoice().getInvoiceID());
         try {
             return ResponseEntity.ok(invoiceDetails);

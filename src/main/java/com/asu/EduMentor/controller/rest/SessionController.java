@@ -2,6 +2,10 @@ package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.RegisterMenteeRequest;
 import com.asu.EduMentor.controller.rest.body.RegisterMentorRequest;
+import com.asu.EduMentor.logging.LoggingMediator;
+import com.asu.EduMentor.logging.MenteeRegisterLog;
+import com.asu.EduMentor.logging.MentorRegisterLog;
+import com.asu.EduMentor.logging.SessionCreationLog;
 import com.asu.EduMentor.model.*;
 import com.asu.EduMentor.socialMediaNotifier.NotificationService;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,7 @@ public class SessionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
+        LoggingMediator.getInstance().log(new SessionCreationLog(session.getSessionID()));
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
 
@@ -36,6 +41,7 @@ public class SessionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
+        LoggingMediator.getInstance().log(new MentorRegisterLog(mentor.getFirstName(), session.getSessionID()));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
     }
 
@@ -48,6 +54,7 @@ public class SessionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
+        LoggingMediator.getInstance().log(new MenteeRegisterLog(mentee.getFirstName(), session.getSessionID()));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
     }
 
