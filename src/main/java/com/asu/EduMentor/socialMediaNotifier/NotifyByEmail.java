@@ -1,11 +1,17 @@
 package com.asu.EduMentor.socialMediaNotifier;
 
+import com.asu.EduMentor.socialMediaNotifier.Iterator.*;
+import com.asu.EduMentor.socialMediaNotifier.Iterator.Iterable;
+
 public class NotifyByEmail implements INotificationObserver {
     private EmailNotificationFacade emailFacade;
+
+    Iterable emailRecipientCollection;
 
     public NotifyByEmail(NotificationService notificationService, EmailNotificationFacade emailFacade) {
         this.emailFacade = emailFacade;
         notificationService.addObserver(this);
+        this.emailRecipientCollection = new EmailRecipientCollection();
     }
 
     public String printNotifyMethod() {
@@ -16,8 +22,11 @@ interact through the update method and don't know the details of sending the ema
     @Override
     public boolean update(){
         try {
-            // TODO: there should be a list of recipients
-            emailFacade.sendEmail("peter", "peterpeter", "peter@elasticsdp.com");
+            Iterator emailRecipientsIterators = emailRecipientCollection.createIterator();
+            while (emailRecipientsIterators.hasNext()){
+                EmailRecipient recipient = (EmailRecipient) emailRecipientsIterators.next();
+                emailFacade.sendEmail(recipient.subject, recipient.content, recipient.recipientEmail);
+            }
 
             return true; // Indicate that the update was successful
         } catch (Exception e) {
