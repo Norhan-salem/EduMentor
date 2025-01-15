@@ -2,8 +2,13 @@ package com.asu.EduMentor.controller.rest.paymentProcessor.strategy;
 
 public class VisaPaymentStrategy implements IPaymentStrategy {
 
+    StripeAPI api = new StripeAPI();
+
     @Override
-    public void processPayment(double amount) {
-        System.out.println("Processing Visa payment of amount: $" + amount);
+    public String processPayment(double amount) {
+
+        long roundedAmount = Math.round(amount);
+
+        return api.createPaymentIntent(roundedAmount);
     }
 }
