@@ -1,5 +1,7 @@
 package com.asu.EduMentor.model;
 
+import lombok.NoArgsConstructor;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 public abstract class User implements CRUD {
 
     private int userID;
@@ -70,7 +73,7 @@ public abstract class User implements CRUD {
 
         User user = switch (role) {
             case ADMIN -> new Admin(rs.getString("FirstName"), rs.getString("LastName"),
-                    rs.getString("Email"), rs.getString("Password"), rs.getBoolean("Status"));
+                    rs.getString("Email"), rs.getString("Password"));
             case MENTOR -> new Mentor(rs.getString("FirstName"), rs.getString("LastName"),
                     rs.getString("Email"), rs.getString("Password"), 0);
             case MENTEE -> new Mentee(rs.getString("FirstName"), rs.getString("LastName"),
