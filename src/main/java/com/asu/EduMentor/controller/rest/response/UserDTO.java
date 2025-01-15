@@ -3,6 +3,8 @@ package com.asu.EduMentor.controller.rest.response;
 import com.asu.EduMentor.model.User;
 import com.asu.EduMentor.model.UserType;
 
+import java.util.List;
+
 public class UserDTO {
     private int userID;
     private String firstName;
@@ -18,6 +20,10 @@ public class UserDTO {
         dto.setEmail(user.getEmail());
         dto.setUserType(user.getRole());
         return dto;
+    }
+
+    public static List<UserDTO> fromUsers(List<User> users) {
+        return users.stream().map(UserDTO::fromUser).toList();
     }
 
     public int getUserID() { return userID; }
