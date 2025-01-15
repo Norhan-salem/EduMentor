@@ -128,4 +128,12 @@ export const getSessionFeedback = async (session) => {
     }
   };
 
-export const getSessions = async () =>{};
+export const getSessions = async () =>{
+    try {
+        const response = await axiosInstance.get('/api/getSessions');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching sessions:', error);
+        throw error;
+    }
+};

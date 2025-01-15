@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import SessionTable from '../components/SessionTable';
 import { useNavigate } from 'react-router-dom';
-import { cancelSession, searchSessions } from '../services/api';
+import { cancelSession, searchSessions, getSessions } from '../services/api';
 
 const AdminDashboardPage = () => {
   const [sessions, setSessions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await getSessions();
+        setSessions(response.data);
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
   const handleDeleteSession = async (session) => {
     try {
-        await cancelSession(session);
-        setSessions(sessions.filter(s => s.id !== session.sessionID));
+      await cancelSession(session);
+      setSessions(sessions.filter((s) => s.id !== session.sessionID));
     } catch (error) {
-        console.error('Error deleting session:', error);
+      console.error('Error deleting session:', error);
     }
-};
+  };
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +37,7 @@ const AdminDashboardPage = () => {
       const response = await searchSessions(searchQuery);
       setSessions(response.data);
     } catch (error) {
-      console.error('Error fetching sessions:', error);
+      console.error('Error searching sessions:', error);
     }
   };
 
@@ -74,3 +87,4 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
+

@@ -18,16 +18,16 @@ import java.util.List;
 @RequestMapping("/api/search")
 public class SortController {
 
-    MentorSorter mentorSorter;
+    MentorSorter mentorSorter = new MentorSorter();
 
     @PostMapping("/sort")
     public ResponseEntity<List<Mentor>> sortMentors(@RequestBody SortBody sortBody) {
         List<Mentor> mentors = sortBody.getMentors();
         String sortMethod = sortBody.getSortMethod();
         // Set the sorting strategy based on the sortMethod parameter
-        if ("name".equalsIgnoreCase(sortMethod)) {
+        if ("alphabetical".equalsIgnoreCase(sortMethod)) {
             mentorSorter.setSortingStrategy(new NameSortingStrategy());
-        } else if ("total_hours".equalsIgnoreCase(sortMethod)) {
+        } else if ("hours".equalsIgnoreCase(sortMethod)) {
             mentorSorter.setSortingStrategy((new TotalHoursSortingStrategy()));
         } else {
             return ResponseEntity.badRequest().body(null); // Return 400 for invalid sortMethod
