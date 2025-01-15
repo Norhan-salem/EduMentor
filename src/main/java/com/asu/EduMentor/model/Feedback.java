@@ -49,6 +49,64 @@ public class Feedback implements CRUD {
         isDeleted = deleted;
     }
 
+    public Object create2(int sessionId, int menteeId) {
+        String feedbackQuery = "INSERT INTO public.\"Feedback\" (\"Comment\", \"Stars\", \"IsDeleted\") VALUES (?, ?, ?)";
+        String fsHasQuery = "INSERT INTO public.\"FS_Has\" (\"FeedbackID\", \"SessionID\") VALUES (?, ?)";
+        String fmGivesQuery = "INSERT INTO public.\"FM_Gives\" (\"FeedbackID\", \"MenteeID\") VALUES (?, ?)";
+
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        try {
+            conn.setAutoCommit(false);
+
+            long feedbackId;
+            try (PreparedStatement feedbackStmt = conn.prepareStatement(feedbackQuery, Statement.RETURN_GENERATED_KEYS)) {
+                feedbackStmt.setString(1, this.getComment());
+                feedbackStmt.setShort(2, this.getRating());
+                feedbackStmt.setBoolean(3, this.isDeleted());
+
+                feedbackStmt.executeUpdate();
+
+                ResultSet rs = feedbackStmt.getGeneratedKeys();
+                if (rs.next()) {
+                    feedbackId = rs.getLong("FeedbackID");
+                    this.setFeedbackID(feedbackId);
+                } else {
+                    throw new SQLException("Failed to retrieve FeedbackID.");
+                }
+            }
+
+            try (PreparedStatement fsHasStmt = conn.prepareStatement(fsHasQuery)) {
+                fsHasStmt.setLong(1, feedbackId);
+                fsHasStmt.setInt(2, sessionId);
+                fsHasStmt.executeUpdate();
+            }
+
+            try (PreparedStatement fmGivesStmt = conn.prepareStatement(fmGivesQuery)) {
+                fmGivesStmt.setLong(1, feedbackId);
+                fmGivesStmt.setInt(2, menteeId);
+                fmGivesStmt.executeUpdate();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
+            throw new RuntimeException("Error creating feedback and associations", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting autocommit", e);
+            }
+        }
+
+        return this;
+    }
+
     @Override
     public Object create() {
 
@@ -173,4 +231,50 @@ public class Feedback implements CRUD {
         }
 
     }
+
+    public boolean delete2(int id) {
+        String feedbackQuery = "UPDATE public.\"Feedback\" SET \"IsDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
+        String fsHasQuery = "DELETE FROM public.\"FS_Has\" WHERE \"FeedbackID\" = ?";
+        String fmGivesQuery = "DELETE FROM public.\"FM_Gives\" WHERE \"FeedbackID\" = ?";
+
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        try {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement fsHasStmt = conn.prepareStatement(fsHasQuery)) {
+                fsHasStmt.setLong(1, id);
+                fsHasStmt.executeUpdate();
+            }
+
+            try (PreparedStatement fmGivesStmt = conn.prepareStatement(fmGivesQuery)) {
+                fmGivesStmt.setLong(1, id);
+                fmGivesStmt.executeUpdate();
+            }
+
+            int rowsAffected;
+            try (PreparedStatement feedbackStmt = conn.prepareStatement(feedbackQuery)) {
+                feedbackStmt.setLong(1, id);
+                rowsAffected = feedbackStmt.executeUpdate();
+            }
+
+            conn.commit();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
+            throw new RuntimeException("Error deleting feedback", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting autocommit", e);
+            }
+        }
+    }
+
 }
