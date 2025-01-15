@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { getMentorAvailability, addMentorAvailability, deleteMentorAvailability, getMentoringHours, getUserSessions } from '../services/api'; // Add necessary imports
-import { getUserTopics, addTopicsToUser, deleteTopicsFromUser } from '../services/api';
+import {
+  getMentorAvailability,
+  addMentorAvailability,
+  deleteMentorAvailability,
+  getMentoringHours,
+  getUserSessions,
+  getUserTopics,
+  addTopicsToUser,
+  deleteTopicsFromUser
+} from '../services/api';
 import AssignedSessions from '../components/AssignedSessions';
 import AvailabilitySchedule from '../components/AvailabilitySchedule';
 import MentoringHours from '../components/MentoringHours';
@@ -39,88 +47,104 @@ const MentorDashboardPage = () => {
     fetchMentorData();
   }, [user]);
 
-  const handleAddAvailability = async (availabilityData) => {
+  const handleAddAvailability = () => {
+    const newAvailability = {
+      date: '',
+      time: '',
+      duration: '',
+      isNew: true
+    };
+    setAvailability((prev) => [...prev, newAvailability]);
+  };
+
+  const handleSaveAvailability = async (entry, index) => {
     try {
-      const response = await addMentorAvailability({ mentor: user, availability: availabilityData });
+      const response = await addMentorAvailability({ mentor: user, availability: entry });
       if (response) {
-        setAvailability((prev) => [...prev, availabilityData]);
+        setAvailability((prev) => {
+          const updated = [...prev];
+          updated[index].isNew = false;
+          return updated;
+        });
       }
     } catch (error) {
-      console.error('Error adding mentor availability:', error);
+      console.error('Error saving availability:', error);
     }
   };
 
-  const handleDeleteAvailability = async (availabilityData) => {
+  const handleDeleteAvailability = async (index) => {
     try {
-      const response = await deleteMentorAvailability({ mentor: user, availability: availabilityData });
+      const entryToDelete = availability[index];
+      const response = await deleteMentorAvailability({ mentor: user, availability: entryToDelete });
       if (response) {
-        setAvailability((prev) => prev.filter(avail => avail !== availabilityData));
+        setAvailability((prev) => prev.filter((_, i) => i !== index));
       }
     } catch (error) {
-      console.error('Error deleting mentor availability:', error);
-    }
-  };
-
-  const handleInterestChange = async (interest) => {
-    if (interests.includes(interest)) {
-      try {
-        await deleteTopicsFromUser({ user, topics: interest });
-        setInterests((prev) => prev.filter((i) => i !== interest));
-      } catch (error) {
-        console.error('Error removing interest:', error);
-      }
-    } else if (interests.length < 3) {
-      try {
-        await addTopicsToUser({ user, topics: interest });
-        setInterests((prev) => [...prev, interest]);
-      } catch (error) {
-        console.error('Error adding interest:', error);
-      }
+      console.error('Error deleting availability:', error);
     }
   };
 
   const handleScheduleChange = (e, index, field) => {
     const { value } = e.target;
-    const updatedAvailability = [...availability];
-    updatedAvailability[index] = {
-      ...updatedAvailability[index],
-      [field]: value,
-    };
-    setAvailability(updatedAvailability);
+    setAvailability((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value
+      };
+      return updated;
+    });
   };
+
+  const handleAddInterest = async (interest) => {
+    try {
+      await addTopicsToUser({ user, topics: [interest] });
+      setInterests((prev) => [...prev, interest]);
+    } catch (error) {
+      console.error('Error adding interest:', error);
+    }
+  };
+
+  const handleDeleteInterest = async (interest) => {
+    try {
+      await deleteTopicsFromUser({ user, topics: [interest] });
+      setInterests((prev) => prev.filter((i) => i !== interest));
+    } catch (error) {
+      console.error('Error removing interest:', error);
+    }
+  };
+
 
   return (
     <Container className="mt-5">
       <h1 className="text-center mb-4">Mentor Dashboard</h1>
-      
+
       <Row>
-        {/* Assigned Sessions */}
         <Col md={6}>
           <AssignedSessions sessions={sessions} />
         </Col>
 
-        {/* Availability Schedule */}
         <Col md={6}>
           <AvailabilitySchedule
             availability={availability}
             handleAddAvailability={handleAddAvailability}
             handleScheduleChange={handleScheduleChange}
+            handleSaveAvailability={handleSaveAvailability}
             handleDeleteAvailability={handleDeleteAvailability}
           />
         </Col>
       </Row>
 
       <Row>
-        {/* Mentoring Hours */}
         <Col md={6}>
           <MentoringHours taughtHours={taughtHours} />
         </Col>
 
-        {/* Interests */}
         <Col md={6}>
           <Interests
             interests={interests}
-            handleInterestChange={handleInterestChange}
+            handleAddInterest={handleAddInterest}
+            handleDeleteInterest={handleDeleteInterest}
           />
         </Col>
       </Row>

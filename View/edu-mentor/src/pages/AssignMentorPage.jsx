@@ -3,7 +3,9 @@ import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { searchMentors, assignMentor } from '../services/api';
 
-
+/*
+get all mentors that are available on the session's date
+*/
 const AssignMentorPage = () => {
   const location = useLocation();
   const navigate = useNavigate();

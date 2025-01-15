@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, Table, Form } from 'react-bootstrap';
 
-const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange, handleDeleteAvailability }) => {
+const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange, handleSaveAvailability, handleDeleteAvailability }) => {
   return (
     <Card className="mb-4 shadow-lg auth-form">
       <Card.Body>
@@ -12,7 +12,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
               <th>Date</th>
               <th>Time</th>
               <th>Duration (hrs)</th>
-              <th>Delete</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -22,7 +22,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   <Form.Control
                     type="date"
                     name="date"
-                    value={entry.time ? new Date(entry.time).toLocaleDateString() : ''}
+                    value={entry.date || ''}
                     onChange={(e) => handleScheduleChange(e, index, 'date')}
                     className="schedule-input"
                   />
@@ -31,7 +31,7 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   <Form.Control
                     type="text"
                     name="time"
-                    value={entry.time ? `${new Date(entry.time).toLocaleTimeString()} - ${new Date(new Date(entry.time).getTime() + entry.duration * 60 * 60 * 1000).toLocaleTimeString()}` : ''}
+                    value={entry.time || ''}
                     onChange={(e) => handleScheduleChange(e, index, 'time')}
                     placeholder="e.g., 9:00 AM - 11:00 AM"
                     className="schedule-input"
@@ -48,12 +48,21 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   />
                 </td>
                 <td>
-                  <Button
-                    onClick={() => handleDeleteAvailability(index)}
-                    className="delete-btn"
-                  >
-                    Delete
-                  </Button>
+                  {entry.isNew ? (
+                    <Button
+                      onClick={() => handleSaveAvailability(entry, index)}
+                      className="home-button"
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleDeleteAvailability(index)}
+                      className="delete-btn"
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}

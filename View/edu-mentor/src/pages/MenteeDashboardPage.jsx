@@ -69,22 +69,21 @@ const MenteeDashboardPage = () => {
     }
   };
 
-  const handleInterestChange = async (interest) => {
-    // Add or remove the interest from the list and update the server accordingly
-    if (interests.includes(interest)) {
-      try {
-        await deleteTopicsFromUser({ user, topics: interest });
-        setInterests((prev) => prev.filter((i) => i !== interest));
-      } catch (error) {
-        console.error('Error removing interest:', error);
-      }
-    } else if (interests.length < 3) {
-      try {
-        await addTopicsToUser({ user, topics: interest });
-        setInterests((prev) => [...prev, interest]);
-      } catch (error) {
-        console.error('Error adding interest:', error);
-      }
+  const handleAddInterest = async (interest) => {
+    try {
+      await addTopicsToUser({ user, topics: [interest] });
+      setInterests((prev) => [...prev, interest]);
+    } catch (error) {
+      console.error('Error adding interest:', error);
+    }
+  };
+
+  const handleDeleteInterest = async (interest) => {
+    try {
+      await deleteTopicsFromUser({ user, topics: [interest] });
+      setInterests((prev) => prev.filter((i) => i !== interest));
+    } catch (error) {
+      console.error('Error removing interest:', error);
     }
   };
 
@@ -120,7 +119,8 @@ const MenteeDashboardPage = () => {
         <Col md={12}>
         <Interests 
             interests={interests} 
-            handleInterestChange={handleInterestChange} 
+            handleAddInterest={handleAddInterest}
+            handleDeleteInterest={handleDeleteInterest}
           />
         </Col>
       </Row>

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 
-const Interests = ({ interests: parentInterests, setInterests: parentSetInterests }) => {
+const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
   const [selectedInterest, setSelectedInterest] = useState('');
-  const [interests, setInterests] = useState(parentInterests || []);
   const allInterests = [
     'Frontend Development',
     'Backend Development',
@@ -13,22 +12,15 @@ const Interests = ({ interests: parentInterests, setInterests: parentSetInterest
     'Game Development',
   ];
 
-  const updateInterests = (newInterests) => {
-    setInterests(newInterests);
-    if (parentSetInterests) {
-      parentSetInterests(newInterests); 
-    }
-  };
-
   const handleAddInterest = () => {
     if (selectedInterest && !interests.includes(selectedInterest) && interests.length < 3) {
-      updateInterests([...interests, selectedInterest]);
-      setSelectedInterest(''); 
+      onAddInterest(selectedInterest);
+      setSelectedInterest('');
     }
   };
 
-  const handleDeleteInterest = (interestToDelete) => {
-    updateInterests(interests.filter((interest) => interest !== interestToDelete));
+  const handleDeleteInterest = (interest) => {
+    onDeleteInterest(interest);
   };
 
   return (
