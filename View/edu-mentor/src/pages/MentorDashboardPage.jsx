@@ -1,69 +1,122 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { getMentorAvailability, addMentorAvailability, deleteMentorAvailability, getMentoringHours, getUserSessions } from '../services/api'; // Add necessary imports
+import { getUserTopics, addTopicsToUser, deleteTopicsFromUser } from '../services/api';
 import AssignedSessions from '../components/AssignedSessions';
 import AvailabilitySchedule from '../components/AvailabilitySchedule';
 import MentoringHours from '../components/MentoringHours';
 import Interests from '../components/InterestsSelection';
+import { useAuthContext } from '../context/useAuthContext';
 
 const MentorDashboardPage = () => {
-  const [sessions] = useState([
-    { date: '2024-11-07', duration: '4 hours', topic: 'Math Tutoring' },
-    { date: '2024-11-09', duration: '11.5 hours', topic: 'Science Tutoring' },
-    { date: '2024-11-12', duration: '15 hours', topic: 'Programming' },
-  ]);
-
-  const [availability, setAvailability] = useState([
-    { date: '2024-11-07', time: '10:00 AM - 12:00 PM', status: 'Free' },
-    { date: '2024-11-09', time: '2:00 PM - 3:30 PM', status: 'Booked' },
-    { date: '2024-11-10', time: '9:00 AM - 11:00 AM', status: 'Free' },
-  ]);
-
-  const [taughtHours, setTaughtHours] = useState(70);
+  const [sessions, setSessions] = useState([]);
+  const [availability, setAvailability] = useState([]);
+  const [taughtHours, setTaughtHours] = useState(0);
   const [interests, setInterests] = useState([]);
+  const { user } = useAuthContext();
 
-  const handleInterestChange = (interest) => {
-    setInterests((prevInterests) => {
-      if (prevInterests.includes(interest)) {
-        return prevInterests.filter((i) => i !== interest);
+  useEffect(() => {
+    const fetchMentorData = async () => {
+      if (!user) return;
+
+      try {
+        const mentorAvailability = await getMentorAvailability(user);
+        setAvailability(mentorAvailability);
+
+        const hours = await getMentoringHours(user);
+        setTaughtHours(hours);
+
+        const mentorSessions = await getUserSessions(user);
+        setSessions(mentorSessions);
+
+        const userTopics = await getUserTopics(user);
+        setInterests(userTopics);
+      } catch (error) {
+        console.error('Error fetching mentor data:', error);
       }
-      if (prevInterests.length < 3) {
-        return [...prevInterests, interest];
+    };
+
+    fetchMentorData();
+  }, [user]);
+
+  const handleAddAvailability = async (availabilityData) => {
+    try {
+      const response = await addMentorAvailability({ mentor: user, availability: availabilityData });
+      if (response) {
+        setAvailability((prev) => [...prev, availabilityData]);
       }
-      return prevInterests;
-    });
+    } catch (error) {
+      console.error('Error adding mentor availability:', error);
+    }
   };
 
-  const handleScheduleChange = (e, index) => {
-    const { name, value } = e.target;
+  const handleDeleteAvailability = async (availabilityData) => {
+    try {
+      const response = await deleteMentorAvailability({ mentor: user, availability: availabilityData });
+      if (response) {
+        setAvailability((prev) => prev.filter(avail => avail !== availabilityData));
+      }
+    } catch (error) {
+      console.error('Error deleting mentor availability:', error);
+    }
+  };
+
+  const handleInterestChange = async (interest) => {
+    if (interests.includes(interest)) {
+      try {
+        await deleteTopicsFromUser({ user, topics: interest });
+        setInterests((prev) => prev.filter((i) => i !== interest));
+      } catch (error) {
+        console.error('Error removing interest:', error);
+      }
+    } else if (interests.length < 3) {
+      try {
+        await addTopicsToUser({ user, topics: interest });
+        setInterests((prev) => [...prev, interest]);
+      } catch (error) {
+        console.error('Error adding interest:', error);
+      }
+    }
+  };
+
+  const handleScheduleChange = (e, index, field) => {
+    const { value } = e.target;
     const updatedAvailability = [...availability];
-    updatedAvailability[index][name] = value;
+    updatedAvailability[index] = {
+      ...updatedAvailability[index],
+      [field]: value,
+    };
     setAvailability(updatedAvailability);
-  };
-
-  const handleAddAvailability = () => {
-    setAvailability([...availability, { date: '', time: '', status: 'Free' }]);
   };
 
   return (
     <Container className="mt-5">
       <h1 className="text-center mb-4">Mentor Dashboard</h1>
+      
       <Row>
+        {/* Assigned Sessions */}
         <Col md={6}>
           <AssignedSessions sessions={sessions} />
         </Col>
+
+        {/* Availability Schedule */}
         <Col md={6}>
           <AvailabilitySchedule
             availability={availability}
             handleAddAvailability={handleAddAvailability}
             handleScheduleChange={handleScheduleChange}
+            handleDeleteAvailability={handleDeleteAvailability}
           />
         </Col>
       </Row>
 
       <Row>
+        {/* Mentoring Hours */}
         <Col md={6}>
           <MentoringHours taughtHours={taughtHours} />
         </Col>
+
+        {/* Interests */}
         <Col md={6}>
           <Interests
             interests={interests}

@@ -5,13 +5,13 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
   return (
     <Card className="mb-4 shadow-lg auth-form">
       <Card.Body>
-        <Card.Title className=" mb-4">Availability Schedule</Card.Title>
+        <Card.Title className="mb-4">Availability Schedule</Card.Title>
         <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>Date</th>
               <th>Time</th>
-              <th>Status</th>
+              <th>Duration (hrs)</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -22,8 +22,8 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   <Form.Control
                     type="date"
                     name="date"
-                    value={entry.date}
-                    onChange={(e) => handleScheduleChange(e, index)}
+                    value={entry.time ? new Date(entry.time).toLocaleDateString() : ''}
+                    onChange={(e) => handleScheduleChange(e, index, 'date')}
                     className="schedule-input"
                   />
                 </td>
@@ -31,23 +31,21 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   <Form.Control
                     type="text"
                     name="time"
-                    value={entry.time}
-                    onChange={(e) => handleScheduleChange(e, index)}
+                    value={entry.time ? `${new Date(entry.time).toLocaleTimeString()} - ${new Date(new Date(entry.time).getTime() + entry.duration * 60 * 60 * 1000).toLocaleTimeString()}` : ''}
+                    onChange={(e) => handleScheduleChange(e, index, 'time')}
                     placeholder="e.g., 9:00 AM - 11:00 AM"
                     className="schedule-input"
                   />
                 </td>
                 <td>
                   <Form.Control
-                    as="select"
-                    name="status"
-                    value={entry.status}
-                    onChange={(e) => handleScheduleChange(e, index)}
+                    type="number"
+                    name="duration"
+                    value={entry.duration || ''}
+                    onChange={(e) => handleScheduleChange(e, index, 'duration')}
+                    placeholder="Duration in hours"
                     className="schedule-input"
-                  >
-                    <option>Free</option>
-                    <option>Booked</option>
-                  </Form.Control>
+                  />
                 </td>
                 <td>
                   <Button
@@ -72,4 +70,3 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
 };
 
 export default AvailabilitySchedule;
-

@@ -4,13 +4,13 @@ import RegisterUpcomingSessions from '../components/RegisterUpcomingSessions';
 import RegisteredSessions from '../components/RegisteredSessions';
 import AttendedHours from '../components/AttendedHours';
 import Interests from '../components/InterestsSelection';
-import { getSessions, getUserSessions, registerMentee } from '../services/api'; 
+import { getSessions, getUserSessions, registerMentee, getMenteeAttendedHours, addTopicsToUser, deleteTopicsFromUser, getUserTopics } from '../services/api'; 
 import { useAuthContext } from '../context/useAuthContext';
 
 const MenteeDashboardPage = () => {
   const [sessions, setSessions] = useState([]);
   const [registeredSessions, setRegisteredSessions] = useState([]);
-  const [attendedHours, setAttendedHours] = useState(4);
+  const [attendedHours, setAttendedHours] = useState(0);
   const [interests, setInterests] = useState([]);
   const { user } = useAuthContext();
 
@@ -35,8 +35,29 @@ const MenteeDashboardPage = () => {
       }
     };
 
+    const fetchAttendedHours = async () => {
+      if(!user) return;
+      try {
+        const data = await getMenteeAttendedHours(user.userID);
+        setAttendedHours(data);
+      } catch (error) {
+        console.error('Error fetching attended hours:', error);
+      }
+    };
+    const fetchUserTopics = async () => {
+      if (!user) return;
+      try {
+        const data = await getUserTopics(user);
+        setInterests(data);
+      } catch (error) {
+        console.error('Error fetching user topics:', error);
+      }
+    };
+
     fetchSessions();
     fetchRegisteredSessions();
+    fetchAttendedHours();
+    fetchUserTopics();
   }, [user]);
 
   const handleRegister = async (session) => {
@@ -45,6 +66,25 @@ const MenteeDashboardPage = () => {
       setRegisteredSessions((prevSessions) => [...prevSessions, session]);
     } catch (error) {
       console.error('Error registering for session:', error);
+    }
+  };
+
+  const handleInterestChange = async (interest) => {
+    // Add or remove the interest from the list and update the server accordingly
+    if (interests.includes(interest)) {
+      try {
+        await deleteTopicsFromUser({ user, topics: interest });
+        setInterests((prev) => prev.filter((i) => i !== interest));
+      } catch (error) {
+        console.error('Error removing interest:', error);
+      }
+    } else if (interests.length < 3) {
+      try {
+        await addTopicsToUser({ user, topics: interest });
+        setInterests((prev) => [...prev, interest]);
+      } catch (error) {
+        console.error('Error adding interest:', error);
+      }
     }
   };
 
@@ -78,15 +118,10 @@ const MenteeDashboardPage = () => {
       <Row>
         {/* Interests */}
         <Col md={12}>
-          <Interests interests={interests} handleInterestChange={(interest) => setInterests(prev => {
-            if (prev.includes(interest)) {
-              return prev.filter(i => i !== interest);
-            }
-            if (prev.length < 3) {
-              return [...prev, interest];
-            }
-            return prev;
-          })} />
+        <Interests 
+            interests={interests} 
+            handleInterestChange={handleInterestChange} 
+          />
         </Col>
       </Row>
     </Container>

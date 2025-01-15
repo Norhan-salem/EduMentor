@@ -137,3 +137,87 @@ export const getSessions = async () =>{
         throw error;
     }
 };
+
+export const getMenteeAttendedHours = async (menteeId) => {
+    try {
+      const response = await axiosInstance.get(`/api/mentee/${menteeId}/attendedHours`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching attended hours for mentee with ID ${menteeId}:`, error);
+      throw error;
+    }
+};
+
+export const addTopicsToUser = async (userTopicsRequest) => {
+    try {
+      const response = await axiosInstance.post('/api/topics/addTopicsToUser', userTopicsRequest);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding topics to user:', error);
+      throw error;
+    }
+};
+
+export const deleteTopicsFromUser = async (userTopicsRequest) => {
+    try {
+      const response = await axiosInstance.delete('/api/topics/deleteTopicsFromUser', {
+        data: userTopicsRequest,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting topics from user:', error);
+      throw error;
+    }
+};
+
+export const getUserTopics = async (user) => {
+    try {
+      const response = await axiosInstance.get('/api/topics/getUserTopics', {
+        params: { user },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user topics:', error);
+      throw error;
+    }
+};
+
+export const getMentorAvailability = async (mentor) => {
+    try {
+      const response = await axiosInstance.post('/api/mentor/getMentorAvailability', mentor);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching mentor availability:', error);
+      throw error;
+    }
+  };
+  
+  export const addMentorAvailability = async (mentorAvailabilityRequest) => {
+    try {
+      const response = await axiosInstance.post('/api/mentor/addMentorAvailability', mentorAvailabilityRequest);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding mentor availability:', error);
+      throw error;
+    }
+  };
+
+  export const deleteMentorAvailability = async (mentorAvailabilityRequest) => {
+    try {
+      const response = await axiosInstance.post('/api/mentor/deleteMentorAvailability', mentorAvailabilityRequest);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting mentor availability:', error);
+      throw error;
+    }
+  };
+  
+  export const getMentoringHours = async (mentor) => {
+    try {
+      const response = await axiosInstance.post('/api/mentor/getMentoringHours', mentor);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching mentoring hours:', error);
+      throw error;
+    }
+  };
