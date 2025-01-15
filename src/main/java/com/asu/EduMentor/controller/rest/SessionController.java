@@ -68,16 +68,16 @@ public class SessionController {
     }
 
     @PostMapping("/getUserSessions")
-    public ResponseEntity<List<Session>> getUserSessions(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<List<SessionDTO>> getUserSessions(@RequestBody UserDTO userDTO) {
         try {
             User user = User.findByEmail(userDTO.getEmail());
             assert user != null;
             if (user.getRole() == UserType.MENTOR) {
                 Mentor mentor = new Mentor(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
-                return ResponseEntity.ok(mentor.getGivenSessions());
+                return ResponseEntity.ok(SessionDTO.fromSessions(mentor.getGivenSessions()));
             } else if (user.getRole() == UserType.MENTEE) {
                 Mentee mentee = new Mentee(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
-                return ResponseEntity.ok(mentee.getAttendedSessions());
+                return ResponseEntity.ok(SessionDTO.fromSessions(mentee.getAttendedSessions()));
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of());
             }
