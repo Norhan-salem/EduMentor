@@ -10,10 +10,7 @@ import com.asu.EduMentor.model.*;
 import com.asu.EduMentor.socialMediaNotifier.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class SessionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
-        LoggingMediator.getInstance().log(new SessionCreationLog(session.getSessionID()));
+        LoggingMediator.getInstance().log(new SessionCreationLog(session.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
 
@@ -107,6 +104,17 @@ public class SessionController {
     public ResponseEntity<List<Feedback>> getSessionFeedback(@RequestBody Session session) {
         try {
             return ResponseEntity.ok(session.getSessionFeedback());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
+        }
+    }
+
+    @GetMapping("/getSessions")
+    public ResponseEntity<List<Session>> getSessions() {
+        try {
+            Session session = new Session();
+            List<Object> sessions = session.readAll();
+            return ResponseEntity.ok((List<Session>) (List<?>) sessions);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }

@@ -89,7 +89,7 @@ const Header = () => {
                     Dashboard
                   </Nav.Link>
                 )}
-                {user.userType === userTypeMap.ADMIN && (
+                {user.userType === "ADMIN" && (
                   <Nav.Link
                     as={Link}
                     to="/admin-dashboard"

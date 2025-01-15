@@ -1,9 +1,12 @@
 package com.asu.EduMentor.model;
 
+import lombok.NoArgsConstructor;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 public class Admin extends User {
 
     private boolean status;
