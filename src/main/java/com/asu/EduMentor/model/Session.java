@@ -1,10 +1,13 @@
 package com.asu.EduMentor.model;
 
+import lombok.NoArgsConstructor;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@NoArgsConstructor
 public class Session implements CRUD {
 
     private long sessionID;
