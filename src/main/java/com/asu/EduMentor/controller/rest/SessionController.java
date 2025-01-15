@@ -74,9 +74,11 @@ public class SessionController {
             assert user != null;
             if (user.getRole() == UserType.MENTOR) {
                 Mentor mentor = new Mentor(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
+                mentor.setUserID(user.getUserID());
                 return ResponseEntity.ok(SessionDTO.fromSessions(mentor.getGivenSessions()));
             } else if (user.getRole() == UserType.MENTEE) {
                 Mentee mentee = new Mentee(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
+                mentee.setUserID(user.getUserID());
                 return ResponseEntity.ok(SessionDTO.fromSessions(mentee.getAttendedSessions()));
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of());
