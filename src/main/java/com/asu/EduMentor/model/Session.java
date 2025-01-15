@@ -94,6 +94,55 @@ public class Session implements CRUD {
         isDeleted = deleted;
     }
 
+    public Object create2(int AdminId) {
+        String sessionQuery = "INSERT INTO public.\"Session\" (\"Date\", \"Duration\", \"SessionName\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
+        String asMakesQuery = "INSERT INTO public.\"AS_Makes\" (\"AdminID\", \"SessionID\") VALUES (?, ?)";
+
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        try {
+            conn.setAutoCommit(false);
+            long generatedSessionId;
+            try (PreparedStatement sessionStmt = conn.prepareStatement(sessionQuery, Statement.RETURN_GENERATED_KEYS)) {
+                sessionStmt.setDate(1, new java.sql.Date(this.date.getTime()));
+                sessionStmt.setDouble(2, this.duration);
+                sessionStmt.setString(3, this.name);
+                sessionStmt.setBoolean(4, this.isDeleted);
+
+                sessionStmt.executeUpdate();
+
+                ResultSet rs = sessionStmt.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedSessionId = rs.getLong("SessionID");
+                    this.sessionID = generatedSessionId;
+                } else {
+                    throw new SQLException("Failed to retrieve SessionID");
+                }
+            }
+
+            try (PreparedStatement asMakesStmt = conn.prepareStatement(asMakesQuery)) {
+                asMakesStmt.setInt(1, AdminId);
+                asMakesStmt.setLong(2, generatedSessionId);
+                asMakesStmt.executeUpdate();
+            }
+            conn.commit();
+            return this;
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
+            throw new RuntimeException("Error creating session with admin association", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting autocommit", e);
+            }
+        }
+    }
+
     @Override
     public Object create() {
 
