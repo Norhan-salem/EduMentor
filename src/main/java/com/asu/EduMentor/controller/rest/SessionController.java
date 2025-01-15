@@ -3,6 +3,7 @@ package com.asu.EduMentor.controller.rest;
 import com.asu.EduMentor.controller.rest.body.RegisterMenteeRequest;
 import com.asu.EduMentor.controller.rest.body.RegisterMentorRequest;
 import com.asu.EduMentor.controller.rest.response.SessionDTO;
+import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.logging.LoggingMediator;
 import com.asu.EduMentor.logging.MenteeRegisterLog;
 import com.asu.EduMentor.logging.MentorRegisterLog;
@@ -67,8 +68,10 @@ public class SessionController {
     }
 
     @PostMapping("/getUserSessions")
-    public ResponseEntity<List<Session>> getUserSessions(@RequestBody User user) {
+    public ResponseEntity<List<Session>> getUserSessions(@RequestBody UserDTO userDTO) {
         try {
+            User user = User.findByEmail(userDTO.getEmail());
+            assert user != null;
             if (user.getRole() == UserType.MENTOR) {
                 Mentor mentor = new Mentor(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
                 return ResponseEntity.ok(mentor.getGivenSessions());

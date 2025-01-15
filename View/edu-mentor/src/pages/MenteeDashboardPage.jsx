@@ -26,7 +26,7 @@ const MenteeDashboardPage = () => {
 
     const fetchRegisteredSessions = async () => {
       try {
-        const data = await getUserSessions();
+        const data = await getUserSessions(user);
         setRegisteredSessions(data);
       } catch (error) {
         console.error('Error fetching registered sessions:', error);
