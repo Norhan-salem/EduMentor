@@ -26,26 +26,41 @@ const MentorDashboardPage = () => {
   useEffect(() => {
     const fetchMentorData = async () => {
       if (!user) return;
-
+  
       try {
+        // Fetch mentor availability data
         const mentorAvailability = await getMentorAvailability(user);
-        setAvailability(mentorAvailability);
-
+  
+        // Transform availability data to include separate date and time fields
+        const formattedAvailability = mentorAvailability.map((entry) => {
+          const dateObject = new Date(entry.time);
+          return {
+            ...entry,
+            date: dateObject.toISOString().split('T')[0], // Extract date in 'YYYY-MM-DD' format
+            time: dateObject.toISOString().split('T')[1].slice(0, 5), // Extract time in 'HH:mm' format
+          };
+        });
+  
+        // Update state with formatted availability data
+        setAvailability(formattedAvailability);
+  
+        // Fetch and set additional mentor data
         const hours = await getMentoringHours(user);
         setTaughtHours(hours);
-
+  
         const mentorSessions = await getUserSessions(user);
         setSessions(mentorSessions);
-
+  
         const userTopics = await getUserTopics(user);
         setInterests(userTopics);
       } catch (error) {
         console.error('Error fetching mentor data:', error);
       }
     };
-
+  
     fetchMentorData();
   }, [user]);
+  
 
   const handleAddAvailability = () => {
     const newAvailability = {
@@ -69,7 +84,7 @@ const MentorDashboardPage = () => {
       console.error('Error saving availability:', error);
     }
   };
-  
+
   const handleDeleteAvailability = async (payload, index) => {
     try {
       // Make the API call to delete the specified availability
