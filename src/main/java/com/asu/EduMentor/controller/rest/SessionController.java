@@ -89,18 +89,22 @@ public class SessionController {
     }
 
     @PostMapping("/getSessionMentors")
-    public ResponseEntity<List<Mentor>> getSessionMentors(@RequestBody Session session) {
+    public ResponseEntity<List<UserDTO>> getSessionMentors(@RequestBody Session session) {
         try {
-            return ResponseEntity.ok(session.getSessionMentors());
+            List<Mentor> mentors = session.getSessionMentors();
+            List<UserDTO> userDTOS = UserDTO.fromUsers((List<User>) (List<?>) mentors);
+            return ResponseEntity.ok(userDTOS);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }
     }
 
     @PostMapping("/getSessionMentees")
-    public ResponseEntity<List<Mentee>> getSessionMentees(@RequestBody Session session) {
+    public ResponseEntity<List<UserDTO>> getSessionMentees(@RequestBody Session session) {
         try {
-            return ResponseEntity.ok(session.getSessionMentees());
+            List<Mentee> mentees = session.getSessionMentees();
+            List<UserDTO> userDTOS = UserDTO.fromUsers((List<User>) (List<?>) mentees);
+            return ResponseEntity.ok(userDTOS);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }

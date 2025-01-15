@@ -7,10 +7,10 @@ public class PaymentProcessor {
         this.paymentStrategy = strategy;
     }
 
-    public void executePayment(double amount) {
+    public String  executePayment(double amount) {
         if (paymentStrategy == null) {
             throw new IllegalStateException("Payment strategy is not set");
         }
-        paymentStrategy.processPayment(amount);
+        return paymentStrategy.processPayment(amount);
     }
 }
