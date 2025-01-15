@@ -120,7 +120,7 @@ export const getUserSessions = async (user) => {
 
 export const getSessionFeedback = async (session) => {
     try {
-      const response = await axiosInstance.post('/api/getSessionFeedback', session);
+      const response = await axiosInstance.post('/api/session/getSessionFeedback', session);
       return response.data; 
     } catch (error) {
       console.error('Error fetching session feedback:', error);
@@ -130,7 +130,7 @@ export const getSessionFeedback = async (session) => {
 
 export const getSessions = async () =>{
     try {
-        const response = await axiosInstance.get('/api/getSessions');
+        const response = await axiosInstance.get('/api/session/getSessions');
         return response.data;
     } catch (error) {
         console.error('Error fetching sessions:', error);

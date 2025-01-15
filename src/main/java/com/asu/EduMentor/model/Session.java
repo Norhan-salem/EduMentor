@@ -212,7 +212,10 @@ public class Session implements CRUD {
 
     public List<Feedback> getSessionFeedback() {
         List<Feedback> feedbacks = new ArrayList<>();
-        String query = "SELECT * FROM public.\"Feedback\" WHERE \"SessionID\" = ?";
+        String query = "SELECT f.* FROM public.\"Feedback\" f " +
+                "INNER JOIN public.\"FS_Has\" fsh ON f.\"FeedbackID\" = fsh.\"FeedbackID\" " +
+                "WHERE fsh.\"SessionID\" = ? AND f.\"IsDeleted\" = false " +
+                "ORDER BY f.\"FeedbackID\" ASC";
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -270,7 +273,7 @@ public class Session implements CRUD {
     public List<Mentee> getSessionMentees() {
         List<Mentee> mentees = new ArrayList<>();
         String sqlQuery = "SELECT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\"," +
-                "m.\"NumberOfAttendedSessions\", m.\"LearningHours\" " +
+                "m.\"NumberOfAttandedSessions\", m.\"LearningHours\" " +
                 "FROM public.\"User\" u " +
                 "JOIN public.\"Mentee\" m ON u.\"UserID\" = m.\"MenteeID\" " +
                 "JOIN public.\"SMTT_Takes\" st ON m.\"MenteeID\" = st.\"MenteeID\" " +
@@ -297,7 +300,7 @@ public class Session implements CRUD {
             }
 
         } catch (SQLException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             throw new RuntimeException("Error retrieving mentees", e);
         }
         return mentees;

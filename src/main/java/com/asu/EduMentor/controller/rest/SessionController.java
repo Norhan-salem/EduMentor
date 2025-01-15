@@ -2,6 +2,7 @@ package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.RegisterMenteeRequest;
 import com.asu.EduMentor.controller.rest.body.RegisterMentorRequest;
+import com.asu.EduMentor.controller.rest.response.SessionDTO;
 import com.asu.EduMentor.logging.LoggingMediator;
 import com.asu.EduMentor.logging.MenteeRegisterLog;
 import com.asu.EduMentor.logging.MentorRegisterLog;
@@ -110,11 +111,11 @@ public class SessionController {
     }
 
     @GetMapping("/getSessions")
-    public ResponseEntity<List<Session>> getSessions() {
+    public ResponseEntity<List<SessionDTO>> getSessions() {
         try {
             Session session = new Session();
-            List<Object> sessions = session.readAll();
-            return ResponseEntity.ok((List<Session>) (List<?>) sessions);
+            List<Session> sessions = (List<Session>) (List<?>) session.readAll();
+            return ResponseEntity.ok(SessionDTO.fromSessions(sessions));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }
