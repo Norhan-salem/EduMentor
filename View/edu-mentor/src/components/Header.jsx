@@ -99,13 +99,6 @@ const Header = () => {
                     Donations
                   </Nav.Link>
                 )}
-                <Nav.Link
-                  as={Link}
-                  to="/profile"
-                  className={`nav-link ${isActive('/profile') ? 'active-link' : ''}`}
-                >
-                  Profile
-                </Nav.Link>
                 {/* Logout link */}
                 <Nav.Link
                   as={Link}

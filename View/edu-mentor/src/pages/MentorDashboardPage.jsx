@@ -51,8 +51,7 @@ const MentorDashboardPage = () => {
     const newAvailability = {
       date: '',
       time: '',
-      duration: '',
-      isNew: true
+      duration: ''
     };
     setAvailability((prev) => [...prev, newAvailability]);
   };
@@ -63,7 +62,6 @@ const MentorDashboardPage = () => {
       if (response) {
         setAvailability((prev) => {
           const updated = [...prev];
-          updated[index].isNew = false;
           return updated;
         });
       }
@@ -71,11 +69,13 @@ const MentorDashboardPage = () => {
       console.error('Error saving availability:', error);
     }
   };
-
-  const handleDeleteAvailability = async (index) => {
+  
+  const handleDeleteAvailability = async (payload, index) => {
     try {
-      const entryToDelete = availability[index];
-      const response = await deleteMentorAvailability({ mentor: user, availability: entryToDelete });
+      // Make the API call to delete the specified availability
+      const response = await deleteMentorAvailability({ mentor: user, availability: payload });
+  
+      // If the deletion is successful, update the local state
       if (response) {
         setAvailability((prev) => prev.filter((_, i) => i !== index));
       }
@@ -143,8 +143,8 @@ const MentorDashboardPage = () => {
         <Col md={6}>
           <Interests
             interests={interests}
-            handleAddInterest={handleAddInterest}
-            handleDeleteInterest={handleDeleteInterest}
+            onAddInterest={handleAddInterest}
+            onDeleteInterest={handleDeleteInterest}
           />
         </Col>
       </Row>

@@ -119,8 +119,8 @@ const MenteeDashboardPage = () => {
         <Col md={12}>
         <Interests 
             interests={interests} 
-            handleAddInterest={handleAddInterest}
-            handleDeleteInterest={handleDeleteInterest}
+            onAddInterest={handleAddInterest}
+            onDeleteInterest={handleDeleteInterest}
           />
         </Col>
       </Row>

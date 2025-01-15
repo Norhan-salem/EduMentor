@@ -14,7 +14,6 @@ import CreateSessionPage from './pages/CreateSessionPage';
 import ResultsPage from './pages/ResultsPage';
 import DonationsPage from './pages/DisplayDonationsPage';
 import AssignMentorPage from './pages/AssignMentorPage';
-import Profile from './pages/UserProfilePage';
 import SessionDetailsPage from './pages/SessionDetailsPage';
 import { useAuthContext } from './context/useAuthContext';
 
@@ -40,7 +39,6 @@ const App = () => {
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/donations" element={<DonationsPage />} />
         <Route path="/assign-mentor" element={<AssignMentorPage />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/session-details/:sessionID" element={<SessionDetailsPage />} />
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>

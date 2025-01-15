@@ -2,6 +2,25 @@ import React from 'react';
 import { Card, Button, Table, Form } from 'react-bootstrap';
 
 const AvailabilitySchedule = ({ availability, handleAddAvailability, handleScheduleChange, handleSaveAvailability, handleDeleteAvailability }) => {
+
+  const handleSave = (entry, index) => {
+    const combinedDateTime = `${entry.date}T${entry.time}:00.000Z`;
+    const payload = {
+      time: combinedDateTime, 
+      duration: entry.duration
+    };
+    handleSaveAvailability(payload, index);
+  };
+
+  const handleDelete = (entry, index) => {
+    const combinedDateTime = `${entry.date}T${entry.time}:00.000Z`;
+    const payload = {
+      time: combinedDateTime,
+      duration: entry.duration
+    };
+    handleDeleteAvailability(payload, index);
+  };
+
   return (
     <Card className="mb-4 shadow-lg auth-form">
       <Card.Body>
@@ -12,7 +31,8 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
               <th>Date</th>
               <th>Time</th>
               <th>Duration (hrs)</th>
-              <th>Actions</th>
+              <th>Save</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -29,11 +49,10 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                 </td>
                 <td>
                   <Form.Control
-                    type="text"
+                    type="time"
                     name="time"
                     value={entry.time || ''}
                     onChange={(e) => handleScheduleChange(e, index, 'time')}
-                    placeholder="e.g., 9:00 AM - 11:00 AM"
                     className="schedule-input"
                   />
                 </td>
@@ -48,21 +67,20 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
                   />
                 </td>
                 <td>
-                  {entry.isNew ? (
-                    <Button
-                      onClick={() => handleSaveAvailability(entry, index)}
-                      className="home-button"
-                    >
-                      Save
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => handleDeleteAvailability(index)}
-                      className="delete-btn"
-                    >
-                      Delete
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleSave(entry, index)}
+                    className="home-button"
+                  >
+                    Save
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    onClick={() => handleDelete(entry, index)}
+                    className="delete-btn"
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -79,3 +97,4 @@ const AvailabilitySchedule = ({ availability, handleAddAvailability, handleSched
 };
 
 export default AvailabilitySchedule;
+
