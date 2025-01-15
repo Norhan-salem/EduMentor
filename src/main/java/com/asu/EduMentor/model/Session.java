@@ -291,7 +291,7 @@ public class Session implements CRUD {
                 String lastName = rs.getString("LastName");
                 String email = rs.getString("Email");
                 String password = rs.getString("Password");
-                int numberOfAttendedSessions = rs.getInt("NumberOfAttendedSessions");
+                int numberOfAttendedSessions = rs.getInt("NumberOfAttandedSessions");
                 double learningHours = rs.getDouble("LearningHours");
 
                 Mentee m = new Mentee(firstName, lastName, email, password, numberOfAttendedSessions, learningHours);

@@ -9,17 +9,17 @@ const AssignedSessions = ({ sessions }) => {
         <Table striped bordered hover>
           <thead>
             <tr>
+              <th>Name</th>
               <th>Date</th>
               <th>Duration</th>
-              <th>Topic</th>
             </tr>
           </thead>
           <tbody>
             {sessions.map((session, index) => (
               <tr key={index}>
-                <td>{session.date}</td>
+                <td>{session.name}</td>
+                <td>{new Date(session.date).toLocaleDateString()}</td>
                 <td>{session.duration}</td>
-                <td>{session.topic}</td>
               </tr>
             ))}
           </tbody>

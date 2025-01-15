@@ -12,7 +12,7 @@ const SessionTable = ({ sessions = [], onDeleteSession, onAssignMentor }) => {
   return (
       <Card className="mb-4 shadow-sm auth-form">
         <Card.Body>
-          <Card.Title>Upcoming Sessions</Card.Title>
+          <Card.Title>Sessions</Card.Title>
           {sessions.length === 0 ? (
               <p className="text-center">No sessions found</p>
           ) : (

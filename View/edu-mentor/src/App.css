@@ -96,4 +96,5 @@ body {
 
 .delete-btn:hover {
   background-color: var(--accent-color) !important;
+  transform: translateY(-3px);
 }

@@ -18,7 +18,7 @@ const RegisteredSessions = ({ sessions }) => {
             {sessions.map((session, index) => (
               <tr key={index}>
                 <td>{session.name}</td>
-                <td>{session.date}</td>
+                <td>{new Date(session.date).toLocaleDateString()}</td>
                 <td>{session.duration}</td>
               </tr>
             ))}

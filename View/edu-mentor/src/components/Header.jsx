@@ -18,17 +18,9 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
-  };
-
-  // Map backend enums to frontend roles
-  const userTypeMap = {
-    ADMIN: 'admin',
-    MENTOR: 'mentor',
-    MENTEE: 'mentee',
-    ONLINEDONOR: 'donor',
   };
 
   return (
@@ -107,7 +99,13 @@ const Header = () => {
                     Donations
                   </Nav.Link>
                 )}
-
+                <Nav.Link
+                  as={Link}
+                  to="/profile"
+                  className={`nav-link ${isActive('/profile') ? 'active-link' : ''}`}
+                >
+                  Profile
+                </Nav.Link>
                 {/* Logout link */}
                 <Nav.Link
                   as={Link}
@@ -116,13 +114,6 @@ const Header = () => {
                   className={`nav-link ${isActive('/logout') ? 'active-link' : ''}`}
                 >
                   Logout
-                </Nav.Link>
-                <Nav.Link
-                  as={Link}
-                  to="/profile"
-                  className={`nav-link ${isActive('/profile') ? 'active-link' : ''}`}
-                >
-                  Profile
                 </Nav.Link>
               </>
             )}

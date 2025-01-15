@@ -24,7 +24,7 @@ const MenteeDashboardPage = () => {
       }
     };
 
-    const fetchRegisteredSessions = async () => {
+    const fetchRegisteredSessions = async (user) => {
       try {
         const data = await getUserSessions(user);
         setRegisteredSessions(data);

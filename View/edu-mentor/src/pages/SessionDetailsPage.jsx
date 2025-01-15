@@ -37,9 +37,9 @@ const SessionDetailsPage = () => {
           <Card className="mb-4 auth-form">
             <Card.Body>
               <Card.Title>Session Information</Card.Title>
-              <p><strong>Date:</strong> {session?.date}</p>
-              <p><strong>Duration:</strong> {session?.duration}</p>
               <p><strong>Session ID:</strong> {session?.sessionID}</p>
+              <p><strong>Date:</strong> {new Date(session?.date).toLocaleDateString()}</p>
+              <p><strong>Duration:</strong> {session?.duration}</p>
             </Card.Body>
           </Card>
         </Col>
