@@ -1,14 +1,14 @@
 package com.asu.EduMentor.logging;
 
 public class SessionCreationLog implements Loggable {
-    long sessionId;
+    String sessionName;
 
-    public SessionCreationLog(long sessionId) {
-        this.sessionId = sessionId;
+    public SessionCreationLog(String sessionName) {
+        this.sessionName = sessionName;
     }
 
     @Override
     public String toLog() {
-        return "Session " + sessionId + " created";
+        return "Session " + sessionName + " created";
     }
 }
