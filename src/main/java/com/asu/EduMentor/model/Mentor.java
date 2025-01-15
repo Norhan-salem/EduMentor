@@ -260,4 +260,49 @@ public class Mentor extends User {
         }
 
     }
+
+    public static List<Mentor> findAvailableMentors(java.util.Date sessionDate, double sessionDuration) {
+        List<Mentor> availableMentors = new ArrayList<>();
+
+        String sqlQuery = "SELECT DISTINCT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" " +
+                "FROM public.\"User\" u " +
+                "JOIN public.\"Mentor\" m ON u.\"UserID\" = m.\"MentorID\" " +
+                "JOIN public.\"Mentor_Availability\" ma ON m.\"MentorID\" = ma.\"MentorID\" " +
+                "WHERE u.\"IsDeleted\" = FALSE " +
+                "AND ma.\"IsDeleted\" = FALSE " +
+                "AND ma.\"Availability\" = ? " +
+                "AND ma.\"AvailabilityDuration\" >= ? " +
+                "AND NOT EXISTS (" + // check if mentor is already giving a session on the same day
+                "SELECT 1 FROM public.\"SM_Gives\" sg " +
+                "JOIN public.\"Session\" s ON sg.\"SessionID\" = s.\"SessionID\" " +
+                "WHERE sg.\"MentorID\" = m.\"MentorID\" " +
+                "AND s.\"Date\" = ? " +
+                "AND s.\"IsDeleted\" = FALSE" +
+                ")";
+
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+            stmt.setTimestamp(1, new Timestamp(sessionDate.getTime()));
+            stmt.setDouble(2, sessionDuration);
+            stmt.setDate(3, new java.sql.Date(sessionDate.getTime()));
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int mentorID = rs.getInt("UserID");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String email = rs.getString("Email");
+                String password = rs.getString("Password");
+
+                Mentor mentor = new Mentor(firstName, lastName, email, password);
+                mentor.setUserID(mentorID);
+                availableMentors.add(mentor);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding available mentors", e);
+        }
+
+        return availableMentors;
+    }
 }

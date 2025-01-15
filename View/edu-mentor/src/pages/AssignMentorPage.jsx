@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { searchMentors, assignMentor } from '../services/api';
+import { assignMentor, getAvailableMentors } from '../services/api';
 
 
 const AssignMentorPage = () => {
@@ -13,7 +13,7 @@ const AssignMentorPage = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const data = await searchMentors('');
+        const data = await getAvailableMentors(session);
         setMentors(data);
       } catch (error) {
         console.error('Error fetching mentors:', error);

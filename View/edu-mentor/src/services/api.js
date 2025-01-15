@@ -219,3 +219,13 @@ export const getMentorAvailability = async (mentor) => {
       throw error;
     }
   };
+
+  export const getAvailableMentors = async (session) => {
+    try {
+      const response = await axiosInstance.post('/api/mentor/getAvailableMentors', session);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching available mentors:', error);
+      throw error;
+    }
+  }
