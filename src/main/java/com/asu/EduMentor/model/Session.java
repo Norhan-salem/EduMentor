@@ -2,6 +2,11 @@ package com.asu.EduMentor.model;
 
 import lombok.NoArgsConstructor;
 
+import com.asu.EduMentor.model.SessionStateDP.CompletedState;
+import com.asu.EduMentor.model.SessionStateDP.ISessionState;
+import com.asu.EduMentor.model.SessionStateDP.OngoingState;
+import com.asu.EduMentor.model.SessionStateDP.ScheduleState;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,13 +21,29 @@ public class Session implements CRUD {
     private String name;
     private boolean isDeleted = false;
 
+    ISessionState sessionState;
 
     public Session(Date date, double duration, String name) {
         this.date = date;
         this.duration = duration;
         this.name = name;
+        sessionState = fetchDate(date);
     }
+    public void setSessionState(ISessionState sessionState) {
+       this.sessionState = sessionState;
+    }
+    public ISessionState fetchDate(Date currentDate){
+        long sessionStartTime = getDate().getTime();
+        long sessionEndTime = sessionStartTime + (long) (getDuration() * 3600 * 1000);
+        long currentTime = currentDate.getTime();
 
+        if (currentTime < sessionStartTime) {
+            return new ScheduleState();
+        } else if (currentTime >= sessionStartTime && currentTime < sessionEndTime) {
+            return new OngoingState();
+        }
+        return new CompletedState();
+    }
     public static List<Session> findSessionsBySearchTerm(String search) {
         List<Session> sessions = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE " +
