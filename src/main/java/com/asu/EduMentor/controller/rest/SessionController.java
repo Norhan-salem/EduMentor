@@ -25,7 +25,7 @@ public class SessionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
-        LoggingMediator.getInstance().log(new SessionCreationLog(session.getSessionID()));
+        LoggingMediator.getInstance().log(new SessionCreationLog(session.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
 
