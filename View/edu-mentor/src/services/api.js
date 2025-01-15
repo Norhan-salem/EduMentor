@@ -172,9 +172,7 @@ export const deleteTopicsFromUser = async (userTopicsRequest) => {
 
 export const getUserTopics = async (user) => {
     try {
-      const response = await axiosInstance.get('/api/topics/getUserTopics', {
-        params: { user },
-      });
+      const response = await axiosInstance.post('/api/topics/getUserTopics', user);
       return response.data;
     } catch (error) {
       console.error('Error fetching user topics:', error);

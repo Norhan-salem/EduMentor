@@ -1,8 +1,10 @@
 package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.UserTopicsRequest;
+import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.model.Topics;
 import com.asu.EduMentor.model.User;
+import com.asu.EduMentor.model.UserFactory;
 import com.asu.EduMentor.model.UserTopics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +44,10 @@ public class TopicsController {
         }
     }
 
-    @GetMapping("/getUserTopics")
-    public ResponseEntity<List<Topics>> getUserTopics(@RequestParam User user) {
+    @PostMapping("/getUserTopics")
+    public ResponseEntity<List<Topics>> getUserTopics(@RequestBody UserDTO userDTO) {
         UserTopics userTopics = new UserTopics();
-
+        User user = UserFactory.createUser(userDTO.getUserType(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
         try {
             return  ResponseEntity.ok(userTopics.getUserTopics(user));
         } catch (Exception e) {
