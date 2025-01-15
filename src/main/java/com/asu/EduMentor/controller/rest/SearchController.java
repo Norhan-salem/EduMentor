@@ -4,6 +4,7 @@ package com.asu.EduMentor.controller.rest;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.MentorSorter;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.NameSortingStrategy;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.TotalHoursSortingStrategy;
+import com.asu.EduMentor.controller.rest.response.SessionDTO;
 import com.asu.EduMentor.model.Mentor;
 import com.asu.EduMentor.model.Session;
 import com.asu.EduMentor.model.User;
@@ -28,8 +29,8 @@ public class SearchController {
     }
 
     @GetMapping("/sessions")
-    public ResponseEntity<List<Session>> searchSessions(@RequestParam("search") String search) {
-        List<Session> sessions = Session.findSessionsBySearchTerm(search);
+    public ResponseEntity<List<SessionDTO>> searchSessions(@RequestParam("search") String search) {
+        List<SessionDTO> sessions = SessionDTO.fromSessions(Session.findSessionsBySearchTerm(search));
         return ResponseEntity.ok(sessions);
     }
 
