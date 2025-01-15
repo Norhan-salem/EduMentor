@@ -16,8 +16,14 @@ import DonationsPage from './pages/DisplayDonationsPage';
 import AssignMentorPage from './pages/AssignMentorPage';
 import Profile from './pages/UserProfilePage';
 import SessionDetailsPage from './pages/SessionDetailsPage';
+import { useAuthContext } from './context/useAuthContext';
 
 const App = () => {
+  const { isInitialized } = useAuthContext();
+
+  if (!isInitialized) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className='app-wrapper'>
     <Router>

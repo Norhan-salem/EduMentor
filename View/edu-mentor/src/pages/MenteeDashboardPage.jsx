@@ -24,8 +24,10 @@ const MenteeDashboardPage = () => {
       }
     };
 
-    const fetchRegisteredSessions = async (user) => {
+    const fetchRegisteredSessions = async () => {
+      if(!user) return;
       try {
+        console.log(user);
         const data = await getUserSessions(user);
         setRegisteredSessions(data);
       } catch (error) {
@@ -35,7 +37,7 @@ const MenteeDashboardPage = () => {
 
     fetchSessions();
     fetchRegisteredSessions();
-  }, []);
+  }, [user]);
 
   const handleRegister = async (session) => {
     try {
