@@ -240,3 +240,13 @@ export const getMentorAvailability = async (mentor) => {
         throw error;
       }
     }
+
+ export const makeDonation = async (donationPayload) => {
+      try{
+          const response = await axiosInstance.post('/api/donor/api/makeDonation',donationPayload);
+          return response.data;
+      }catch (error){
+          console.error('Error making donation:', error);
+          throw error;
+      }
+ }

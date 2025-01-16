@@ -20,6 +20,13 @@ public abstract class User implements CRUD {
     private String password;
     private boolean isDeleted = false;
 
+    public User(String firstName, String lastName, UserType role, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.email = email;
+    }
+
     public User(String firstName, String lastName, UserType role, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;

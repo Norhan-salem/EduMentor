@@ -2,6 +2,7 @@ package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.CourierPaymentStrategy;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.CreatePaymentResponse;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProcessor;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
 import com.asu.EduMentor.logging.DonationLog;
@@ -21,7 +22,7 @@ import java.util.List;
 public class DonorController {
 
     @PostMapping("/api/makeDonation")
-    public ResponseEntity<Boolean> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest) {
+    public ResponseEntity<CreatePaymentResponse> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest) {
         OnlineDonation donation = donorDonationRequest.getOnlineDonation();
         OnlineDonor donor = donorDonationRequest.getOnlineDonor();
         PaymentType paymentType = donorDonationRequest.getPaymentType();
@@ -33,16 +34,16 @@ public class DonorController {
         } else if (paymentType == PaymentType.VISA) {
             paymentProcessor.setPaymentStrategy(new VisaPaymentStrategy());
         }
-        paymentProcessor.executePayment(donorDonationRequest.getAmount());
+        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount());
 
         try {
             if (!donation.makeDonation(donor, paymentType)) {
                 throw new Exception("Make donation failed");
             }
             LoggingMediator.getInstance().log(new DonationLog(donor.getFirstName(), donation.getAmount()));
-            return ResponseEntity.ok().body(true);
+            return ResponseEntity.ok(new CreatePaymentResponse(response));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return ResponseEntity.badRequest().body(new CreatePaymentResponse(e.getMessage()));
         }
     }
 
