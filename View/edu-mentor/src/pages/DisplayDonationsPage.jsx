@@ -12,16 +12,16 @@ const DonationsPage = () => {
 
   useEffect(() => {
     const fetchDonations = async () => {
-      try {
-        const response = await axios.get('/api/getDonations', {
-          params: { donor: { email: user.email } },
-        });
-        setDonations(response.data);
-      } catch (err) {
-        setError('Failed to fetch donations');
-      } finally {
-        setLoading(false);
-      }
+      // try {
+      //   const response = await axios.get('/api/getDonations', {
+      //     params: { donor: { email: user.email } },
+      //   });
+      //   setDonations(response.data);
+      // } catch (err) {
+      //   setError('Failed to fetch donations');
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     if (user) fetchDonations();

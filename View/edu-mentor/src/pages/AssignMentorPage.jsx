@@ -31,9 +31,9 @@ const AssignMentorPage = () => {
     }
   }, [session]);
 
-  const handleAssign = async (mentorId) => {
+  const handleAssign = async (mentor) => {
     try {
-        await assignMentor(session, mentorId);
+        await assignMentor(session, mentor);
         alert('Mentor successfully assigned to the session!');
         navigate('/admin-dashboard');
     } catch (error) {
@@ -42,7 +42,7 @@ const AssignMentorPage = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading until mentors are fetched or session is confirmed
+    return <div>Loading...</div>;
   }
 
   return (
