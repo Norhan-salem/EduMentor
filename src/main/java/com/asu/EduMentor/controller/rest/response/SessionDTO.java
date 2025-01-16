@@ -14,6 +14,7 @@ public class SessionDTO {
     private Date date;
     private double duration;
     private String name;
+    private String state;
 
     public static SessionDTO fromSession(Session session) {
         SessionDTO dto = new SessionDTO();
@@ -21,6 +22,7 @@ public class SessionDTO {
         dto.setDate(session.getDate());
         dto.setDuration(session.getDuration());
         dto.setName(session.getName());
+        dto.setState(session.getState());
         return dto;
     }
 

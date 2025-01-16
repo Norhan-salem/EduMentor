@@ -9,5 +9,10 @@ public class CompletedState implements ISessionState{
         return;
     }
 
+    @Override
+    public String getStateName() {
+        return "Completed";
+    }
+
 
 }

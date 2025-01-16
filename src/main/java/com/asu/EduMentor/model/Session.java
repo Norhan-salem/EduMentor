@@ -29,6 +29,11 @@ public class Session implements CRUD {
         this.name = name;
         sessionState = fetchDate(date);
     }
+
+    public String getState() {
+        return sessionState.getStateName();
+    }
+
     public void setSessionState(ISessionState sessionState) {
        this.sessionState = sessionState;
     }

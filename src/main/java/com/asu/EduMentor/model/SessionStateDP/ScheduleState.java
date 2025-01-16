@@ -8,4 +8,9 @@ public class ScheduleState implements ISessionState{
     public void nextState(Session session) {
         session.setSessionState(new OngoingState());
     }
+
+    @Override
+    public String getStateName() {
+        return "Scheduled";
+    }
 }

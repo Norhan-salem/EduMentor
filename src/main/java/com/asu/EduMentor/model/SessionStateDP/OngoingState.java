@@ -8,4 +8,9 @@ public class OngoingState implements ISessionState{
     public void nextState(Session session) {
         session.setSessionState(new CompletedState());
     }
+
+    @Override
+    public String getStateName() {
+        return "Ongoing";
+    }
 }
