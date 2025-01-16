@@ -41,9 +41,10 @@ public class Session implements CRUD {
         long sessionEndTime = sessionStartTime + (long) (getDuration() * 3600 * 1000);
         long currentTime = new Date().getTime();
 
-        if (currentTime < sessionStartTime) {
+        if (currentTime <   sessionStartTime) {
             return new ScheduleState();
-        } else if (currentTime >= sessionStartTime && currentTime < sessionEndTime) {
+        }
+        if (currentTime >= sessionStartTime && currentTime < sessionEndTime) {
             return new OngoingState();
         }
         return new CompletedState();
