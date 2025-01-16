@@ -9,6 +9,8 @@ public class Feedback implements CRUD {
     private String comment;
     private short rating;
     private boolean isDeleted = false;
+    private int sessionId;
+    private int menteeId;
 
 
     public Feedback(String comment, short rating) {
@@ -49,7 +51,8 @@ public class Feedback implements CRUD {
         isDeleted = deleted;
     }
 
-    public Object create2(int sessionId, int menteeId) {
+    @Override
+    public Object create() {
         String feedbackQuery = "INSERT INTO public.\"Feedback\" (\"Comment\", \"Stars\", \"IsDeleted\") VALUES (?, ?, ?)";
         String fsHasQuery = "INSERT INTO public.\"FS_Has\" (\"FeedbackID\", \"SessionID\") VALUES (?, ?)";
         String fmGivesQuery = "INSERT INTO public.\"FM_Gives\" (\"FeedbackID\", \"MenteeID\") VALUES (?, ?)";
@@ -78,13 +81,13 @@ public class Feedback implements CRUD {
 
             try (PreparedStatement fsHasStmt = conn.prepareStatement(fsHasQuery)) {
                 fsHasStmt.setLong(1, feedbackId);
-                fsHasStmt.setInt(2, sessionId);
+                fsHasStmt.setInt(2, this.sessionId);
                 fsHasStmt.executeUpdate();
             }
 
             try (PreparedStatement fmGivesStmt = conn.prepareStatement(fmGivesQuery)) {
                 fmGivesStmt.setLong(1, feedbackId);
-                fmGivesStmt.setInt(2, menteeId);
+                fmGivesStmt.setInt(2, this.menteeId);
                 fmGivesStmt.executeUpdate();
             }
 
@@ -105,32 +108,6 @@ public class Feedback implements CRUD {
         }
 
         return this;
-    }
-
-    @Override
-    public Object create() {
-
-        String sqlQuery = "INSERT INTO public.\"Feedback\" (\"Comment\", \"Stars\", \"IsDeleted\") VALUES (?, ?, ?)";
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, this.getComment());
-            stmt.setShort(2, this.getRating());
-            stmt.setBoolean(3, this.isDeleted());
-
-
-            stmt.executeUpdate();
-
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                this.setFeedbackID(rs.getLong("FeedbackID"));
-            }
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new RuntimeException("Error creating feedback", e);
-        }
-
-        return this;
-
     }
 
     @Override
@@ -216,23 +193,6 @@ public class Feedback implements CRUD {
 
     @Override
     public boolean delete(int id) {
-
-        String sqlQuery = "UPDATE public.\"Feedback\" SET \"IsDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setLong(1, id);
-
-            int rowsAffected = stmt.executeUpdate();
-
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new RuntimeException("Error deleting feedback", e);
-        }
-
-    }
-
-    public boolean delete2(int id) {
         String feedbackQuery = "UPDATE public.\"Feedback\" SET \"IsDeleted\" = TRUE WHERE \"FeedbackID\" = ?";
         String fsHasQuery = "DELETE FROM public.\"FS_Has\" WHERE \"FeedbackID\" = ?";
         String fmGivesQuery = "DELETE FROM public.\"FM_Gives\" WHERE \"FeedbackID\" = ?";
