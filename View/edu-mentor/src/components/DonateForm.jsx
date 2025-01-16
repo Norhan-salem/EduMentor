@@ -184,7 +184,7 @@ const DonateForm = () => {
         </Form.Select>
       </Form.Group>
 
-      {(paymentOption === 'Visa' || paymentOption === 'MasterCard') && (
+      {(paymentOption === 'Card') && (
         <>
           <Form.Group className="mb-3" controlId="formBasicCardNumber">
             <Form.Label>Card Number</Form.Label>
