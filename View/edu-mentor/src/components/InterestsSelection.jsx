@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
+import { getAllTopics } from '../services/api';
 
 const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
-  const [selectedInterest, setSelectedInterest] = useState('');
-  const allInterests = [
-    'Frontend Development',
-    'Backend Development',
-    'AI/ML',
-    'DevOps',
-    'Cloud Computing',
-    'Game Development',
-  ];
+  const [allTopics, setAllTopics] = useState([]);
+  const [selectedTopicID, setSelectedTopicID] = useState('');
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const data = await getAllTopics();
+        setAllTopics(data.filter((topic) => !topic.deleted));
+      } catch (error) {
+        console.error('Error fetching topics:', error);
+      }
+    };
+    fetchTopics();
+  }, []);
 
   const handleAddInterest = () => {
-    if (selectedInterest && !interests.includes(selectedInterest) && interests.length < 3) {
-      onAddInterest(selectedInterest);
-      setSelectedInterest('');
+    if (
+      selectedTopicID &&
+      !interests.some((interest) => interest.topicID === selectedTopicID)
+    ) {
+      const topic = allTopics.find((topic) => topic.topicID === Number(selectedTopicID));
+      if (topic) {
+        onAddInterest(topic);
+        setSelectedTopicID('');
+      }
     }
   };
 
-  const handleDeleteInterest = (interest) => {
-    onDeleteInterest(interest);
+  const handleDeleteInterest = (topicID) => {
+    onDeleteInterest(topicID);
   };
 
   return (
@@ -32,20 +44,20 @@ const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
             <Form.Label>Select an Interest</Form.Label>
             <div className="d-flex align-items-center mb-3">
               <Form.Select
-                value={selectedInterest}
-                onChange={(e) => setSelectedInterest(e.target.value)}
+                value={selectedTopicID}
+                onChange={(e) => setSelectedTopicID(e.target.value)}
                 className="me-2"
               >
                 <option value="">-- Select an Interest --</option>
-                {allInterests.map((interest) => (
-                  <option key={interest} value={interest}>
-                    {interest}
+                {allTopics.map((topic) => (
+                  <option key={topic.topicID} value={topic.topicID}>
+                    {topic.topicsName}
                   </option>
                 ))}
               </Form.Select>
               <Button
                 onClick={handleAddInterest}
-                disabled={!selectedInterest || interests.includes(selectedInterest) || interests.length >= 3}
+                disabled={!selectedTopicID || interests.some((i) => i.topicID === Number(selectedTopicID))}
                 className="home-button"
               >
                 Add
@@ -54,12 +66,12 @@ const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
             <p className="mt-3">Selected Interests:</p>
             <ul className="list-unstyled">
               {interests.map((interest) => (
-                <li key={interest} className="d-flex flex-column align-items-start mb-2">
-                  <span>{interest}</span>
+                <li key={interest.topicID} className="d-flex flex-column align-items-start mb-2">
+                  <span>{interest.topicsName}</span>
                   <Button
                     size="sm"
                     className="delete-btn mt-1"
-                    onClick={() => handleDeleteInterest(interest)}
+                    onClick={() => handleDeleteInterest(interest.topicID)}
                   >
                     Delete
                   </Button>

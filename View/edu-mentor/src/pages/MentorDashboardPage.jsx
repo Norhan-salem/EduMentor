@@ -113,17 +113,22 @@ const MentorDashboardPage = () => {
 
   const handleAddInterest = async (interest) => {
     try {
-      await addTopicsToUser({ user, topics: [interest] });
+      const payload = {
+        user: user, 
+        topic: interest, 
+      };
+      await addTopicsToUser(payload);
       setInterests((prev) => [...prev, interest]);
     } catch (error) {
       console.error('Error adding interest:', error);
     }
   };
+  
 
-  const handleDeleteInterest = async (interest) => {
+  const handleDeleteInterest = async (topicID) => {
     try {
-      await deleteTopicsFromUser({ user, topics: [interest] });
-      setInterests((prev) => prev.filter((i) => i !== interest));
+      await deleteTopicsFromUser({ user, topics: [{ topicID }] });
+      setInterests((prev) => prev.filter((i) => i.topicID !== topicID));
     } catch (error) {
       console.error('Error removing interest:', error);
     }
