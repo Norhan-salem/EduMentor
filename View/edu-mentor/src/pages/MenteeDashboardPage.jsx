@@ -73,7 +73,7 @@ const MenteeDashboardPage = () => {
     try {
       const payload = {
         user: user, 
-        topic: interest, 
+        topics: interest, 
       };
       await addTopicsToUser(payload);
       setInterests((prev) => [...prev, interest]);
