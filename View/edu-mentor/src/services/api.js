@@ -228,4 +228,15 @@ export const getMentorAvailability = async (mentor) => {
       console.error('Error fetching available mentors:', error);
       throw error;
     }
+
   }
+
+  export const getAllTopics = async () => {
+      try {
+        const response = await axiosInstance.get('/api/topics/getAllTopics');
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching all topics:', error);
+        throw error;
+      }
+    }
