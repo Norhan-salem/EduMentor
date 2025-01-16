@@ -27,20 +27,15 @@ public class Session implements CRUD {
         this.date = date;
         this.duration = duration;
         this.name = name;
-        sessionState = fetchDate(date);
+        sessionState = getStateBasedOnDate();
     }
-
-    public String getState() {
-        return sessionState.getStateName();
-    }
-
     public void setSessionState(ISessionState sessionState) {
        this.sessionState = sessionState;
     }
-    public ISessionState fetchDate(Date currentDate){
+    public ISessionState getStateBasedOnDate(){
         long sessionStartTime = getDate().getTime();
         long sessionEndTime = sessionStartTime + (long) (getDuration() * 3600 * 1000);
-        long currentTime = currentDate.getTime();
+        long currentTime = new Date().getTime();
 
         if (currentTime < sessionStartTime) {
             return new ScheduleState();
