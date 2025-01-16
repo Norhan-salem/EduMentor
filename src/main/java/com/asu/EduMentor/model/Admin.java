@@ -39,7 +39,7 @@ public class Admin extends User {
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
             stmt.setString(4, this.getPassword());
-            stmt.setInt(5, 1);
+            stmt.setInt(5, UserType.ADMIN.getRoleId());
 
             stmt.executeUpdate();
 

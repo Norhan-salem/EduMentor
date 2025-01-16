@@ -55,7 +55,7 @@ public class Mentee extends User {
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
             stmt.setString(4, this.getPassword());
-            stmt.setInt(5, 3);
+            stmt.setInt(5, UserType.MENTEE.getRoleId());
 
             stmt.executeUpdate();
 

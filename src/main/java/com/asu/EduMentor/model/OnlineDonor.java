@@ -42,7 +42,7 @@ public class OnlineDonor extends User {
             stmt.setString(2, this.getLastName());
             stmt.setString(3, this.getEmail());
             stmt.setString(4, this.getPassword());
-            stmt.setInt(5, 4);
+            stmt.setInt(5, UserType.ONLINEDONOR.getRoleId());
 
             stmt.executeUpdate();
 
