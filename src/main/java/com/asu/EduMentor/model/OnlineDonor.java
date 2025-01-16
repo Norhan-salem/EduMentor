@@ -13,6 +13,10 @@ public class OnlineDonor extends User {
     private int numberOfDonations;
 
 
+    public OnlineDonor(String firstName, String lastName, String email) {
+        super(firstName, lastName, UserType.ONLINEDONOR, email);
+    }
+
     public OnlineDonor(String firstName, String lastName, String email, String password) {
         super(firstName, lastName, UserType.ONLINEDONOR, email, password);
         this.numberOfDonations = 0;
