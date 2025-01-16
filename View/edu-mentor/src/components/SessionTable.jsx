@@ -22,6 +22,7 @@ const SessionTable = ({ sessions = [], onDeleteSession, onAssignMentor }) => {
                   <th>Name</th>
                   <th>Date</th>
                   <th>Duration</th>
+                  <th>State</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -31,14 +32,8 @@ const SessionTable = ({ sessions = [], onDeleteSession, onAssignMentor }) => {
                       <td>{session.name}</td>
                       <td>{new Date(session.date).toLocaleDateString()}</td>
                       <td>{session.duration} hours</td>
+                      <td>{session.state}</td>
                       <td>
-                        <Button
-                            size="sm"
-                            className="me-2 delete-btn"
-                            onClick={() => onDeleteSession(session)}
-                        >
-                          Delete
-                        </Button>
                         <Button
                             size="sm"
                             className="me-2 home-button"
@@ -48,10 +43,17 @@ const SessionTable = ({ sessions = [], onDeleteSession, onAssignMentor }) => {
                         </Button>
                         <Button
                             size="sm"
-                            className="home-button"
+                            className="me-2 home-button"
                             onClick={() => handleViewDetails(session)}
                         >
                           View Details
+                        </Button>
+                        <Button
+                            size="sm"
+                            className="me-2 delete-btn"
+                            onClick={() => onDeleteSession(session)}
+                        >
+                          Delete
                         </Button>
                       </td>
                     </tr>
