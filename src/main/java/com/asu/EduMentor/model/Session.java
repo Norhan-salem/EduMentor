@@ -29,6 +29,9 @@ public class Session implements CRUD {
         this.name = name;
         sessionState = getStateBasedOnDate();
     }
+    public String getState() {
+        return sessionState.getStateName();
+    }
     public void setSessionState(ISessionState sessionState) {
        this.sessionState = sessionState;
     }
@@ -44,6 +47,7 @@ public class Session implements CRUD {
         }
         return new CompletedState();
     }
+
     public static List<Session> findSessionsBySearchTerm(String search) {
         List<Session> sessions = new ArrayList<>();
         String sqlQuery = "SELECT * FROM public.\"Session\" WHERE " +
