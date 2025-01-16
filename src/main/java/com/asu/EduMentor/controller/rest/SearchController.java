@@ -4,6 +4,7 @@ package com.asu.EduMentor.controller.rest;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.MentorSorter;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.NameSortingStrategy;
 import com.asu.EduMentor.controller.rest.mentorSorter.strategy.TotalHoursSortingStrategy;
+import com.asu.EduMentor.controller.rest.response.MentorDTO;
 import com.asu.EduMentor.controller.rest.response.SessionDTO;
 import com.asu.EduMentor.model.Mentor;
 import com.asu.EduMentor.model.Session;
@@ -35,14 +36,20 @@ public class SearchController {
     }
 
     @GetMapping("/mentors")
-    public ResponseEntity<List<Mentor>> searchMentors(@RequestParam("search") String search) {
-        // Find users matching the search term
+    public ResponseEntity<List<MentorDTO>> searchMentors(@RequestParam("search") String search) {
         List<User> users = User.findUsersBySearchTerm(search);
 
-        // Filter users by the role MENTOR
-        List<Mentor> mentors = users.stream()
-                .filter(user -> user.getRole() == UserType.MENTOR) // Check if the user is a mentor
-                .map(user -> (Mentor) user) // Cast User to Mentor
+        List<MentorDTO> mentors = users.stream()
+                .filter(user -> user.getRole() == UserType.MENTOR)
+                .map(user -> (Mentor) user)
+                .peek(mentor -> {
+                    double totalHours = mentor.getGivenSessions()
+                            .stream()
+                            .mapToDouble(Session::getDuration)
+                            .sum();
+                    mentor.setTotalHours(totalHours);
+                })
+                .map(MentorDTO::fromMentor)
                 .toList();
 
         return ResponseEntity.ok(mentors);
