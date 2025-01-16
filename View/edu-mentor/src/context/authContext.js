@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer, useCallback, useMemo } from 'react';
-import axiosInstance from '../utils/axios';
+import axiosInstance from '../api/axiosInstance';
 import localStorageAvailable from '../utils/localStorageAvailable';
 
 // Initial state for the AuthContext

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import SessionTable from '../components/SessionTable';
 import { useNavigate } from 'react-router-dom';
-import { cancelSession, searchSessions, getSessions } from '../services/api';
+import { cancelSession, searchSessions, getSessions } from '../api/apiClient';
 
 const AdminDashboardPage = () => {
   const [sessions, setSessions] = useState([]);

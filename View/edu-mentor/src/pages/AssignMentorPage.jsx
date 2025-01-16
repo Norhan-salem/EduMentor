@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { assignMentor, getAvailableMentors } from '../services/api';
+import { assignMentor, getAvailableMentors } from '../api/apiClient';
 
 const AssignMentorPage = () => {
   const location = useLocation();

@@ -374,7 +374,7 @@ export const getAllTopics = async () => {
  */
 export const makeDonation = async (donationPayload) => {
   try {
-    const response = await proxyClient.requestWithRetries('/api/donor/api/makeDonation', 3, 'post', donationPayload);
+    const response = await proxyClient.requestWithRetries('/api/donation/create-payment-intent', 3, 'post', donationPayload);
     return response;
   } catch (error) {
     console.error('Error making donation:', error);

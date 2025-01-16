@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
-import { getAllTopics } from '../services/api';
+import { getAllTopics } from '../api/apiClient';
 
 const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
   const [allTopics, setAllTopics] = useState([]);

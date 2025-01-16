@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { FaSortAlphaDown, FaSortNumericDown } from 'react-icons/fa';
-import { sortMentors } from '../services/api';
+import { sortMentors } from '../api/apiClient';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
