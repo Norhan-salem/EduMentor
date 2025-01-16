@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { createSession } from '../api/apiClient';
+import { useAuthContext } from '../context/useAuthContext';
 
 const CreateSessionPage = () => {
   const [newSession, setNewSession] = useState({
@@ -10,6 +11,8 @@ const CreateSessionPage = () => {
     duration: '',
     name: '',
   });
+
+  const {user} = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -38,6 +41,7 @@ const CreateSessionPage = () => {
       date: sessionDateTime,
       duration: parseFloat(newSession.duration),
       name: newSession.name.trim(),
+      adminId: user.userID,
     };
 
     try {
