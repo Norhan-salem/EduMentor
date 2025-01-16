@@ -29,7 +29,7 @@ public class OnlineDonor extends User {
     }
 
     public int getNumberOfDonations() {
-        return numberOfDonations;
+        return getDonations().size();
     }
 
     public void setNumberOfDonations(int numberOfDonations) {

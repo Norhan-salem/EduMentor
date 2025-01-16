@@ -199,20 +199,55 @@ public class Session implements CRUD {
             throw new IllegalArgumentException("Invalid object type");
         }
 
-        String sqlQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setTimestamp(1, new Timestamp(updatedSession.getDate().getTime()));
-            stmt.setDouble(2, updatedSession.getDuration());
-            stmt.setString(3, updatedSession.getName());
-            stmt.setLong(4, updatedSession.getSessionID());
+        String sessionQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? " +
+                "WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
+        String updateMenteeQuery = "UPDATE public.\"Mentee\" SET \"LearningHours\" = \"LearningHours\" + ? " +
+                "WHERE \"MenteeID\" = ?";
 
-            stmt.executeUpdate();
+        Connection conn = DBConnection.getInstance().getConnection();
+        try {
+            conn.setAutoCommit(false);
+
+            double oldDuration = this.getDuration();
+            double durationDifference = updatedSession.getDuration() - oldDuration;
+
+            // Only update mentee hours if duration changed
+            if (durationDifference != 0) {
+                List<Mentee> mentees = getSessionMentees();
+                try (PreparedStatement stmt = conn.prepareStatement(updateMenteeQuery)) {
+                    for (Mentee mentee : mentees) {
+                        stmt.setDouble(1, durationDifference);
+                        stmt.setInt(2, mentee.getUserID());
+                        stmt.executeUpdate();
+                    }
+                }
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(sessionQuery)) {
+                stmt.setTimestamp(1, new Timestamp(updatedSession.getDate().getTime()));
+                stmt.setDouble(2, updatedSession.getDuration());
+                stmt.setString(3, updatedSession.getName());
+                stmt.setLong(4, updatedSession.getSessionID());
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return updatedSession;
+
         } catch (SQLException e) {
-            //e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
             throw new RuntimeException("Error updating session", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting auto-commit", e);
+            }
         }
-        return updatedSession;
     }
 
     @Override
@@ -270,18 +305,48 @@ public class Session implements CRUD {
 
     @Override
     public boolean delete(int id) {
+        List<Mentee> mentees = getSessionMentees();
 
-        String sqlQuery = "UPDATE public.\"Session\" SET \"IsDeleted\" = TRUE WHERE \"SessionID\" = ?";
+        String sessionQuery = "UPDATE public.\"Session\" SET \"IsDeleted\" = TRUE WHERE \"SessionID\" = ?";
+        String updateMenteeQuery = "UPDATE public.\"Mentee\" SET " +
+                "\"LearningHours\" = \"LearningHours\" - ?, " +
+                "\"NumberOfAttandedSessions\" = \"NumberOfAttandedSessions\" - 1 " +
+                "WHERE \"MenteeID\" = ?";
+
         Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setLong(1, id);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new RuntimeException("Error deleting session", e);
-        }
+        try {
+            conn.setAutoCommit(false);
 
+            try (PreparedStatement stmt = conn.prepareStatement(sessionQuery)) {
+                stmt.setLong(1, id);
+                stmt.executeUpdate();
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(updateMenteeQuery)) {
+                for (Mentee mentee : mentees) {
+                    stmt.setDouble(1, this.getDuration()); // Deduct session duration
+                    stmt.setInt(2, mentee.getUserID());
+                    stmt.executeUpdate();
+                }
+            }
+
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
+            throw new RuntimeException("Error deleting session", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting auto-commit", e);
+            }
+        }
     }
 
     public List<Feedback> getSessionFeedback() {
@@ -398,21 +463,42 @@ public class Session implements CRUD {
         }
     }
 
-    public boolean addMentee(Mentee mentee) {
-        String sqlQuery = "INSERT INTO public.\"SMTT_Takes\" (\"SessionID\", \"MenteeID\") VALUES (?, ?)";
+    public boolean addMentee(Mentee mentee, double duration) {
+        String sessionMenteeQuery = "INSERT INTO public.\"SMTT_Takes\" (\"SessionID\", \"MenteeID\") VALUES (?, ?)";
+        String updateMenteeQuery = "UPDATE public.\"Mentee\" SET \"LearningHours\" = \"LearningHours\" + ?, \"NumberOfAttandedSessions\" = \"NumberOfAttandedSessions\" + 1 WHERE \"MenteeID\" = ?";
+
         Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+        try {
+            conn.setAutoCommit(false);
 
-            stmt.setLong(1, this.sessionID);
-            stmt.setInt(2, mentee.getUserID());
+            try (PreparedStatement stmt = conn.prepareStatement(sessionMenteeQuery)) {
+                stmt.setLong(1, this.sessionID);
+                stmt.setInt(2, mentee.getUserID());
+                stmt.executeUpdate();
+            }
 
-            int rowsAffected = stmt.executeUpdate();
+            try (PreparedStatement stmt = conn.prepareStatement(updateMenteeQuery)) {
+                stmt.setDouble(1, duration);
+                stmt.setInt(2, mentee.getUserID());
+                stmt.executeUpdate();
+            }
 
-            return rowsAffected > 0;
+            conn.commit();
+            return true;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
             throw new RuntimeException("Error adding mentee to session", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting auto-commit", e);
+            }
         }
     }
 

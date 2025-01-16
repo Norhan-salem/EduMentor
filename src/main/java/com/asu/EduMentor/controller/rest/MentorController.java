@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.asu.EduMentor.model.Session;
 
 import java.util.List;
 
@@ -59,10 +58,7 @@ public class MentorController {
     @PostMapping("/getMentoringHours")
     public ResponseEntity<Double> getMentoringHours(@RequestBody Mentor mentor) {
         try {
-            double totalHours = mentor.getGivenSessions()
-                    .stream()
-                    .mapToDouble(Session::getDuration)
-                    .sum();
+            double totalHours = mentor.getTotalHours();
             return ResponseEntity.ok().body(totalHours);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0d);

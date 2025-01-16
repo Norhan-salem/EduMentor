@@ -52,7 +52,7 @@ public class SessionController {
         Session session = registerMenteeRequest.getSession();
         Mentee mentee = registerMenteeRequest.getMentee();
         try {
-            session.addMentee(mentee);
+            session.addMentee(mentee, session.getDuration());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }

@@ -23,7 +23,10 @@ public class Mentor extends User {
     }
 
     public double getTotalHours() {
-        return totalHours;
+        return getGivenSessions()
+                .stream()
+                .mapToDouble(Session::getDuration)
+                .sum();
     }
 
     public void setTotalHours(double totalHours) {
@@ -158,7 +161,7 @@ public class Mentor extends User {
         String query = "SELECT s.\"SessionID\", s.\"SessionName\", s.\"Date\",  s.\"Duration\"" +
                 "FROM public.\"Session\" s " +
                 "JOIN public.\"SM_Gives\" sg ON s.\"SessionID\" = sg.\"SessionID\" " +
-                "WHERE sg.\"MentorID\" = ?";
+                "WHERE sg.\"MentorID\" = ? AND s.\"IsDeleted\" = FALSE";
 
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -190,7 +193,7 @@ public class Mentor extends User {
 
         String query = "SELECT a.\"Availability\", a.\"AvailabilityDuration\" " +
                 "FROM public.\"Mentor_Availability\" a " +
-                "WHERE a.\"MentorID\" = ?";
+                "WHERE a.\"MentorID\" = ? AND a.\"IsDeleted\" = FALSE";
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, this.getUserID());

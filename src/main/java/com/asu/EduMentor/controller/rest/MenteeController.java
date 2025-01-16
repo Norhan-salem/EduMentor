@@ -1,7 +1,6 @@
 package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.model.Mentee;
-import com.asu.EduMentor.model.Session;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +18,7 @@ public class MenteeController {
             return ResponseEntity.notFound().build();
         }
 
-        double totalHours = mentee.getAttendedSessions()
-                .stream()
-                .mapToDouble(Session::getDuration)
-                .sum();
+        double totalHours = mentee.getLearningHours();
 
         return ResponseEntity.ok(totalHours);
     }

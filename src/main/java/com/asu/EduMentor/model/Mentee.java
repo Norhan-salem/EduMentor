@@ -1,7 +1,5 @@
 package com.asu.EduMentor.model;
 
-import lombok.NoArgsConstructor;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class Mentee extends User {
     }
 
     public double getLearningHours() {
-        return learningHours;
+        return getAttendedSessions().stream().mapToDouble(Session::getDuration).sum();
     }
 
     public void setLearningHours(double learningHours) {
@@ -38,7 +36,7 @@ public class Mentee extends User {
     }
 
     public int getNumberOfAttendedSessions() {
-        return numberOfAttendedSessions;
+        return getAttendedSessions().size();
     }
 
     public void setNumberOfAttendedSessions(int numberOfAttendedSessions) {
@@ -192,7 +190,7 @@ public class Mentee extends User {
         String query = "SELECT s.\"SessionID\", s.\"SessionName\", s.\"Date\", s.\"Duration\" " +
                 "FROM public.\"Session\" s " +
                 "JOIN public.\"SMTT_Takes\" st ON s.\"SessionID\" = st.\"SessionID\" " +
-                "WHERE st.\"MenteeID\" = ?";
+                "WHERE st.\"MenteeID\" = ? AND s.\"IsDeleted\" = FALSE";
 
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
