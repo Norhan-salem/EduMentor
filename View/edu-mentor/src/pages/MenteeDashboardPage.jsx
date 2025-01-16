@@ -4,7 +4,7 @@ import RegisterUpcomingSessions from '../components/RegisterUpcomingSessions';
 import RegisteredSessions from '../components/RegisteredSessions';
 import AttendedHours from '../components/AttendedHours';
 import Interests from '../components/InterestsSelection';
-import { getSessions, updateUserEmail, updateUserName, getUserSessions, registerMentee, getMenteeAttendedHours, addTopicsToUser, deleteTopicsFromUser, getUserTopics } from '../services/api'; 
+import { getSessions, updateUserEmail, updateUserName, getUserSessions, registerMentee, getMenteeAttendedHours, addTopicsToUser, deleteTopicsFromUser, getUserTopics } from '../api/apiClient'; 
 import { useAuthContext } from '../context/useAuthContext';
 
 const MenteeDashboardPage = () => {

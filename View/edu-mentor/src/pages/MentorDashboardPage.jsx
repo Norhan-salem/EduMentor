@@ -9,7 +9,7 @@ import {
   getUserTopics,
   addTopicsToUser,
   deleteTopicsFromUser
-} from '../services/api';
+} from '../api/apiClient';
 import AssignedSessions from '../components/AssignedSessions';
 import AvailabilitySchedule from '../components/AvailabilitySchedule';
 import MentoringHours from '../components/MentoringHours';

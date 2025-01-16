@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getSessionFeedback, getSessionMentors, getSessionMentees } from '../services/api';
+import { getSessionFeedback, getSessionMentors, getSessionMentees } from '../api/apiClient';
 import { Container, Card, Table, Row, Col } from 'react-bootstrap';
 
 const SessionDetailsPage = () => {

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../styles/Home.css';
-import { searchMentors } from '../services/api';
+import { searchMentors } from '../api/apiClient';
 
 const mentorsData = [
   { name: "John Doe", bio: "Software Engineer", image: "https://via.placeholder.com/150" },

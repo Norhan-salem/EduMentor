@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { createSession } from '../services/api';
+import { createSession } from '../api/apiClient';
 
 const CreateSessionPage = () => {
   const [newSession, setNewSession] = useState({
