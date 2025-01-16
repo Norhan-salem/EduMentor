@@ -2,17 +2,19 @@ package com.asu.EduMentor.socialMediaNotifier;
 
 public class NotifyByFacebook implements INotificationObserver{
     INotificationManager facebook;
-    public NotifyByFacebook(INotificationManager facebook){
-        this.facebook = facebook;
-        facebook.addObserver(this);
+    FacebookNotificationFacade facebookNotificationFacade;
+    public NotifyByFacebook(INotificationManager notificationManager){
+        this.facebook = notificationManager;
+        notificationManager.addObserver(this);
+        facebookNotificationFacade = new FacebookNotificationFacade();
     }
 
-    public String printNotifyMethod(){
-        return "FaceBook Notification";
-    }
     @Override
     public boolean update() {
-        printNotifyMethod();
-        return false;
+        try {
+            return facebookNotificationFacade.createPost("A new session has been created");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
