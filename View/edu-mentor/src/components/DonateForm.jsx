@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Invoice from './invoice';
+import { makeDonation } from '../services/api';
 
 const currencies = ['EGP', 'USD', 'EUR', 'GBP', 'CAD'];
 const predefinedAmounts = [10, 25, 50, 100];
-const paymentOptions = ['Card', 'Bank Transfer'];
+const paymentOptions = ['VISA', 'COURIER'];
 
 const DonateForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -21,15 +22,6 @@ const DonateForm = () => {
   const [cvv, setCvv] = useState('');
   const [errors, setErrors] = useState({});
   const [invoice, setInvoice] = useState(null);
-
-  // Dummy function to simulate donation API call
-  const makeDonation = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true, donationId: '12345' });
-      }, 2000);
-    });
-  };
 
   // Dummy function to simulate fetching invoice details
   const showInvoice = (donationId) => {
@@ -48,17 +40,17 @@ const DonateForm = () => {
   const handleDonate = async (e) => {
     e.preventDefault();
     const validationErrors = {};
-    
+
     if (!firstName) validationErrors.firstName = 'First name is required';
     if (!lastName) validationErrors.lastName = 'Last name is required';
     if (!email) validationErrors.email = 'Email is required';
     if (!amount) validationErrors.amount = 'Amount is required';
     if (!currency) validationErrors.currency = 'Currency is required';
-    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !cardNumber) 
+    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !cardNumber)
       validationErrors.cardNumber = 'Card number is required';
-    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !expiryDate) 
+    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !expiryDate)
       validationErrors.expiryDate = 'Expiry date is required';
-    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !cvv) 
+    if ((paymentOption === 'Visa' || paymentOption === 'MasterCard') && !cvv)
       validationErrors.cvv = 'CVV is required';
 
     if (Object.keys(validationErrors).length) {
@@ -66,10 +58,24 @@ const DonateForm = () => {
       return;
     }
 
+    const donationPayload = {
+          onlineDonation: {
+            paymentType: paymentOption,
+            amount: parseFloat(amount),
+          },
+          onlineDonor: {
+            firstName,
+            lastName,
+            email,
+          },
+          paymentType: paymentOption,
+          amount: parseFloat(amount),
+        };
+
     setErrors({});
 
     // Call the dummy makeDonation function
-    const donationResponse = await makeDonation();
+    const donationResponse = await makeDonation(donationPayload);
 
     if (donationResponse.success) {
       // Fetch the invoice details after the donation is successful
@@ -132,8 +138,8 @@ const DonateForm = () => {
 
       <Form.Group className="mb-3" controlId="formBasicCurrency">
         <Form.Label>Currency</Form.Label>
-        <Form.Select 
-          value={currency} 
+        <Form.Select
+          value={currency}
           onChange={(e) => setCurrency(e.target.value)}
           required
         >
@@ -171,8 +177,8 @@ const DonateForm = () => {
 
       <Form.Group className="mb-3" controlId="formBasicPaymentOption">
         <Form.Label>Payment Option</Form.Label>
-        <Form.Select 
-          value={paymentOption} 
+        <Form.Select
+          value={paymentOption}
           onChange={(e) => setPaymentOption(e.target.value)}
           required
         >
