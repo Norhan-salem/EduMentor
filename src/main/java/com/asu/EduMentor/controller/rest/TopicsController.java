@@ -49,6 +49,7 @@ public class TopicsController {
     public ResponseEntity<List<Topics>> getUserTopics(@RequestBody UserDTO userDTO) {
         UserTopics userTopics = new UserTopics();
         User user = UserFactory.createUser(userDTO.getUserType(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
+        user.setUserID(userDTO.getUserID());
         try {
             return  ResponseEntity.ok(userTopics.getUserTopics(user));
         } catch (Exception e) {
