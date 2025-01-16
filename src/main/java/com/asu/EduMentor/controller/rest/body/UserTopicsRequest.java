@@ -1,19 +1,20 @@
 package com.asu.EduMentor.controller.rest.body;
 
+import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.model.Topics;
 import com.asu.EduMentor.model.User;
 
 public class UserTopicsRequest {
-    User user;
+    UserDTO userDTO;
     Topics topics;
 
-    public User getUser() {
-        return user;
+    public UserDTO getUserDTO() {
+        return userDTO;
     }
 
-    public boolean setUser(User user) {
+    public boolean setUser(UserDTO user) {
         if (user != null) {
-            this.user = user;
+            this.userDTO = user;
             return true;
         }
 

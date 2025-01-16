@@ -19,7 +19,7 @@ public class TopicsController {
     @PostMapping("/addTopicsToUser")
     public ResponseEntity<Boolean> addTopicsToUser(@RequestBody UserTopicsRequest userTopicsRequest) {
         UserTopics userTopics = new UserTopics();
-        User user = userTopicsRequest.getUser();
+        User user = UserFactory.createUser(userTopicsRequest.getUserDTO().getUserType(), userTopicsRequest.getUserDTO().getFirstName(), userTopicsRequest.getUserDTO().getLastName(), userTopicsRequest.getUserDTO().getEmail(),null);
         Topics topic = userTopicsRequest.getTopics();
 
         try {
@@ -33,7 +33,7 @@ public class TopicsController {
     @DeleteMapping("/deleteTopicsFromUser")
     public ResponseEntity<Boolean> deleteTopicsFromUser(@RequestBody UserTopicsRequest userTopicsRequest) {
         UserTopics userTopics = new UserTopics();
-        User user = userTopicsRequest.getUser();
+        User user = UserFactory.createUser(userTopicsRequest.getUserDTO().getUserType(), userTopicsRequest.getUserDTO().getFirstName(), userTopicsRequest.getUserDTO().getLastName(), userTopicsRequest.getUserDTO().getEmail(),null);
         Topics topic = userTopicsRequest.getTopics();
 
         try {
