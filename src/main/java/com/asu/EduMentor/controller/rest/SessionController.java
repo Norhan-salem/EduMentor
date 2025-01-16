@@ -23,7 +23,8 @@ public class SessionController {
     public ResponseEntity<Boolean> addSession(@RequestBody Session session) {
         try {
             session.create();
-            NotificationService.getInstance().notifyObserver();
+            NotificationService.getInstance().notifyObserver("A new session " + session.getName() +
+                    " has been created at time: " + session.getDate().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
