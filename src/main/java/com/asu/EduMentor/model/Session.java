@@ -20,6 +20,7 @@ public class Session implements CRUD {
     private double duration;
     private String name;
     private boolean isDeleted = false;
+    private int adminId;
 
     ISessionState sessionState;
 
@@ -119,7 +120,16 @@ public class Session implements CRUD {
         isDeleted = deleted;
     }
 
-    public Object create2(int AdminId) {
+    public int getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
+
+    @Override
+    public Object create() {
         String sessionQuery = "INSERT INTO public.\"Session\" (\"Date\", \"Duration\", \"SessionName\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
         String asMakesQuery = "INSERT INTO public.\"AS_Makes\" (\"AdminID\", \"SessionID\") VALUES (?, ?)";
 
@@ -146,7 +156,7 @@ public class Session implements CRUD {
             }
 
             try (PreparedStatement asMakesStmt = conn.prepareStatement(asMakesQuery)) {
-                asMakesStmt.setInt(1, AdminId);
+                asMakesStmt.setInt(1, this.adminId);
                 asMakesStmt.setLong(2, generatedSessionId);
                 asMakesStmt.executeUpdate();
             }
@@ -166,30 +176,6 @@ public class Session implements CRUD {
                 throw new RuntimeException("Error resetting autocommit", e);
             }
         }
-    }
-
-    @Override
-    public Object create() {
-
-        String sqlQuery = "INSERT INTO public.\"Session\" (\"Date\", \"Duration\", \"SessionName\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setTimestamp(1, new Timestamp(this.date.getTime()));
-            stmt.setDouble(2, this.duration);
-            stmt.setString(3, this.name);
-            stmt.setBoolean(4, this.isDeleted);
-
-            stmt.executeUpdate();
-
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                this.sessionID = rs.getLong("SessionID");
-            }
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new RuntimeException("Error creating session", e);
-        }
-        return this;
     }
 
     @Override
