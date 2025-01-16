@@ -221,8 +221,10 @@ public class Mentor extends User {
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
 
+            Timestamp utcTimestamp = new Timestamp(availability.getTime().getTime());
+
             stmt.setInt(1, this.getUserID());
-            stmt.setTimestamp(2, availability.getTime());
+            stmt.setTimestamp(2, utcTimestamp);
             stmt.setDouble(3, availability.getDuration());
             stmt.setBoolean(4, availability.isDeleted());
 
@@ -264,42 +266,64 @@ public class Mentor extends User {
     public static List<Mentor> findAvailableMentors(java.util.Date sessionDate, double sessionDuration) {
         List<Mentor> availableMentors = new ArrayList<>();
 
-        String sqlQuery = "SELECT DISTINCT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\" " +
-                "FROM public.\"User\" u " +
-                "JOIN public.\"Mentor\" m ON u.\"UserID\" = m.\"MentorID\" " +
-                "JOIN public.\"Mentor_Availability\" ma ON m.\"MentorID\" = ma.\"MentorID\" " +
-                "WHERE u.\"IsDeleted\" = FALSE " +
-                "AND ma.\"IsDeleted\" = FALSE " +
-                "AND ma.\"Availability\" = ? " +
-                "AND ma.\"AvailabilityDuration\" >= ? " +
-                "AND NOT EXISTS (" + // check if mentor is already giving a session on the same day
-                "SELECT 1 FROM public.\"SM_Gives\" sg " +
-                "JOIN public.\"Session\" s ON sg.\"SessionID\" = s.\"SessionID\" " +
-                "WHERE sg.\"MentorID\" = m.\"MentorID\" " +
-                "AND s.\"Date\" = ? " +
-                "AND s.\"IsDeleted\" = FALSE" +
-                ")";
+        String sqlQuery =
+                "WITH MaxMentorAvailability AS (" +
+                        "    SELECT m.\"MentorID\", ma.\"Availability\", MAX(ma.\"AvailabilityDuration\") as \"AvailabilityDuration\" " +
+                        "    FROM public.\"Mentor\" m " +
+                        "    JOIN public.\"Mentor_Availability\" ma ON m.\"MentorID\" = ma.\"MentorID\" " +
+                        "    WHERE ma.\"IsDeleted\" = FALSE " +
+                        "    GROUP BY m.\"MentorID\", ma.\"Availability\" " +
+                        ") " +
+                        "SELECT DISTINCT u.\"UserID\", u.\"FirstName\", u.\"LastName\", u.\"Email\", u.\"Password\", " +
+                        "mma.\"Availability\", mma.\"AvailabilityDuration\" " +
+                        "FROM public.\"User\" u " +
+                        "JOIN public.\"Mentor\" m ON u.\"UserID\" = m.\"MentorID\" " +
+                        "JOIN MaxMentorAvailability mma ON m.\"MentorID\" = mma.\"MentorID\" " +
+                        "WHERE u.\"IsDeleted\" = FALSE " +
+                        "AND DATE(mma.\"Availability\") = DATE(?::timestamp) " +
+                        "AND ?::timestamp >= mma.\"Availability\" " +
+                        "AND ?::timestamp <= mma.\"Availability\" + " +
+                        "INTERVAL '1 hour' * mma.\"AvailabilityDuration\" " +
+                        "AND mma.\"AvailabilityDuration\" >= ? " +
+                        "AND NOT EXISTS (" +
+                        "    SELECT 1 FROM public.\"SM_Gives\" sg " +
+                        "    JOIN public.\"Session\" s ON sg.\"SessionID\" = s.\"SessionID\" " +
+                        "    WHERE sg.\"MentorID\" = m.\"MentorID\" " +
+                        "    AND s.\"Date\" = ? " +
+                        "    AND s.\"IsDeleted\" = FALSE" +
+                        ")";
 
         Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setTimestamp(1, new Timestamp(sessionDate.getTime()));
-            stmt.setDouble(2, sessionDuration);
-            stmt.setDate(3, new java.sql.Date(sessionDate.getTime()));
+        try {
+            try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+                Timestamp sessionTimestamp = new Timestamp(sessionDate.getTime());
 
-            ResultSet rs = stmt.executeQuery();
+                stmt.setTimestamp(1, sessionTimestamp);
+                stmt.setTimestamp(2, sessionTimestamp);
+                stmt.setTimestamp(3, sessionTimestamp);
+                stmt.setDouble(4, sessionDuration);
+                stmt.setDate(5, new java.sql.Date(sessionDate.getTime()));
 
-            while (rs.next()) {
-                int mentorID = rs.getInt("UserID");
-                String firstName = rs.getString("FirstName");
-                String lastName = rs.getString("LastName");
-                String email = rs.getString("Email");
-                String password = rs.getString("Password");
+                ResultSet rs = stmt.executeQuery();
 
-                Mentor mentor = new Mentor(firstName, lastName, email, password);
-                mentor.setUserID(mentorID);
-                availableMentors.add(mentor);
+                boolean hasResults = false;
+
+                while (rs.next()) {
+                    hasResults = true;
+                    int mentorID = rs.getInt("UserID");
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    Timestamp availability = rs.getTimestamp("Availability");
+                    double availDuration = rs.getDouble("AvailabilityDuration");
+
+                    Mentor mentor = new Mentor(firstName, lastName,
+                            rs.getString("Email"), rs.getString("Password"));
+                    mentor.setUserID(mentorID);
+                    availableMentors.add(mentor);
+                }
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("Error finding available mentors", e);
         }
 

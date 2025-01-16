@@ -1,11 +1,10 @@
 package com.asu.EduMentor.controller.rest.body;
-
-import com.asu.EduMentor.model.Mentor;
+import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.model.Session;
 
 public class RegisterMentorRequest {
     private Session session;
-    private Mentor mentor;
+    private UserDTO mentor;
 
     // Getters and setters
     public Session getSession() {
@@ -17,11 +16,11 @@ public class RegisterMentorRequest {
             this.session = session;
     }
 
-    public Mentor getMentor() {
+    public UserDTO getMentor() {
         return mentor;
     }
 
-    public void setMentor(Mentor mentor) {
+    public void setMentor(UserDTO mentor) {
         if (mentor != null)
             this.mentor = mentor;
     }

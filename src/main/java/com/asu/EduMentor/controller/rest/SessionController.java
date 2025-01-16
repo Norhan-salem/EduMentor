@@ -34,9 +34,11 @@ public class SessionController {
     @PostMapping("/registerMentor")
     public ResponseEntity<Boolean> registerMentorInSession(@RequestBody RegisterMentorRequest registerMentorRequest) {
         Session session = registerMentorRequest.getSession();
-        Mentor mentor = registerMentorRequest.getMentor();
+        UserDTO userDTO = registerMentorRequest.getMentor();
+        User mentor = UserFactory.createUser(userDTO.getUserType(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
+        mentor.setUserID(userDTO.getUserID());
         try {
-            session.addMentor(mentor);
+            session.addMentor((Mentor) mentor);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
