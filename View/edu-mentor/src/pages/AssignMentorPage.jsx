@@ -63,7 +63,7 @@ const AssignMentorPage = () => {
                   <Card.Title>{`${mentor.firstName} ${mentor.lastName}`}</Card.Title>
                   <Button
                     className="home-button"
-                    onClick={() => handleAssign(mentor.userID)}
+                    onClick={() => handleAssign(mentor)}
                   >
                     Assign Mentor
                   </Button>
