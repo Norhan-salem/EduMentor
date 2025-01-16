@@ -9,13 +9,10 @@ const Invoice = ({ invoice }) => {
       <h3 className="invoice-title">Invoice</h3>
       <div className="invoice-details">
         <p className="invoice-item">
-          <strong>Donation ID:</strong> {invoice.donationId}
+          <strong>Amount:</strong> {invoice.originalAmount} {invoice.currency}
         </p>
         <p className="invoice-item">
-          <strong>Amount:</strong> {invoice.amount} {invoice.currency}
-        </p>
-        <p className="invoice-item">
-          <strong>Date:</strong> {invoice.date}
+          <strong>Final Amount:</strong> {invoice.calculatedTotal} 'USD'
         </p>
       </div>
     </div>

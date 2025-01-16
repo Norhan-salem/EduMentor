@@ -1,8 +1,7 @@
-// src/components/DonateForm.js
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Invoice from './invoice';
-import { makeDonation } from '../services/api';
+import { makeDonation, getInvoiceDetails } from '../services/api';
 
 const currencies = ['EGP', 'USD', 'EUR', 'GBP', 'CAD'];
 const predefinedAmounts = [10, 25, 50, 100];
@@ -60,6 +59,7 @@ const DonateForm = () => {
 
     const donationPayload = {
           onlineDonation: {
+            // faen el id hena bta3 el donation
             paymentType: paymentOption,
             amount: parseFloat(amount),
           },
@@ -74,18 +74,25 @@ const DonateForm = () => {
 
     setErrors({});
 
-    // Call the dummy makeDonation function
-    const donationResponse = await makeDonation(donationPayload);
+    try {
+      const donationResponse = await makeDonation(donationPayload);
 
-    if (donationResponse.success) {
-      // Fetch the invoice details after the donation is successful
-      const invoiceDetails = await showInvoice(donationResponse.donationId);
-      setInvoice(invoiceDetails); // Set the invoice state
-    } else {
-      alert('Donation failed');
+      if (donationResponse.success) {
+        const invoiceDetails = await getInvoiceDetails({
+          // ana 3aiza el id hena bta3 el donation
+          donation: { donationID: donationResponse.donationId, paymentType: paymentOption, amount },
+          targetCurrency: currency,
+          includeTax: true,
+        });
+        setInvoice(invoiceDetails);
+      } else {
+        alert('Donation failed');
+      }
+    } catch (error) {
+      console.error('Donation process failed:', error);
+      alert('An error occurred while processing the donation.');
     }
   };
-
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === 'custom') {
