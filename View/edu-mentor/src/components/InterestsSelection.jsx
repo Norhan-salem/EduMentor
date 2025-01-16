@@ -31,8 +31,8 @@ const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
     }
   };
 
-  const handleDeleteInterest = (topicID) => {
-    onDeleteInterest(topicID);
+  const handleDeleteInterest = (interest) => {
+    onDeleteInterest(interest);
   };
 
   return (

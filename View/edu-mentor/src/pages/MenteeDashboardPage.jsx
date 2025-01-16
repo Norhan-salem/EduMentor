@@ -82,11 +82,10 @@ const MenteeDashboardPage = () => {
     }
   };
   
-
-  const handleDeleteInterest = async (topicID) => {
+  const handleDeleteInterest = async (interest) => {
     try {
-      await deleteTopicsFromUser({ user, topics: [{ topicID }] });
-      setInterests((prev) => prev.filter((i) => i.topicID !== topicID));
+      await deleteTopicsFromUser({ user, topics: interest });
+      setInterests((prev) => prev.filter((i) => i.topicID !== interest.topicID));
     } catch (error) {
       console.error('Error removing interest:', error);
     }
