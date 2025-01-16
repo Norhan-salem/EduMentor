@@ -1,7 +1,7 @@
 package com.asu.EduMentor.controller.rest;
 
 import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
-import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.MasterCardPaymentStrategy;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.CourierPaymentStrategy;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProcessor;
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
 import com.asu.EduMentor.logging.DonationLog;
@@ -28,8 +28,8 @@ public class DonorController {
 
         PaymentProcessor paymentProcessor = new PaymentProcessor();
 
-        if (paymentType == PaymentType.MASTERCARD) {
-            paymentProcessor.setPaymentStrategy(new MasterCardPaymentStrategy());
+        if (paymentType == PaymentType.COURIER) {
+            paymentProcessor.setPaymentStrategy(new CourierPaymentStrategy());
         } else if (paymentType == PaymentType.VISA) {
             paymentProcessor.setPaymentStrategy(new VisaPaymentStrategy());
         }

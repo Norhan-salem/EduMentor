@@ -2,7 +2,7 @@ package com.asu.EduMentor.model;
 
 public enum PaymentType {
     VISA(0),
-    MASTERCARD(1);
+    COURIER(1);
 
     private final int value;
 
