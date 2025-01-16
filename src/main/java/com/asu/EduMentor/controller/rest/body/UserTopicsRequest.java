@@ -2,11 +2,10 @@ package com.asu.EduMentor.controller.rest.body;
 
 import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.model.Topics;
-import com.asu.EduMentor.model.User;
 
 public class UserTopicsRequest {
     UserDTO userDTO;
-    Topics topics;
+    Topics topic;
 
     public UserDTO getUserDTO() {
         return userDTO;
@@ -21,13 +20,13 @@ public class UserTopicsRequest {
         return false;
     }
 
-    public Topics getTopics() {
-        return topics;
+    public Topics getTopic() {
+        return topic;
     }
 
     public boolean setTopics(Topics topics) {
         if (topics != null) {
-            this.topics = topics;
+            this.topic = topics;
             return true;
         }
 

@@ -20,7 +20,8 @@ public class TopicsController {
     public ResponseEntity<Boolean> addTopicsToUser(@RequestBody UserTopicsRequest userTopicsRequest) {
         UserTopics userTopics = new UserTopics();
         User user = UserFactory.createUser(userTopicsRequest.getUserDTO().getUserType(), userTopicsRequest.getUserDTO().getFirstName(), userTopicsRequest.getUserDTO().getLastName(), userTopicsRequest.getUserDTO().getEmail(),null);
-        Topics topic = userTopicsRequest.getTopics();
+        user.setUserID(userTopicsRequest.getUserDTO().getUserID());
+        Topics topic = userTopicsRequest.getTopic();
 
         try {
             userTopics.addTopic(topic, user);
@@ -34,7 +35,7 @@ public class TopicsController {
     public ResponseEntity<Boolean> deleteTopicsFromUser(@RequestBody UserTopicsRequest userTopicsRequest) {
         UserTopics userTopics = new UserTopics();
         User user = UserFactory.createUser(userTopicsRequest.getUserDTO().getUserType(), userTopicsRequest.getUserDTO().getFirstName(), userTopicsRequest.getUserDTO().getLastName(), userTopicsRequest.getUserDTO().getEmail(),null);
-        Topics topic = userTopicsRequest.getTopics();
+        Topics topic = userTopicsRequest.getTopic();
 
         try {
             userTopics.deleteTopic(topic, user);
