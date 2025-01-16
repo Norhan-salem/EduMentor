@@ -54,5 +54,15 @@ public class TopicsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }
     }
+    @GetMapping("/getAllTopics")
+    public ResponseEntity<List<Topics>> getAllTopics() {
+        Topics topic = new Topics();
+        List<Object> topics = topic.readAll();
+        try {
+            return ResponseEntity.ok((List<Topics>) (Object) topics);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
+        }
+    }
 
 }

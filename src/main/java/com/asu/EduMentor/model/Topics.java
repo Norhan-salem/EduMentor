@@ -1,9 +1,11 @@
 package com.asu.EduMentor.model;
 
+import lombok.NoArgsConstructor;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor
 public class Topics implements CRUD {
 
     private int topicID;
