@@ -10,9 +10,9 @@ public class NotifyByFacebook implements INotificationObserver{
     }
 
     @Override
-    public boolean update() {
+    public boolean update(String content) {
         try {
-            return facebookNotificationFacade.createPost("A new session has been created");
+            return facebookNotificationFacade.createPost(content);
         } catch (Exception e) {
             return false;
         }

@@ -17,7 +17,6 @@ public class EduMentorApplication {
         SpringApplication.run(EduMentorApplication.class, args);
         NotifyByFacebook notifyByFacebook = new NotifyByFacebook(NotificationService.getInstance());
         NotifyByEmail notifyByEmail = new NotifyByEmail(NotificationService.getInstance(), new EmailNotificationFacade());
-        NotifyByTwitter notifyByTwitter = new NotifyByTwitter(NotificationService.getInstance());
 
         // start the logging thread
         LoggingThread loggingThread = new LoggingThread();
