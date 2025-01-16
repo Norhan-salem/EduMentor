@@ -229,7 +229,7 @@ export const getMentorAvailability = async (mentor) => {
       throw error;
     }
 
-  }
+  };
 
   export const getAllTopics = async () => {
       try {
@@ -239,7 +239,7 @@ export const getMentorAvailability = async (mentor) => {
         console.error('Error fetching all topics:', error);
         throw error;
       }
-    }
+    };
 
  export const makeDonation = async (donationPayload) => {
       try{
@@ -249,4 +249,35 @@ export const getMentorAvailability = async (mentor) => {
           console.error('Error making donation:', error);
           throw error;
       }
- }
+ };
+
+export const updateUserEmail = async (user, newEmail) => {
+    try {
+        const emailUpdateRequest = {
+            email: newEmail,
+            userDTO: user
+        };
+
+        const response = await axiosInstance.post('/api/users/updateEmail', emailUpdateRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user email:', error);
+        throw error;
+    }
+};
+
+export const updateUserName = async (user, firstName, lastName) => {
+    try {
+        const nameUpdateRequest = {
+            firstName: firstName,
+            lastName: lastName,
+            userDTO: user
+        };
+
+        const response = await axiosInstance.post('/api/users/updateName', nameUpdateRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user name:', error);
+        throw error;
+    }
+};
