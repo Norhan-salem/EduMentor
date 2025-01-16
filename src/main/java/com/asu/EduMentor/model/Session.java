@@ -170,7 +170,7 @@ public class Session implements CRUD {
         String sqlQuery = "INSERT INTO public.\"Session\" (\"Date\", \"Duration\", \"SessionName\", \"IsDeleted\") VALUES (?, ?, ?, ?)";
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setDate(1, new java.sql.Date(this.date.getTime()));
+            stmt.setTimestamp(1, new Timestamp(this.date.getTime()));
             stmt.setDouble(2, this.duration);
             stmt.setString(3, this.name);
             stmt.setBoolean(4, this.isDeleted);
@@ -198,7 +198,7 @@ public class Session implements CRUD {
         String sqlQuery = "UPDATE public.\"Session\" SET \"Date\" = ?, \"Duration\" = ?, \"SessionName\" = ? WHERE \"SessionID\" = ? AND \"IsDeleted\" = FALSE";
         Connection conn = DBConnection.getInstance().getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setDate(1, new java.sql.Date(updatedSession.getDate().getTime()));
+            stmt.setTimestamp(1, new Timestamp(updatedSession.getDate().getTime()));
             stmt.setDouble(2, updatedSession.getDuration());
             stmt.setString(3, updatedSession.getName());
             stmt.setLong(4, updatedSession.getSessionID());
@@ -221,7 +221,7 @@ public class Session implements CRUD {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Date date = rs.getDate("Date");
+                java.util.Date date = rs.getTimestamp("Date");
                 double duration = rs.getDouble("Duration");
                 String name = rs.getString("SessionName");
 
@@ -247,7 +247,7 @@ public class Session implements CRUD {
 
             while (rs.next()) {
                 long sessionID = rs.getLong("SessionID");
-                Date date = rs.getDate("Date");
+                java.util.Date date = rs.getTimestamp("Date");
                 double duration = rs.getDouble("Duration");
                 String name = rs.getString("SessionName");
 
