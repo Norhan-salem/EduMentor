@@ -99,8 +99,8 @@ public class OnlineDonor extends User {
             throw new RuntimeException("Error updating donor", e);
         }
 
-        String menteeQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = ? WHERE \"OnlineDonorID\" = ?";
-        try (PreparedStatement adminStmt = conn.prepareStatement(menteeQuery)) {
+        String donorQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = ? WHERE \"OnlineDonorID\" = ?";
+        try (PreparedStatement adminStmt = conn.prepareStatement(donorQuery)) {
             adminStmt.setInt(1, updatedDonor.getNumberOfDonations());
             adminStmt.setInt(3, updatedDonor.getUserID());
 

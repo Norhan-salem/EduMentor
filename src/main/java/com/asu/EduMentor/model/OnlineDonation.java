@@ -139,31 +139,63 @@ public class OnlineDonation implements CRUD {
      * @param od The donor who made the donation.
      */
     public boolean makeDonation(OnlineDonor od, PaymentType paymentType) {
-        String query = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
+        String donationQuery = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING \"DonationID\"";
 
+        String donorUpdateQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = \"NumberofDonations\" + 1 " +
+                "WHERE \"OnlineDonorID\" = ?";
+
+        String donationLinkQuery = "INSERT INTO public.\"ODD_Makes\" (\"OnlineDonorID\", \"DonationID\", \"Date\") " +
+                "VALUES (?, ?, CURRENT_TIMESTAMP)";
+
         Connection conn = DBConnection.getInstance().getConnection();
-        try (
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            conn.setAutoCommit(false);
 
-            stmt.setDouble(1, amount);
-            stmt.setInt(2, paymentType.ordinal());  // Store the enum ordinal (int)
-            stmt.setInt(3, getInvoice().getInvoiceID());
-            stmt.setDouble(4, amount);
-            stmt.setBoolean(5, false);
+            try (PreparedStatement stmt = conn.prepareStatement(donationQuery, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setDouble(1, amount);
+                stmt.setInt(2, paymentType.ordinal());
+                stmt.setInt(3, getInvoice().getInvoiceID());
+                stmt.setDouble(4, amount);
+                stmt.setBoolean(5, false);
 
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
+                stmt.executeUpdate();
+
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         this.donationID = generatedKeys.getInt(1);
                     }
                 }
             }
+
+            try (PreparedStatement stmt = conn.prepareStatement(donorUpdateQuery)) {
+                stmt.setInt(1, od.getUserID());
+                stmt.executeUpdate();
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(donationLinkQuery)) {
+                stmt.setInt(1, od.getUserID());
+                stmt.setInt(2, this.donationID);
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+
         } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
             throw new RuntimeException("Error making donation", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting auto-commit", e);
+            }
         }
-        return true;
     }
 
     /**
@@ -267,16 +299,57 @@ public class OnlineDonation implements CRUD {
      */
     @Override
     public boolean delete(int id) {
-        String query = "UPDATE public.\"OnlineDonation\" SET \"IsDeleted\" = TRUE WHERE \"DonationID\" = ?";
+        String findDonorQuery = "SELECT \"OnlineDonorID\" FROM public.\"ODD_Makes\" WHERE \"DonationID\" = ?";
+        String donationQuery = "UPDATE public.\"OnlineDonation\" SET \"IsDeleted\" = TRUE WHERE \"DonationID\" = ?";
+        String donorUpdateQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = \"NumberofDonations\" - 1 " +
+                "WHERE \"OnlineDonorID\" = ?";
+        String oddMakesQuery = "UPDATE public.\"ODD_Makes\" SET \"IsDeleted\" = TRUE WHERE \"DonationID\" = ?";
 
         Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try {
+            conn.setAutoCommit(false);
 
-            stmt.setInt(1, id);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            int donorId;
+            try (PreparedStatement stmt = conn.prepareStatement(findDonorQuery)) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (!rs.next()) {
+                    throw new RuntimeException("No donor found for donation ID: " + id);
+                }
+                donorId = rs.getInt("OnlineDonorID");
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(donationQuery)) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(donorUpdateQuery)) {
+                stmt.setInt(1, donorId);
+                stmt.executeUpdate();
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(oddMakesQuery)) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+
         } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                throw new RuntimeException("Error rolling back transaction", rollbackEx);
+            }
             throw new RuntimeException("Error deleting donation", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error resetting auto-commit", e);
+            }
         }
     }
 }
