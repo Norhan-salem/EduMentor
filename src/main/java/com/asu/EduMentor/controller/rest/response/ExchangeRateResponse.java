@@ -1,4 +1,4 @@
-package com.asu.EduMentor.controller.rest;
+package com.asu.EduMentor.controller.rest.response;
 import java.util.Map;
 
 public class ExchangeRateResponse {

@@ -30,6 +30,11 @@ const reducer = (state, action) => {
         isAuthenticated: false,
         user: null,
       };
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: action.payload.user,
+      };
     default:
       return state;
   }
@@ -129,6 +134,16 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   }, []);
 
+  const updateUser = useCallback((updatedUser) => {
+    if (localStorageAvailable()) {
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+    dispatch({
+      type: 'UPDATE_USER',
+      payload: { user: updatedUser },
+    });
+  }, []);
+
   // Memoized context value
   const contextValue = useMemo(
     () => ({
@@ -138,8 +153,9 @@ export const AuthProvider = ({ children }) => {
       login,
       register,
       logout,
+      updateUser
     }),
-    [state.isInitialized, state.isAuthenticated, state.user, login, register, logout]
+    [state.isInitialized, state.isAuthenticated, state.user, login, register, logout, updateUser]
   );
 
   if (!state.isInitialized) {

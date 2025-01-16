@@ -281,3 +281,20 @@ export const updateUserName = async (user, firstName, lastName) => {
         throw error;
     }
 };
+
+export const getInvoiceDetails = async ({ donation, targetCurrency, includeTax = true }) => {
+  try {
+    const response = await axiosInstance.get('/api/invoice/getInvoiceDetails', {
+      params: {
+        donation: JSON.stringify(donation),
+        targetCurrency,
+        includeTax,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching invoice details:', error);
+    throw error;
+  }
+};

@@ -7,7 +7,6 @@ import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProces
 import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
 import com.asu.EduMentor.logging.DonationLog;
 import com.asu.EduMentor.logging.LoggingMediator;
-import com.asu.EduMentor.model.InvoiceDetails;
 import com.asu.EduMentor.model.OnlineDonation;
 import com.asu.EduMentor.model.OnlineDonor;
 import com.asu.EduMentor.model.PaymentType;
@@ -53,16 +52,6 @@ public class DonorController {
             return ResponseEntity.ok(donor.getDonations());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
-        }
-    }
-
-    @GetMapping("/api/getInvoiceDetails")
-    public ResponseEntity<InvoiceDetails> getInvoiceDetails(@RequestParam OnlineDonation donation) {
-        InvoiceDetails invoiceDetails = new InvoiceDetails(donation.getInvoice().getInvoiceID());
-        try {
-            return ResponseEntity.ok(invoiceDetails);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
