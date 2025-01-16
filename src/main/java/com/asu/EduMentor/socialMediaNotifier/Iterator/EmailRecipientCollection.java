@@ -8,7 +8,7 @@ public class EmailRecipientCollection implements Iterable{
 
     public EmailRecipientCollection(){
         recipients = new ArrayList<EmailRecipient>(); // TODO: fetch them from database
-        recipients.add(new EmailRecipient("peter", "peterpeter", "peter@elasticsdp.com"));
+        recipients.add(new EmailRecipient("New Session", "peterpeter", "peter@elasticsdp.com"));
     }
 
     @Override
