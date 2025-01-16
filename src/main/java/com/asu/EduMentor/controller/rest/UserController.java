@@ -6,9 +6,11 @@ import com.asu.EduMentor.controller.rest.body.ErrorResponse;
 import com.asu.EduMentor.controller.rest.body.NameUpdateRequest;
 import com.asu.EduMentor.controller.rest.response.UserDTO;
 import com.asu.EduMentor.model.User;
-import com.asu.EduMentor.model.UserFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -19,16 +21,21 @@ public class UserController {
     public ResponseEntity<?> updateEmail(@RequestBody EmailUpdateRequest request) {
         try {
             UserDTO userDTO = request.getUserDTO();
-            User user = UserFactory.createUser(userDTO.getUserType(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
-            user.setUserID(userDTO.getUserID());
+            User existingUser = User.findByEmail(userDTO.getEmail());
+            if (existingUser == null) {
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("User not found"));
+            }
 
-            User existingUser = User.findByEmail(request.getEmail());
-            if (existingUser != null && existingUser.getUserID() != user.getUserID()) {
+            User emailCheck = User.findByEmail(request.getEmail());
+            if (emailCheck != null && emailCheck.getUserID() != existingUser.getUserID()) {
                 return ResponseEntity.badRequest()
                         .body(new ErrorResponse("Email already in use"));
             }
-            user.setEmail(request.getEmail());
-            User updatedUser = (User) user.update(user);
+
+            existingUser.setEmail(request.getEmail());
+
+            User updatedUser = (User) existingUser.update(existingUser);
             UserDTO updatedUserDTO = UserDTO.fromUser(updatedUser);
 
             return ResponseEntity.ok(updatedUserDTO);
@@ -42,13 +49,16 @@ public class UserController {
     public ResponseEntity<?> updateName(@RequestBody NameUpdateRequest request) {
         try {
             UserDTO userDTO = request.getUserDTO();
-            User user = UserFactory.createUser(userDTO.getUserType(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), null);
-            user.setUserID(userDTO.getUserID());
+            User existingUser = User.findByEmail(userDTO.getEmail());
+            if (existingUser == null) {
+                return ResponseEntity.badRequest()
+                        .body(new ErrorResponse("User not found"));
+            }
 
-            user.setFirstName(request.getFirstName());
-            user.setLastName(request.getLastName());
-            User updatedUser = (User) user.update(user);
+            existingUser.setFirstName(request.getFirstName());
+            existingUser.setLastName(request.getLastName());
 
+            User updatedUser = (User) existingUser.update(existingUser);
             UserDTO updatedUserDTO = UserDTO.fromUser(updatedUser);
 
             return ResponseEntity.ok(updatedUserDTO);
@@ -58,9 +68,3 @@ public class UserController {
         }
     }
 }
-
-
-
-
-
-
