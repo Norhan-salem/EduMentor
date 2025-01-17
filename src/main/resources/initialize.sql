@@ -175,7 +175,6 @@ CREATE TABLE IF NOT EXISTS public."OnlineDonation"
     "DonationID" serial NOT NULL,
     "Amount" double precision NOT NULL,
     "PaymentType" smallint NOT NULL,
-    "InvoiceID" serial NOT NULL,
     "AmountCharged" double precision NOT NULL,
     "IsDeleted" boolean NOT NULL DEFAULT false,
     CONSTRAINT "OnlineDonation_pkey" PRIMARY KEY
