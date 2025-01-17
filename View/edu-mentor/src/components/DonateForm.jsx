@@ -31,7 +31,12 @@ const DonateForm = () => {
     }
 
     const donationPayload = {
-      amount : parseInt(amount)
+      amount : parseInt(amount),
+      paymentType: "Card", // to be replaced with payment option once full integration is done
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      donorId: 0 // to be replaced with the actual user id
     }
     setErrors({});
 
