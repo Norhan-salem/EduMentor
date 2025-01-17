@@ -35,6 +35,7 @@ public class TopicsController {
     public ResponseEntity<Boolean> deleteTopicsFromUser(@RequestBody UserTopicsRequest userTopicsRequest) {
         UserTopics userTopics = new UserTopics();
         User user = UserFactory.createUser(userTopicsRequest.getUserDTO().getUserType(), userTopicsRequest.getUserDTO().getFirstName(), userTopicsRequest.getUserDTO().getLastName(), userTopicsRequest.getUserDTO().getEmail(),null);
+        user.setUserID(userTopicsRequest.getUserDTO().getUserID());
         Topics topic = userTopicsRequest.getTopic();
 
         try {
