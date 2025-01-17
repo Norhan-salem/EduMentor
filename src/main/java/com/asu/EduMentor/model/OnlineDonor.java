@@ -1,10 +1,13 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.profile.template.IProfileTemplate;
+import com.asu.EduMentor.model.profile.template.OnlineDonorProfileTemplate;
 import lombok.NoArgsConstructor;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 public class OnlineDonor extends User {
@@ -34,6 +37,18 @@ public class OnlineDonor extends User {
 
     public void setNumberOfDonations(int numberOfDonations) {
         this.numberOfDonations = numberOfDonations;
+    }
+
+    @Override
+    public IProfileTemplate getProfileTemplate() {
+        return new OnlineDonorProfileTemplate();
+    }
+
+    @Override
+    public Map<String, Object> getProfileData() {
+        IProfileTemplate template = getProfileTemplate();
+        Map<String, Object> profileData = template.setupProfile(this.getUserID());
+        return profileData;
     }
 
     @Override

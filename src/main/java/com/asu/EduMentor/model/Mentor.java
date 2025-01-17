@@ -1,10 +1,13 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.profile.template.IProfileTemplate;
+import com.asu.EduMentor.model.profile.template.MentorProfileTemplate;
 import lombok.NoArgsConstructor;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 public class Mentor extends User {
@@ -31,6 +34,18 @@ public class Mentor extends User {
 
     public void setTotalHours(double totalHours) {
         this.totalHours = totalHours;
+    }
+
+    @Override
+    public IProfileTemplate getProfileTemplate() {
+        return new MentorProfileTemplate();
+    }
+
+    @Override
+    public Map<String, Object> getProfileData() {
+        IProfileTemplate template = getProfileTemplate();
+        Map<String, Object> profileData = template.setupProfile(this.getUserID());
+        return profileData;
     }
 
     @Override
