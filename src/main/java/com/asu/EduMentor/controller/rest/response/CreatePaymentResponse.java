@@ -14,4 +14,12 @@ public class CreatePaymentResponse {
     public String getClientSecret() {
         return clientSecret;
     }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
 }
