@@ -140,7 +140,7 @@ public class Session implements CRUD {
             conn.setAutoCommit(false);
             long generatedSessionId;
             try (PreparedStatement sessionStmt = conn.prepareStatement(sessionQuery, Statement.RETURN_GENERATED_KEYS)) {
-                sessionStmt.setDate(1, new java.sql.Date(this.date.getTime()));
+                sessionStmt.setTimestamp(1, new Timestamp(this.date.getTime()));
                 sessionStmt.setDouble(2, this.duration);
                 sessionStmt.setString(3, this.name);
                 sessionStmt.setBoolean(4, this.isDeleted);
