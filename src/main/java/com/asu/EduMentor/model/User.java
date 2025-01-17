@@ -1,5 +1,7 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.profile.template.IProfileTemplate;
+import com.asu.EduMentor.model.profile.template.ProfileTemplateFactory;
 import lombok.NoArgsConstructor;
 
 import java.sql.Connection;
@@ -8,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 public abstract class User implements CRUD {
@@ -149,6 +152,14 @@ public abstract class User implements CRUD {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public IProfileTemplate getProfileTemplate() {
+        return ProfileTemplateFactory.createTemplate(this.role);
+    }
+
+    public Map<String, Object> getProfileData() {
+        return getProfileTemplate().setupProfile(this.getUserID());
     }
 
     @Override
