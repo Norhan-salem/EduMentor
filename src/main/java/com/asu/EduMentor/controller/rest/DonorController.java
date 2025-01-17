@@ -53,9 +53,9 @@ public class DonorController {
                 throw new Exception("Make donation failed");
             }
             LoggingMediator.getInstance().log(new DonationLog(donor.getFirstName(), donation.getAmount()));
-            return ResponseEntity.ok(new CreatePaymentResponse(response));
+            return ResponseEntity.ok(new CreatePaymentResponse(response, (double) donorDonationRequest.getAmount(), currency));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new CreatePaymentResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new CreatePaymentResponse(e.getMessage(), 0, "NONE"));
         }
     }
 
