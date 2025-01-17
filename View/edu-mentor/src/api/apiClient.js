@@ -7,11 +7,11 @@ import proxyClient from './proxyClient';
  */
 export const searchMentors = async (searchTerm) => {
   try {
-      const response = await proxyClient.requestWithRetries('/api/search/mentors', 3, 'get', { search: searchTerm });
-      return response;
+    const response = await proxyClient.requestWithRetries(`/api/search/mentors?search=${encodeURIComponent(searchTerm)}`, 3, 'get');
+    return response;
   } catch (error) {
-      console.error('Error fetching mentors:', error);
-      throw error;
+    console.error('Error fetching mentors:', error);
+    throw error;
   }
 };
 
@@ -22,7 +22,7 @@ export const searchMentors = async (searchTerm) => {
 */
 export const searchSessions = async (searchTerm) => {
   try {
-      const response = await proxyClient.requestWithRetries('/api/search/sessions', 3, 'get', { search: searchTerm });
+      const response = await proxyClient.requestWithRetries(`/api/search/sessions?search=${encodeURIComponent(searchTerm)}`, 3, 'get', { search: searchTerm });
       return response;
   } catch (error) {
       console.error('Error fetching sessions:', error);

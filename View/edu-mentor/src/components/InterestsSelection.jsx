@@ -30,11 +30,7 @@ const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
       }
     }
   };
-
-  const handleDeleteInterest = (interest) => {
-    onDeleteInterest(interest);
-  };
-
+  
   return (
     <Card className="mb-4 auth-form">
       <Card.Body>
@@ -71,7 +67,7 @@ const Interests = ({ interests, onAddInterest, onDeleteInterest }) => {
                   <Button
                     size="sm"
                     className="delete-btn mt-1"
-                    onClick={() => handleDeleteInterest(interest.topicID)}
+                    onClick={() => onDeleteInterest(interest)}
                   >
                     Delete
                   </Button>

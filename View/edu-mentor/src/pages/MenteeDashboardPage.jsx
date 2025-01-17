@@ -105,6 +105,8 @@ const MenteeDashboardPage = () => {
   };
   
   const handleDeleteInterest = async (interest) => {
+    console.log('Deleting interest:', interest);
+    console.log('User:', user); 
     try {
       await deleteTopicsFromUser({ user, topics: interest });
       setInterests((prev) => prev.filter((i) => i.topicID !== interest.topicID));
@@ -112,6 +114,7 @@ const MenteeDashboardPage = () => {
       console.error('Error removing interest:', error);
     }
   };
+  
 
   return (
     <Container className="mt-5">
