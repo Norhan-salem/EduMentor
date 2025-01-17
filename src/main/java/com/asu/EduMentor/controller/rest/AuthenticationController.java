@@ -8,6 +8,7 @@ import com.asu.EduMentor.logging.SignupLog;
 import com.asu.EduMentor.model.User;
 import com.asu.EduMentor.model.UserFactory;
 import com.asu.EduMentor.model.UserType;
+import com.asu.EduMentor.socialMediaNotifier.EmailNotificationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ public class AuthenticationController {
             );
             newUser.create();
             LoggingMediator.getInstance().log(new SignupLog(newUser.getFirstName()));
+            (new EmailNotificationFacade()).sendEmail("Welcome", "Welcome to EduMentor", newUser.getEmail());
             return ResponseEntity.ok(AuthResponse.success(newUser));
         } catch (Exception e) {
             log.error("Error during signup", e);
