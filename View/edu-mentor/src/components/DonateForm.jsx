@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {makeDonation} from "../api/apiClient";
+import { useAuthContext } from '../context/useAuthContext';
 
 const stripePromise = loadStripe("pk_test_51QgoFqFsbd6P1vCs6AO0oCP0scQwtbfjS1KpOG0Iw9sIknnpayZJkOAeNcgsKnHbNpg5r18k8DjbjsEm5EfAfifq00BnwJMoM8");
 
@@ -15,6 +16,7 @@ const DonateForm = () => {
   const [errors, setErrors] = useState({});
   const stripe = useStripe();
   const elements = useElements();
+  const { user } = useAuthContext();
 
   const handleDonate = async (e) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ const DonateForm = () => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      donorId: 0 // to be replaced with the actual user id
+      donorId: user.userID // to be replaced with the actual user id
     }
     setErrors({});
 

@@ -139,8 +139,8 @@ public class OnlineDonation implements CRUD {
      * @param od The donor who made the donation.
      */
     public boolean makeDonation(OnlineDonor od, PaymentType paymentType) {
-        String donationQuery = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"InvoiceID\", \"AmountCharged\", \"IsDeleted\") " +
-                "VALUES (?, ?, ?, ?, ?) RETURNING \"DonationID\"";
+        String donationQuery = "INSERT INTO public.\"OnlineDonation\" (\"Amount\", \"PaymentType\", \"AmountCharged\", \"IsDeleted\") " +
+                "VALUES (?, ?, ?, ?) RETURNING \"DonationID\"";
 
         String donorUpdateQuery = "UPDATE public.\"OnlineDonor\" SET \"NumberofDonations\" = \"NumberofDonations\" + 1 " +
                 "WHERE \"OnlineDonorID\" = ?";
@@ -155,9 +155,8 @@ public class OnlineDonation implements CRUD {
             try (PreparedStatement stmt = conn.prepareStatement(donationQuery, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setDouble(1, amount);
                 stmt.setInt(2, paymentType.ordinal());
-                stmt.setInt(3, getInvoice().getInvoiceID());
-                stmt.setDouble(4, amount);
-                stmt.setBoolean(5, false);
+                stmt.setDouble(3, amount);
+                stmt.setBoolean(4, false);
 
                 stmt.executeUpdate();
 
