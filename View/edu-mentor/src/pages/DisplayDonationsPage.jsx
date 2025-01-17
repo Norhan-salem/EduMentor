@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Card, ListGroup } from 'react-bootstrap';
-import { useAuthContext } from '../context/useAuthContext';
 import '../styles/Donate.css';
+import { Card, Spinner, Alert, Container, Row, Col } from 'react-bootstrap';
+import { useAuthContext } from '../context/useAuthContext';
+import { getDonations } from '../api/apiClient';
+
 
 const DonationsPage = () => {
   const { user } = useAuthContext();
@@ -12,46 +13,57 @@ const DonationsPage = () => {
 
   useEffect(() => {
     const fetchDonations = async () => {
-      // try {
-      //   const response = await axios.get('/api/getDonations', {
-      //     params: { donor: { email: user.email } },
-      //   });
-      //   setDonations(response.data);
-      // } catch (err) {
-      //   setError('Failed to fetch donations');
-      // } finally {
-      //   setLoading(false);
-      // }
+      try {
+        const response = await getDonations(user);
+        setDonations(response);
+      } catch (err) {
+        setError('Failed to fetch donations. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (user) fetchDonations();
   }, [user]);
 
   return (
-    <div className="donations-page">
-      <h2 className="text-center mb-4">Your Donations</h2>
+    <Container className="donations-page auth-form py-4">
+      <h2 className="text-center my-4">Your Donations</h2>
+
       {loading ? (
-        <div className="loading">Loading...</div>
-      ) : error ? (
-        <div className="error">{error}</div>
-      ) : (
-        <div className="donations-list">
-          <ListGroup>
-            {donations.map((donation) => (
-              <ListGroup.Item key={donation.donationID} className="donation-card">
-                <Card className="donation-card-body">
-                  <Card.Body>
-                    <Card.Title>Donation #{donation.donationID}</Card.Title>
-                    <Card.Text>Amount: ${donation.amount}</Card.Text>
-                    <Card.Text>Payment Method: {donation.paymentType}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+        <div className="text-center">
+          <Spinner animation="border"/>
         </div>
+      ) : error ? (
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
+      ) : donations.length === 0 ? (
+        <Alert variant="info" className="text-center">
+          You haven't made any donations yet.
+        </Alert>
+      ) : (
+        <Row>
+          {donations.map((donation) => (
+            <Col md={6} lg={4} key={donation.donationID} className="mb-4">
+              <Card className="shadow-sm">
+                <Card.Body>
+                  <Card.Title className="donation-card-title">
+                    Donation #{donation.donationID}
+                  </Card.Title>
+                  <Card.Text>
+                    <strong>Amount:</strong> ${donation.amount}
+                  </Card.Text>
+                  <Card.Text>
+                    <strong>Payment Method:</strong> {donation.paymentType}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       )}
-    </div>
+    </Container>
   );
 };
 

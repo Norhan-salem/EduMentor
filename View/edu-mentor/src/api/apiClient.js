@@ -438,15 +438,36 @@ export const updateUserName = async (user, firstName, lastName) => {
  */
 export const getInvoiceDetails = async ({ donation, targetCurrency, includeTax = true }) => {
   try {
-    const params = {
+    const queryParams = new URLSearchParams({
       donation: JSON.stringify(donation),
       targetCurrency,
       includeTax,
-    };
-    const response = await proxyClient.requestWithRetries('/api/invoice/getInvoiceDetails', 3, 'get', params);
+    }).toString();
+
+    const response = await proxyClient.requestWithRetries(`/api/invoice/getInvoiceDetails?${queryParams}`, 3, 'get');
     return response;
   } catch (error) {
     console.error('Error fetching invoice details:', error);
     throw error;
   }
 };
+
+/**
+ * Fetches the donation history for a user.
+ * Uses the proxyClient to handle retries and caching (if applicable).
+ * @param {Object} user - The user object containing user details.
+ * @returns {Object} - The response data containing donation history.
+ * @throws {Error} - If there is an error fetching donation history.
+ */
+export const getDonations = async (user) => {
+  try {
+    const queryParams = new URLSearchParams(user).toString();
+    
+    const response = await proxyClient.requestWithRetries(`/api/donor/api/getDonations?${queryParams}`, 3, 'get');
+    return response;
+  } catch (error) {
+    console.error('Error fetching donation history:', error);
+    throw error;
+  }
+};
+
