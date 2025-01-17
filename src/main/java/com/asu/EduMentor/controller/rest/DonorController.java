@@ -6,6 +6,7 @@ import com.asu.EduMentor.logging.LoggingMediator;
 import com.asu.EduMentor.model.OnlineDonation;
 import com.asu.EduMentor.model.OnlineDonor;
 import com.asu.EduMentor.model.PaymentType;
+import com.asu.EduMentor.service.CurrencyConversionServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,18 @@ public class DonorController {
             paymentProcessor.setPaymentStrategy(new CourierPaymentStrategy());
         }
 
-        OnlineDonation donation = new OnlineDonation(paymentType, (double) donorDonationRequest.getAmount());
+        double paymentAmount = (double) donorDonationRequest.getAmount();
 
-        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount());
+        String currency = donorDonationRequest.getCurrency();
+        if(!currency.equals("USD")){
+            CurrencyConversionServiceImpl conversionService = new CurrencyConversionServiceImpl();
+            double rate = conversionService.getConversionRate(currency);
+            paymentAmount *= rate;
+        }
+
+        double amountCharged = paymentAmount * 1.12;
+        OnlineDonation donation = new OnlineDonation(paymentType, amountCharged);
+        String response = paymentProcessor.executePayment(amountCharged);
 
         try {
             if (!donation.makeDonation(donor, paymentType)) {

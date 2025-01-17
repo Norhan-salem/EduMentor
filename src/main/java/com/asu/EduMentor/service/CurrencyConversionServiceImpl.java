@@ -12,7 +12,7 @@ public class CurrencyConversionServiceImpl implements ICurrencyConversionService
     private static final String API_URL = "https://v6.exchangerate-api.com/v6/da762ace32b2903e9653ddf5/latest/USD";
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();;
 
     @Override
     public double getConversionRate(String targetCurrency) {

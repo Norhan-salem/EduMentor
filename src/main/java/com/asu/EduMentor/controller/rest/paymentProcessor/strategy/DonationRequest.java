@@ -5,10 +5,21 @@ import com.asu.EduMentor.model.PaymentType;
 public class DonationRequest {
     private Long amount;
     private String paymentType;
-    private String firstName;
-    private String lastName;
-    private String email;
     private int donorId;
+    private String currency;
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        if (currency.equals("USD") || currency.equals("EGP") || currency.equals("EUR") || currency.equals("GBP") || currency.equals("CAD")) {
+            this.currency = currency;
+        }else{
+            throw new IllegalArgumentException("Currency not supported"
+            );
+        }
+    }
 
     public int getDonorId() {
         return donorId;
@@ -16,30 +27,6 @@ public class DonationRequest {
 
     public void setDonorId(int donorId) {
         this.donorId = donorId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPaymentType() {
