@@ -4,7 +4,6 @@ import com.asu.EduMentor.controller.rest.response.InvoiceResponse;
 import com.asu.EduMentor.service.ICurrencyConversionService;
 
 import com.asu.EduMentor.model.InvoiceDetails;
-import com.asu.EduMentor.model.OnlineDonation;
 import com.asu.EduMentor.model.Invoice;
 import com.asu.EduMentor.model.invoice.decorator.CurrencyConverterDecorator;
 import com.asu.EduMentor.model.invoice.decorator.TaxDecorator;
@@ -17,25 +16,26 @@ import org.springframework.web.bind.annotation.*;
 public class InvoiceController {
 
     private final ICurrencyConversionService currencyConversionService;
+
     public InvoiceController(ICurrencyConversionService currencyConversionService) {
         this.currencyConversionService = currencyConversionService;
     }
 
     @GetMapping("/getInvoiceDetails")
     public ResponseEntity<InvoiceResponse> getInvoiceDetails(
-            @RequestParam OnlineDonation donation,
+            @RequestParam double amount,
             @RequestParam(required = false) String targetCurrency,
             @RequestParam(required = false, defaultValue = "true") boolean includeTax) {
 
         try {
-            InvoiceDetails baseInvoice = new InvoiceDetails(donation.getInvoice().getInvoiceID());
+            InvoiceDetails baseInvoice = new InvoiceDetails(0, amount);
             Invoice decoratedInvoice = baseInvoice;
 
-            // Apply tax if requested
             if (includeTax) {
                 decoratedInvoice = new TaxDecorator(decoratedInvoice);
             }
 
+            double calculatedTotal = decoratedInvoice.getTotal();
             if (targetCurrency != null && !targetCurrency.equals("USD")) {
                 decoratedInvoice = new CurrencyConverterDecorator(
                         decoratedInvoice,
@@ -44,9 +44,11 @@ public class InvoiceController {
                 );
             }
 
+            double convertedTotal = decoratedInvoice.getTotal();
             InvoiceResponse response = new InvoiceResponse(
                     baseInvoice.getAmountCharged(),
-                    decoratedInvoice.getTotal(),
+                    calculatedTotal,
+                    convertedTotal,
                     targetCurrency != null ? targetCurrency : "USD"
             );
 

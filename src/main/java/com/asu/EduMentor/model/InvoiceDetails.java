@@ -16,9 +16,9 @@ public class InvoiceDetails extends Invoice {
      *
      * @param invoiceID The unique invoice ID.
      */
-    public InvoiceDetails(int invoiceID) {
+    public InvoiceDetails(int invoiceID, double amountCharged) {
         super(invoiceID);
-        this.amountCharged = getAmountChargedFromDB(invoiceID);
+        this.amountCharged = amountCharged;
     }
 
     /**
@@ -37,33 +37,6 @@ public class InvoiceDetails extends Invoice {
      * @return The amount charged.
      */
     public double getAmountCharged() {
-        return amountCharged;
-    }
-
-    /**
-     * Retrieves the amount charged from the OnlineDonation table for a specific InvoiceID.
-     *
-     * @param invoiceID The InvoiceID to search for.
-     * @return The amount charged.
-     */
-    private double getAmountChargedFromDB(int invoiceID) {
-        String query = "SELECT \"AmountCharged\" FROM public.\"OnlineDonation\" WHERE \"InvoiceID\" = ? AND \"IsDeleted\" = false";
-        double amountCharged = 0.0;
-
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, invoiceID);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    amountCharged = rs.getDouble("AmountCharged");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error fetching amount charged for invoice", e);
-        }
-
         return amountCharged;
     }
 

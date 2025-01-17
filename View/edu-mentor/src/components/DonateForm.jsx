@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { makeDonation } from "../api/apiClient";
+import { makeDonation, getInvoiceDetails } from "../api/apiClient";
 import { useAuthContext } from '../context/useAuthContext';
 
 const stripePromise = loadStripe("pk_test_51QgoFqFsbd6P1vCs6AO0oCP0scQwtbfjS1KpOG0Iw9sIknnpayZJkOAeNcgsKnHbNpg5r18k8DjbjsEm5EfAfifq00BnwJMoM8");
@@ -12,6 +12,7 @@ const DonateForm = () => {
   const [currency, setCurrency] = useState('USD');
   const [paymentOption, setPaymentOption] = useState('Card');
   const [errors, setErrors] = useState({});
+  const [invoice, setInvoice] = useState(null);
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuthContext();
@@ -55,6 +56,12 @@ const DonateForm = () => {
           alert(`Payment failed: ${error.message}`);
         } else if (paymentIntent.status === 'succeeded') {
           alert('Donation successful!');
+          const invoiceDetails = await getInvoiceDetails({
+            amount: donationResponse.amount,
+            targetCurrency: donationResponse.currency,
+            includeTax: true,
+          });
+          setInvoice(invoiceDetails);
         }
       } catch (err) {
         alert('Error processing donation. Please try again.');
@@ -117,6 +124,16 @@ const DonateForm = () => {
       <Button type="submit" className="w-100 home-button">
         Donate
       </Button>
+
+      {/* Render the invoice details if available */}
+      {invoice && (
+        <div className="invoice-details mt-4">
+          <h3>Invoice Details</h3>
+          <p><strong>Original Amount:</strong> {invoice.originalAmount} {invoice.currency}</p>
+          <p><strong>Amount with Tax:</strong> {invoice.amountWithTax} {invoice.currency}</p>
+          <p><strong>Converted Total:</strong> {invoice.convertedTotal} USD</p>
+        </div>
+      )}
     </Form>
   );
 };
