@@ -1,10 +1,6 @@
 package com.asu.EduMentor.controller.rest;
 
-import com.asu.EduMentor.controller.rest.body.DonorDonationRequest;
-import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.CourierPaymentStrategy;
-import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.CreatePaymentResponse;
-import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.PaymentProcessor;
-import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.VisaPaymentStrategy;
+import com.asu.EduMentor.controller.rest.paymentProcessor.strategy.*;
 import com.asu.EduMentor.logging.DonationLog;
 import com.asu.EduMentor.logging.LoggingMediator;
 import com.asu.EduMentor.model.OnlineDonation;
@@ -21,19 +17,24 @@ import java.util.List;
 public class DonorController {
 
     @PostMapping("/api/makeDonation")
-    public ResponseEntity<CreatePaymentResponse> makeDonation(@RequestBody DonorDonationRequest donorDonationRequest) {
-        OnlineDonation donation = donorDonationRequest.getOnlineDonation();
-        OnlineDonor donor = donorDonationRequest.getOnlineDonor();
-        PaymentType paymentType = donorDonationRequest.getPaymentType();
+    public ResponseEntity<CreatePaymentResponse> makeDonation(@RequestBody DonationRequest donorDonationRequest) {
+        int donorId = donorDonationRequest.getDonorId();
+        OnlineDonor donor = (OnlineDonor) new OnlineDonor().read(donorId);
 
+//        OnlineDonor donor = new OnlineDonor(donorDonationRequest.getFirstName(), donorDonationRequest.getLastName(), donorDonationRequest.getEmail());
+
+        PaymentType paymentType = PaymentType.VISA;
         PaymentProcessor paymentProcessor = new PaymentProcessor();
-
-        if (paymentType == PaymentType.COURIER) {
-            paymentProcessor.setPaymentStrategy(new CourierPaymentStrategy());
-        } else if (paymentType == PaymentType.VISA) {
+        if (donorDonationRequest.getPaymentType().equals("Card")){
             paymentProcessor.setPaymentStrategy(new VisaPaymentStrategy());
+        }else if(donorDonationRequest.getPaymentType().equals("Courier")){
+            paymentType = PaymentType.COURIER;
+            paymentProcessor.setPaymentStrategy(new CourierPaymentStrategy());
         }
-        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount());
+
+        OnlineDonation donation = new OnlineDonation(paymentType, (double) donorDonationRequest.getAmount());
+
+        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount() * 100);
 
         try {
             if (!donation.makeDonation(donor, paymentType)) {
