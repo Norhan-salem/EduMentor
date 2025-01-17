@@ -15,7 +15,7 @@ public abstract class ProfileTemplate implements IProfileTemplate {
         this.requiredFields = initializeRequiredFields();
     }
 
-    protected List<String> initializeRequiredFields() {
+    final protected List<String> initializeRequiredFields() {
         List<String> fields = new ArrayList<>();
         fields.add("firstName");
         fields.add("lastName");
@@ -26,7 +26,7 @@ public abstract class ProfileTemplate implements IProfileTemplate {
     }
 
     @Override
-    public Map<String, Object> setupProfile(int id) {
+    final public Map<String, Object> setupProfile(int id) {
         profileData = new HashMap<>();
         User user = getUserById(id);
         if (user != null) {
@@ -36,7 +36,7 @@ public abstract class ProfileTemplate implements IProfileTemplate {
         return new HashMap<>(profileData);
     }
 
-    protected void setupCommonFields(User user) {
+    final protected void setupCommonFields(User user) {
         profileData.put("firstName", user.getFirstName());
         profileData.put("lastName", user.getLastName());
         profileData.put("email", user.getEmail());
@@ -44,7 +44,7 @@ public abstract class ProfileTemplate implements IProfileTemplate {
     }
 
     @Override
-    public boolean updateProfile(int id, Map<String, Object> information) {
+    final public boolean updateProfile(int id, Map<String, Object> information) {
         User user = getUserById(id);
         if (user == null) return false;
 
@@ -60,13 +60,13 @@ public abstract class ProfileTemplate implements IProfileTemplate {
         }
     }
 
-    protected boolean validateAllFields(Map<String, Object> information) {
+    final protected boolean validateAllFields(Map<String, Object> information) {
         return information.entrySet().stream()
                 .allMatch(entry -> isValidField(entry.getKey(), entry.getValue()));
     }
 
     @Override
-    public boolean deleteProfileItem(int id, String key) {
+    final public boolean deleteProfileItem(int id, String key) {
         if (isRequiredField(key) || !profileData.containsKey(key)) {
             return false;
         }
@@ -74,17 +74,17 @@ public abstract class ProfileTemplate implements IProfileTemplate {
         return true;
     }
 
-    protected boolean isRequiredField(String key) {
+    final protected boolean isRequiredField(String key) {
         return requiredFields.contains(key);
     }
 
     @Override
-    public List<String> getRequiredFields() {
+    final public List<String> getRequiredFields() {
         return new ArrayList<>(requiredFields);
     }
 
     @Override
-    public boolean validateProfile(Map<String, Object> profileData) {
+    final public boolean validateProfile(Map<String, Object> profileData) {
         if (profileData == null) return false;
 
         if (!hasAllRequiredFields(profileData)) {
@@ -94,26 +94,26 @@ public abstract class ProfileTemplate implements IProfileTemplate {
         return validateAllFields(profileData);
     }
 
-    protected boolean hasAllRequiredFields(Map<String, Object> profileData) {
+    final protected boolean hasAllRequiredFields(Map<String, Object> profileData) {
         return requiredFields.stream()
                 .allMatch(field -> profileData.containsKey(field) && profileData.get(field) != null);
     }
 
-    protected boolean isValidField(String key, Object value) {
+    final protected boolean isValidField(String key, Object value) {
         if (isCommonField(key)) {
             return validateCommonField(key, value);
         }
         return validateTypeSpecificField(key, value);
     }
 
-    protected boolean isCommonField(String key) {
+    final protected boolean isCommonField(String key) {
         return key.equals("firstName") ||
                 key.equals("lastName") ||
                 key.equals("email") ||
                 key.equals("role");
     }
 
-    protected boolean validateCommonField(String key, Object value) {
+    final protected boolean validateCommonField(String key, Object value) {
         if (value == null) return false;
 
         return switch (key) {
