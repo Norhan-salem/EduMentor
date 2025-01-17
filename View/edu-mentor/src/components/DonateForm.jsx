@@ -131,7 +131,7 @@ const DonateForm = () => {
           <h3>Invoice Details</h3>
           <p><strong>Original Amount:</strong> {invoice.originalAmount} {invoice.currency}</p>
           <p><strong>Amount with Tax:</strong> {invoice.amountWithTax} {invoice.currency}</p>
-          <p><strong>Converted Total:</strong> {invoice.convertedTotal} {invoice.currency}</p>
+          <p><strong>Converted Total:</strong> {invoice.convertedTotal} USD</p>
         </div>
       )}
     </Form>
