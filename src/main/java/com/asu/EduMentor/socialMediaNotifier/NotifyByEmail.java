@@ -14,9 +14,6 @@ public class NotifyByEmail implements INotificationObserver {
         this.emailRecipientCollection = new EmailRecipientCollection();
     }
 
-    public String printNotifyMethod() {
-        return "Email Notification";
-    }
 /*In here the Facade pattern is applied because the objects of the NotifyByEmail only
 interact through the update method and don't know the details of sending the email*/
     @Override
