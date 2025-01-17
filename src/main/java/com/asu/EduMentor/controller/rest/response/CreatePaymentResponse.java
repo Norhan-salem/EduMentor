@@ -1,4 +1,4 @@
-package com.asu.EduMentor.controller.rest.paymentProcessor.strategy;
+package com.asu.EduMentor.controller.rest.response;
 
 public class CreatePaymentResponse {
     private String clientSecret;
