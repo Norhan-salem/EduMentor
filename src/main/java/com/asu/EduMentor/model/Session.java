@@ -39,12 +39,11 @@ public class Session implements CRUD {
     public ISessionState getStateBasedOnDate(){
         long sessionStartTime = getDate().getTime();
         long sessionEndTime = sessionStartTime + (long) (getDuration() * 3600 * 1000);
-        long currentTime = new Date().getTime();
+        long currentTime = new Date().getTime() +2 *3600 * 1000;
 
-        if (currentTime <   sessionStartTime) {
+        if (currentTime <  sessionStartTime) {
             return new ScheduleState();
-        }
-        if (currentTime >= sessionStartTime && currentTime < sessionEndTime) {
+        }else if (currentTime >= sessionStartTime && currentTime < sessionEndTime) {
             return new OngoingState();
         }
         return new CompletedState();
