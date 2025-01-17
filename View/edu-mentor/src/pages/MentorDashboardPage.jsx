@@ -17,44 +17,57 @@ import Interests from '../components/InterestsSelection';
 import { useAuthContext } from '../context/useAuthContext';
 
 const MentorDashboardPage = () => {
-  const [sessions, setSessions] = useState([]);
-  const [availability, setAvailability] = useState([]);
-  const [taughtHours, setTaughtHours] = useState(0);
-  const [interests, setInterests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    sessions: [],
+    availability: [],
+    taughtHours: 0,
+    interests: []
+  });
   const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchMentorData = async () => {
       if (!user) return;
-  
+
+      setIsLoading(true);
+      setError(null);
+
       try {
-        // Fetch mentor availability data
-        const mentorAvailability = await getMentorAvailability(user);
-  
+        const [
+          mentorAvailability,
+          hours,
+          mentorSessions,
+          userTopics
+        ] = await Promise.all([
+          getMentorAvailability(user),
+          getMentoringHours(user),
+          getUserSessions(user),
+          getUserTopics(user)
+        ]);
+
         // Transform availability data to include separate date and time fields
         const formattedAvailability = mentorAvailability.map((entry) => {
           const dateObject = new Date(entry.time);
           return {
             ...entry,
-            date: dateObject.toISOString().split('T')[0], // Extract date in 'YYYY-MM-DD' format
-            time: dateObject.toISOString().split('T')[1].slice(0, 5), // Extract time in 'HH:mm' format
+            date: dateObject.toISOString().split('T')[0],
+            time: dateObject.toISOString().split('T')[1].slice(0, 5),
           };
         });
-  
-        // Update state with formatted availability data
-        setAvailability(formattedAvailability);
-  
-        // Fetch and set additional mentor data
-        const hours = await getMentoringHours(user);
-        setTaughtHours(hours);
-  
-        const mentorSessions = await getUserSessions(user);
-        setSessions(mentorSessions);
-  
-        const userTopics = await getUserTopics(user);
-        setInterests(userTopics);
+
+        setDashboardData({
+          sessions: mentorSessions,
+          availability: formattedAvailability,
+          taughtHours: hours,
+          interests: userTopics
+        });
       } catch (error) {
         console.error('Error fetching mentor data:', error);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
     };
   
@@ -68,17 +81,20 @@ const MentorDashboardPage = () => {
       time: '',
       duration: ''
     };
-    setAvailability((prev) => [...prev, newAvailability]);
+    setDashboardData(prev => ({
+      ...prev,
+      availability: [...prev.availability, newAvailability]
+    }));
   };
 
   const handleSaveAvailability = async (entry, index) => {
     try {
       const response = await addMentorAvailability({ mentor: user, availability: entry });
       if (response) {
-        setAvailability((prev) => {
-          const updated = [...prev];
-          return updated;
-        });
+        setDashboardData(prev => ({
+          ...prev,
+          availability: [...prev.availability]
+        }));
       }
     } catch (error) {
       console.error('Error saving availability:', error);
@@ -92,7 +108,10 @@ const MentorDashboardPage = () => {
   
       // If the deletion is successful, update the local state
       if (response) {
-        setAvailability((prev) => prev.filter((_, i) => i !== index));
+        setDashboardData(prev => ({
+          ...prev,
+          availability: prev.availability.filter((_, i) => i !== index)
+        }));
       }
     } catch (error) {
       console.error('Error deleting availability:', error);
@@ -101,24 +120,21 @@ const MentorDashboardPage = () => {
 
   const handleScheduleChange = (e, index, field) => {
     const { value } = e.target;
-    setAvailability((prev) => {
-      const updated = [...prev];
-      updated[index] = {
-        ...updated[index],
-        [field]: value
-      };
-      return updated;
-    });
+    setDashboardData(prev => ({
+      ...prev,
+      availability: prev.availability.map((item, i) =>
+          i === index ? { ...item, [field]: value } : item
+      )
+    }));
   };
 
   const handleAddInterest = async (interest) => {
     try {
-      const payload = {
-        user: user, 
-        topics: interest, 
-      };
-      await addTopicsToUser(payload);
-      setInterests((prev) => [...prev, interest]);
+      await addTopicsToUser({ user, topics: interest });
+      setDashboardData(prev => ({
+        ...prev,
+        interests: [...prev.interests, interest]
+      }));
     } catch (error) {
       console.error('Error adding interest:', error);
     }
@@ -128,12 +144,24 @@ const MentorDashboardPage = () => {
   const handleDeleteInterest = async (interest) => {
     try {
       await deleteTopicsFromUser({ user, topics: interest });
-      setInterests((prev) => prev.filter((i) => i.topicID !== interest.topicID));
+      setDashboardData(prev => ({
+        ...prev,
+        interests: prev.interests.filter((i) => i.topicID !== interest.topicID)
+      }));
     } catch (error) {
       console.error('Error removing interest:', error);
     }
   };
 
+  if (isLoading) {
+    return <div className="text-center mt-5">Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center mt-5 text-danger">{error}</div>;
+  }
+
+  const { sessions, availability, taughtHours, interests } = dashboardData;
 
   return (
     <Container className="mt-5">
