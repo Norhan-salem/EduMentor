@@ -121,7 +121,7 @@ public class OnlineDonation implements CRUD {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int invoiceID = rs.getInt("InvoiceID");
-                    return new InvoiceDetails(invoiceID);
+                    return new InvoiceDetails(invoiceID, 0);
                 }
             }
         } catch (SQLException e) {
