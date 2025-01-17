@@ -1,8 +1,12 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.profile.template.IProfileTemplate;
+import com.asu.EduMentor.model.profile.template.MenteeProfileTemplate;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Mentee extends User {
 
@@ -41,6 +45,18 @@ public class Mentee extends User {
 
     public void setNumberOfAttendedSessions(int numberOfAttendedSessions) {
         this.numberOfAttendedSessions = numberOfAttendedSessions;
+    }
+
+    @Override
+    public IProfileTemplate getProfileTemplate() {
+        return new MenteeProfileTemplate();
+    }
+
+    @Override
+    public Map<String, Object> getProfileData() {
+        IProfileTemplate template = getProfileTemplate();
+        Map<String, Object> profileData = template.setupProfile(this.getUserID());
+        return profileData;
     }
 
     @Override

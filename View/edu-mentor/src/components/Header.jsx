@@ -112,13 +112,13 @@ const Header = () => {
             )}
           </Nav>
         </Navbar.Collapse>
-
-        {/* Donate Button on the Right */}
+        {user?.userType === 'ONLINEDONOR' && (
         <animated.div style={donateBtnAnim} className="donate-btn-container">
-          <Link as={Link} to="/donate" className="donate-btn">
+          <Link to="/donate" className="donate-btn">
             Donate
           </Link>
         </animated.div>
+      )}
       </Container>
     </Navbar>
   );

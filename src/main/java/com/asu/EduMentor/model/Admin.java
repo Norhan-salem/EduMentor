@@ -1,10 +1,13 @@
 package com.asu.EduMentor.model;
 
+import com.asu.EduMentor.model.profile.template.AdminProfileTemplate;
+import com.asu.EduMentor.model.profile.template.IProfileTemplate;
 import lombok.NoArgsConstructor;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 public class Admin extends User {
@@ -27,6 +30,18 @@ public class Admin extends User {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public IProfileTemplate getProfileTemplate() {
+        return new AdminProfileTemplate();
+    }
+
+    @Override
+    public Map<String, Object> getProfileData() {
+        IProfileTemplate template = getProfileTemplate();
+        Map<String, Object> profileData = template.setupProfile(this.getUserID());
+        return profileData;
     }
 
     @Override

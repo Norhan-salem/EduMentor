@@ -1,6 +1,4 @@
-package com.asu.EduMentor.controller.rest.paymentProcessor.strategy;
-
-import com.asu.EduMentor.model.PaymentType;
+package com.asu.EduMentor.controller.rest.body;
 
 public class DonationRequest {
     private Long amount;
