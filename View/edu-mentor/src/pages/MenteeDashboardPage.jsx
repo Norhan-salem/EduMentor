@@ -8,70 +8,77 @@ import { getSessions, updateUserEmail, updateUserName, getUserSessions, register
 import { useAuthContext } from '../context/useAuthContext';
 
 const MenteeDashboardPage = () => {
-  const [sessions, setSessions] = useState([]);
-  const [registeredSessions, setRegisteredSessions] = useState([]);
-  const [attendedHours, setAttendedHours] = useState(0);
-  const [interests, setInterests] = useState([]);
-  const { user, updateUser } = useAuthContext();
-  const [firstName, setFirstName] = useState(user?.firstName || '');
-  const [lastName, setLastName] = useState(user?.lastName || '');
-  const [email, setEmail] = useState(user?.email || '');
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { user, updateUser } = useAuthContext();
+
+  const [dashboardData, setDashboardData] = useState({
+    sessions: [],
+    registeredSessions: [],
+    attendedHours: 0,
+    interests: [],
+    profile: {
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || ''
+    }
+  });
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error fetching sessions:', error);
-      }
-    };
-
-    const fetchRegisteredSessions = async () => {
-      if(!user) return;
-      try {
-        console.log(user);
-        const data = await getUserSessions(user);
-        setRegisteredSessions(data);
-      } catch (error) {
-        console.error('Error fetching registered sessions:', error);
-      }
-    };
-
-    const fetchAttendedHours = async () => {
-      if(!user) return;
-      try {
-        const data = await getMenteeAttendedHours(user.userID);
-        setAttendedHours(data);
-      } catch (error) {
-        console.error('Error fetching attended hours:', error);
-      }
-    };
-    const fetchUserTopics = async () => {
+    const fetchDashboardData = async () => {
       if (!user) return;
+
+      setIsLoading(true);
+      setError('');
+
       try {
-        const data = await getUserTopics(user);
-        setInterests(data);
+        const [
+          sessionsData,
+          registeredSessionsData,
+          attendedHoursData,
+          userTopicsData
+        ] = await Promise.all([
+          getSessions(),
+          getUserSessions(user),
+          getMenteeAttendedHours(user.userID),
+          getUserTopics(user)
+        ]);
+
+        setDashboardData({
+          sessions: sessionsData,
+          registeredSessions: registeredSessionsData,
+          attendedHours: attendedHoursData,
+          interests: userTopicsData,
+          profile: {
+            firstName: user?.firstName || '',
+            lastName: user?.lastName || '',
+            email: user?.email || ''
+          }
+        });
       } catch (error) {
-        console.error('Error fetching user topics:', error);
+        console.error('Error fetching dashboard data:', error);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchSessions();
-    fetchRegisteredSessions();
-    fetchAttendedHours();
-    fetchUserTopics();
+    fetchDashboardData();
   }, [user]);
 
   const handleUpdateProfile = async () => {
+    const { firstName, lastName, email } = dashboardData.profile;
+
     try {
       setError('');
       setSuccess('');
-      await updateUserName(user, firstName, lastName);
-      await updateUserEmail(user, email);
-  
+
+      await Promise.all([
+        updateUserName(user, firstName, lastName),
+        updateUserEmail(user, email)
+      ]);
+
       const updatedUser = { ...user, firstName, lastName, email };
       updateUser(updatedUser);
       console.log(updatedUser);
@@ -82,39 +89,62 @@ const MenteeDashboardPage = () => {
     }
   };
 
+  const handleProfileChange = (field, value) => {
+    setDashboardData(prev => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        [field]: value
+      }
+    }));
+  };
+
   const handleRegister = async (session) => {
     try {
       await registerMentee(session, user);
-      setRegisteredSessions((prevSessions) => [...prevSessions, session]);
+      setDashboardData(prev => ({
+        ...prev,
+        registeredSessions: [...prev.registeredSessions, session]
+      }));
     } catch (error) {
       console.error('Error registering for session:', error);
+      setError('Failed to register for session. Please try again.');
     }
   };
 
   const handleAddInterest = async (interest) => {
     try {
-      const payload = {
-        user: user, 
-        topics: interest, 
-      };
-      await addTopicsToUser(payload);
-      setInterests((prev) => [...prev, interest]);
+      await addTopicsToUser({ user, topics: interest });
+      setDashboardData(prev => ({
+        ...prev,
+        interests: [...prev.interests, interest]
+      }));
     } catch (error) {
       console.error('Error adding interest:', error);
+      setError('Failed to add interest. Please try again.');
     }
   };
-  
+
   const handleDeleteInterest = async (interest) => {
     console.log('Deleting interest:', interest);
     console.log('User:', user); 
     try {
       await deleteTopicsFromUser({ user, topics: interest });
-      setInterests((prev) => prev.filter((i) => i.topicID !== interest.topicID));
+      setDashboardData(prev => ({
+        ...prev,
+        interests: prev.interests.filter((i) => i.topicID !== interest.topicID)
+      }));
     } catch (error) {
       console.error('Error removing interest:', error);
+      setError('Failed to remove interest. Please try again.');
     }
   };
-  
+
+  if (isLoading) {
+    return <div className="text-center mt-5">Loading dashboard...</div>;
+  }
+
+  const { sessions, registeredSessions, attendedHours, interests, profile } = dashboardData;
 
   return (
     <Container className="mt-5">
@@ -131,8 +161,8 @@ const MenteeDashboardPage = () => {
                 <Form.Label>First Name</Form.Label>
                 <Form.Control
                   type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  value={profile.firstName}
+                  onChange={(e) => handleProfileChange('firstName', e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -143,8 +173,8 @@ const MenteeDashboardPage = () => {
                 <Form.Label>Last Name</Form.Label>
                 <Form.Control
                   type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  value={profile.lastName}
+                  onChange={(e) => handleProfileChange('lastName', e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -155,8 +185,8 @@ const MenteeDashboardPage = () => {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={profile.email}
+                  onChange={(e) => handleProfileChange('email', e.target.value)}
                 />
               </Form.Group>
             </Col>
