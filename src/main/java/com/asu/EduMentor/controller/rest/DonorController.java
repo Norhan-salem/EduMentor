@@ -34,7 +34,7 @@ public class DonorController {
 
         OnlineDonation donation = new OnlineDonation(paymentType, (double) donorDonationRequest.getAmount());
 
-        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount() * 100);
+        String response = paymentProcessor.executePayment(donorDonationRequest.getAmount());
 
         try {
             if (!donation.makeDonation(donor, paymentType)) {
