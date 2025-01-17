@@ -114,7 +114,7 @@ const DonateForm = () => {
         </>
       )}
 
-      <Button type="submit" className="w-100">
+      <Button type="submit" className="w-100 home-button">
         Donate
       </Button>
     </Form>
